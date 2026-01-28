@@ -1,0 +1,7 @@
+[
+  { "name": "Enterprise Outreach Q1", "sends": 12450, "opens": 4233, "replies": 892, "meetings": 156 },
+  { "name": "SMB Follow-up Series", "sends": 8932, "opens": 3124, "replies": 645, "meetings": 98 },
+  { "name": "Product Launch Campaign", "sends": 6521, "opens": 2890, "replies": 523, "meetings": 87 },
+  { "name": "Re-engagement Flow", "sends": 5432, "opens": 1876, "replies": 312, "meetings": 45 },
+  { "name": "Cold Outbound - Tech", "sends": 4521, "opens": 1543, "replies": 267, "meetings": 38 }
+]

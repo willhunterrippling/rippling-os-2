@@ -1,0 +1,9 @@
+[
+  { "week": "W1", "s1_count": 145, "s2_count": 48 },
+  { "week": "W2", "s1_count": 162, "s2_count": 55 },
+  { "week": "W3", "s1_count": 178, "s2_count": 62 },
+  { "week": "W4", "s1_count": 195, "s2_count": 71 },
+  { "week": "W5", "s1_count": 189, "s2_count": 68 },
+  { "week": "W6", "s1_count": 203, "s2_count": 75 },
+  { "week": "W7", "s1_count": 175, "s2_count": 44 }
+]
