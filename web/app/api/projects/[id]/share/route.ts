@@ -3,13 +3,26 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { SharePermission } from "@prisma/client";
 
+// Helper to get user email (handles BYPASS_AUTH in development)
+async function getUserEmail(): Promise<string | null> {
+  // In development with BYPASS_AUTH, use the configured email
+  if (
+    process.env.NODE_ENV === "development" &&
+    process.env.BYPASS_AUTH === "true"
+  ) {
+    return process.env.RIPPLING_ACCOUNT_EMAIL || "dev@rippling.com";
+  }
+  const session = await auth();
+  return session?.user?.email || null;
+}
+
 // GET - List shares for a project
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.email) {
+  const userEmail = await getUserEmail();
+  if (!userEmail) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -46,8 +59,8 @@ export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.email) {
+  const userEmail = await getUserEmail();
+  if (!userEmail) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -87,7 +100,7 @@ export async function POST(
     include: {
       owner: true,
       shares: {
-        where: { user: { email: session.user.email } },
+        where: { user: { email: userEmail } },
       },
     },
   });
@@ -96,7 +109,7 @@ export async function POST(
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
 
-  const isOwner = project.owner.email === session.user.email;
+  const isOwner = project.owner.email === userEmail;
   const hasAdminShare = project.shares.some(
     (s) => s.permission === "ADMIN"
   );
@@ -159,8 +172,8 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user?.email) {
+  const userEmail = await getUserEmail();
+  if (!userEmail) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
@@ -181,7 +194,7 @@ export async function DELETE(
     include: {
       owner: true,
       shares: {
-        where: { user: { email: session.user.email } },
+        where: { user: { email: userEmail } },
       },
     },
   });
@@ -190,7 +203,7 @@ export async function DELETE(
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
   }
 
-  const isOwner = project.owner.email === session.user.email;
+  const isOwner = project.owner.email === userEmail;
   const hasAdminShare = project.shares.some(
     (s) => s.permission === "ADMIN"
   );

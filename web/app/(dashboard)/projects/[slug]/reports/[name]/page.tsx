@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProject, getReportContent } from "@/lib/projects";
+import { getProject, getReportContent, canUserAdminProject } from "@/lib/projects";
+import { auth } from "@/lib/auth";
 import { Card, CardContent } from "@/components/ui/card";
+import { ShareButton } from "@/components/project/ShareDialog";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -22,16 +24,29 @@ export default async function ReportPage({ params }: ReportPageProps) {
 
   const content = await getReportContent(slug, name);
 
+  // Check if current user can manage shares
+  const session = await auth();
+  const canManageShares = session?.user?.email
+    ? await canUserAdminProject(session.user.email, project.id)
+    : false;
+
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href={`/projects/${slug}`} className="hover:text-foreground">
-          {project.name}
-        </Link>
-        <span>/</span>
-        <span>reports</span>
-        <span>/</span>
-        <span className="text-foreground font-medium">{name}</span>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+          <Link href={`/projects/${slug}`} className="hover:text-foreground">
+            {project.name}
+          </Link>
+          <span>/</span>
+          <span>reports</span>
+          <span>/</span>
+          <span className="text-foreground font-medium">{name}</span>
+        </div>
+        <ShareButton
+          projectId={project.id}
+          projectName={project.name}
+          canManageShares={canManageShares}
+        />
       </div>
 
       {content ? (

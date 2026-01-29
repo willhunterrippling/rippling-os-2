@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Plus, Trash2, Loader2, Share2 } from "lucide-react";
+import { X, Plus, Trash2, Loader2, Share2, Copy, Check, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -37,15 +37,28 @@ export function ShareDialog({
   const [shares, setShares] = useState<Share[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [shareUrl, setShareUrl] = useState("");
 
   // New share form
   const [newEmail, setNewEmail] = useState("");
   const [newPermission, setNewPermission] = useState<Permission>("VIEW");
   const [isAdding, setIsAdding] = useState(false);
 
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setError("Failed to copy link");
+    }
+  };
+
   useEffect(() => {
     if (isOpen) {
       fetchShares();
+      setShareUrl(window.location.href);
     }
   }, [isOpen, projectId]);
 
@@ -53,7 +66,9 @@ export function ShareDialog({
     setIsLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/projects/${projectId}/share`);
+      const res = await fetch(`/api/projects/${projectId}/share`, {
+        credentials: "include",
+      });
       if (!res.ok) throw new Error("Failed to fetch shares");
       const data = await res.json();
       setOwner(data.owner);
@@ -77,6 +92,7 @@ export function ShareDialog({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: newEmail.trim(), permission: newPermission }),
+        credentials: "include",
       });
 
       if (!res.ok) {
@@ -99,7 +115,7 @@ export function ShareDialog({
     try {
       const res = await fetch(
         `/api/projects/${projectId}/share?shareId=${shareId}`,
-        { method: "DELETE" }
+        { method: "DELETE", credentials: "include" }
       );
 
       if (!res.ok) throw new Error("Failed to remove share");
@@ -120,6 +136,7 @@ export function ShareDialog({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, permission }),
+        credentials: "include",
       });
 
       if (!res.ok) throw new Error("Failed to update permission");
@@ -164,6 +181,39 @@ export function ShareDialog({
 
           {/* Content */}
           <div className="p-4 space-y-4">
+            {/* Copy Link - always shown */}
+            <div className="space-y-2">
+              <div className="text-sm font-medium text-muted-foreground">
+                Share link
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex-1 flex items-center gap-2 py-2 px-3 bg-muted/50 rounded-md overflow-hidden">
+                  <Link className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+                  <span className="text-sm truncate text-muted-foreground">
+                    {typeof window !== "undefined" ? window.location.href : ""}
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleCopyLink}
+                  className="flex-shrink-0 gap-2"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-4 w-4 text-green-600" />
+                      Copied
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4" />
+                      Copy
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
