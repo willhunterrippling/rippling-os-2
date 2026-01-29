@@ -1,5 +1,17 @@
 #!/bin/sh
 
+# Check if Prisma schemas are in sync
+echo "Checking Prisma schema sync..."
+if ! diff -q prisma/schema.prisma web/prisma/schema.prisma > /dev/null 2>&1; then
+  echo "❌ Prisma schemas are out of sync!"
+  echo ""
+  echo "Run: ./scripts/sync-prisma.sh"
+  echo ""
+  exit 1
+fi
+echo "Prisma schemas in sync ✓"
+
+echo ""
 echo "Running TypeScript type check..."
 cd web && npx tsc --noEmit
 

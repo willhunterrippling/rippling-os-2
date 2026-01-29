@@ -1,0 +1,129 @@
+// Prisma schema for Rippling OS
+// Shared by web app and CLI scripts
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ==================== AUTH (NextAuth managed) ====================
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  name          String?
+  emailVerified DateTime?
+  image         String?
+  createdAt     DateTime       @default(now())
+  
+  sessions       Session[]
+  projects       Project[]      @relation("ProjectOwner")
+  sharedProjects ProjectShare[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ==================== APPLICATION DATA ====================
+
+model Project {
+  id          String         @id @default(cuid())
+  slug        String         @unique
+  name        String
+  description String?
+  ownerId     String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  owner      User           @relation("ProjectOwner", fields: [ownerId], references: [id])
+  shares     ProjectShare[]
+  dashboards Dashboard[]
+  queries    Query[]
+  reports    Report[]
+}
+
+enum SharePermission {
+  VIEW
+  EDIT
+  ADMIN
+}
+
+model ProjectShare {
+  id         String          @id @default(cuid())
+  projectId  String
+  userId     String
+  permission SharePermission
+  createdAt  DateTime        @default(now())
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, userId])
+}
+
+model Dashboard {
+  id        String   @id @default(cuid())
+  projectId String
+  name      String
+  config    Json     // Dashboard config with widget definitions
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, name])
+}
+
+model Query {
+  id        String   @id @default(cuid())
+  projectId String
+  name      String
+  sql       String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  result  QueryResult?
+
+  @@unique([projectId, name])
+}
+
+model QueryResult {
+  id         String   @id @default(cuid())
+  queryId    String   @unique // One-to-one: latest result only
+  data       Json     // Query results as JSON array
+  rowCount   Int?
+  executedAt DateTime @default(now())
+  executedBy String?  // Email of user who ran it
+
+  query Query @relation(fields: [queryId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id        String   @id @default(cuid())
+  projectId String
+  name      String
+  content   String   @db.Text // Markdown content
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, name])
+}
