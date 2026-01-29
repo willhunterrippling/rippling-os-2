@@ -2,20 +2,67 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 
-interface Project {
+interface ProjectWithContents {
   slug: string;
   name: string;
-  description?: string;
+  dashboards: string[];
+  queries: string[];
+  reports: string[];
 }
 
 interface SidebarProps {
-  projects: Project[];
+  projects: ProjectWithContents[];
+}
+
+function ChevronIcon({ expanded }: { expanded: boolean }) {
+  return (
+    <svg
+      className={cn(
+        "w-4 h-4 transition-transform",
+        expanded ? "rotate-90" : ""
+      )}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9 5l7 7-7 7"
+      />
+    </svg>
+  );
 }
 
 export function Sidebar({ projects }: SidebarProps) {
   const pathname = usePathname();
+  const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
+    new Set()
+  );
+
+  const toggleProject = (slug: string) => {
+    setExpandedProjects((prev) => {
+      const next = new Set(prev);
+      if (next.has(slug)) {
+        next.delete(slug);
+      } else {
+        next.add(slug);
+      }
+      return next;
+    });
+  };
+
+  // Auto-expand project if we're on one of its pages
+  const getProjectFromPath = () => {
+    const match = pathname.match(/^\/projects\/([^/]+)/);
+    return match ? match[1] : null;
+  };
+
+  const currentProject = getProjectFromPath();
 
   return (
     <aside className="w-64 border-r border-border bg-sidebar min-h-screen p-4">
@@ -60,21 +107,124 @@ export function Sidebar({ projects }: SidebarProps) {
                 No projects yet
               </li>
             ) : (
-              projects.map((project) => (
-                <li key={project.slug}>
-                  <Link
-                    href={`/projects/${project.slug}`}
-                    className={cn(
-                      "block px-3 py-2 rounded-md text-sm transition-colors",
-                      pathname === `/projects/${project.slug}`
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                        : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+              projects.map((project) => {
+                const isExpanded =
+                  expandedProjects.has(project.slug) ||
+                  currentProject === project.slug;
+                const hasContents =
+                  project.dashboards.length > 0 ||
+                  project.queries.length > 0 ||
+                  project.reports.length > 0;
+
+                return (
+                  <li key={project.slug}>
+                    <div className="flex items-center">
+                      {hasContents && (
+                        <button
+                          onClick={() => toggleProject(project.slug)}
+                          className="p-1 hover:bg-sidebar-accent/50 rounded"
+                        >
+                          <ChevronIcon expanded={isExpanded} />
+                        </button>
+                      )}
+                      <Link
+                        href={`/projects/${project.slug}`}
+                        className={cn(
+                          "flex-1 px-2 py-2 rounded-md text-sm transition-colors",
+                          pathname === `/projects/${project.slug}`
+                            ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent/50",
+                          !hasContents && "ml-5"
+                        )}
+                      >
+                        {project.name}
+                      </Link>
+                    </div>
+
+                    {isExpanded && hasContents && (
+                      <div className="ml-5 mt-1 space-y-1">
+                        {project.dashboards.length > 0 && (
+                          <div>
+                            <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
+                              Dashboards
+                            </div>
+                            <ul className="space-y-0.5">
+                              {project.dashboards.map((name) => (
+                                <li key={name}>
+                                  <Link
+                                    href={`/projects/${project.slug}/dashboards/${name}`}
+                                    className={cn(
+                                      "block px-3 py-1.5 rounded-md text-xs transition-colors",
+                                      pathname ===
+                                        `/projects/${project.slug}/dashboards/${name}`
+                                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                        : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                                    )}
+                                  >
+                                    {name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {project.queries.length > 0 && (
+                          <div>
+                            <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
+                              Queries
+                            </div>
+                            <ul className="space-y-0.5">
+                              {project.queries.map((name) => (
+                                <li key={name}>
+                                  <Link
+                                    href={`/projects/${project.slug}/queries/${name}`}
+                                    className={cn(
+                                      "block px-3 py-1.5 rounded-md text-xs transition-colors",
+                                      pathname ===
+                                        `/projects/${project.slug}/queries/${name}`
+                                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                        : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                                    )}
+                                  >
+                                    {name}.sql
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {project.reports.length > 0 && (
+                          <div>
+                            <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
+                              Reports
+                            </div>
+                            <ul className="space-y-0.5">
+                              {project.reports.map((name) => (
+                                <li key={name}>
+                                  <Link
+                                    href={`/projects/${project.slug}/reports/${name}`}
+                                    className={cn(
+                                      "block px-3 py-1.5 rounded-md text-xs transition-colors",
+                                      pathname ===
+                                        `/projects/${project.slug}/reports/${name}`
+                                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                        : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                                    )}
+                                  >
+                                    {name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
                     )}
-                  >
-                    {project.name}
-                  </Link>
-                </li>
-              ))
+                  </li>
+                );
+              })
             )}
           </ul>
         </div>

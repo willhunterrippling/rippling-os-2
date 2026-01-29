@@ -36,8 +36,8 @@ This creates your personal branch: `user/your.name`
 In Cursor, type `/create-project my-analysis` or manually:
 
 ```bash
-mkdir -p projects/my-analysis/{queries,data}
-cp projects/_templates/basic-analysis/* projects/my-analysis/
+mkdir -p projects/my-analysis/{dashboards,queries,reports,data}
+cp -r projects/_templates/basic-analysis/* projects/my-analysis/
 ```
 
 ### 4. Run Queries
@@ -54,7 +54,7 @@ Results are saved to `projects/my-analysis/data/count.json`
 
 ### 5. Configure Dashboard
 
-Edit `projects/my-analysis/dashboard.yaml`:
+Edit `projects/my-analysis/dashboards/main.yaml`:
 
 ```yaml
 title: "My Analysis"
@@ -81,7 +81,10 @@ Start the development server:
 npm run dev
 ```
 
-Open http://localhost:3000/projects/my-analysis
+Open http://localhost:3000/projects/my-analysis to see the project overview, or go directly to:
+- Dashboard: http://localhost:3000/projects/my-analysis/dashboards/main
+- Queries: http://localhost:3000/projects/my-analysis/queries/count
+- Reports: http://localhost:3000/projects/my-analysis/reports/findings
 
 ## Commands
 
@@ -136,9 +139,12 @@ rippling-os-2/
 ├── projects/               # User analysis projects
 │   ├── _templates/         # Project templates
 │   └── [project-name]/     # Individual projects
+│       ├── dashboards/     # Dashboard YAML configs
+│       │   └── main.yaml   # Main dashboard
 │       ├── queries/        # SQL files
+│       ├── reports/        # Written reports (markdown)
 │       ├── data/           # Cached JSON results
-│       └── dashboard.yaml  # Dashboard config
+│       └── README.md       # Project description
 ├── context/
 │   ├── global/            # Shared schema docs & SQL patterns
 │   └── personal/          # Per-user context (gitignored)
@@ -151,7 +157,18 @@ rippling-os-2/
     └── skills/            # Cursor skills
 ```
 
+## URL Routes
+
+| Route | Description |
+|-------|-------------|
+| `/projects/[slug]` | Project overview (folder view) |
+| `/projects/[slug]/dashboards/[name]` | View a specific dashboard |
+| `/projects/[slug]/queries/[name]` | View SQL query source |
+| `/projects/[slug]/reports/[name]` | View a written report |
+
 ## Dashboard Widgets
+
+Configure widgets in `dashboards/*.yaml` files:
 
 ### Metric
 ```yaml

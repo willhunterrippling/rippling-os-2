@@ -6,15 +6,25 @@
 
 This analysis explores [describe what you're analyzing].
 
+## Dashboards
+
+| Dashboard | Description |
+|-----------|-------------|
+| `dashboards/main.yaml` | Main dashboard for this analysis |
+
+View dashboards at: `/projects/{{SLUG}}/dashboards/main`
+
 ## Queries
 
 | Query | Description |
 |-------|-------------|
 | `queries/example.sql` | Description of what this query does |
 
-## Dashboard
+## Reports
 
-View the interactive dashboard at: `/projects/{{SLUG}}`
+| Report | Description |
+|--------|-------------|
+| (none yet) | Add markdown reports to `reports/` folder |
 
 ## Data Sources
 
