@@ -24,16 +24,16 @@ This is an AI-assisted Snowflake querying and dashboard platform for Rippling's 
 GETTING STARTED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. /setup          Configure your environment and create your user
-2. /create-project Create a new analysis project  
+1. /setup          Configure environment, create user, and example project
+2. /start          Start the web dashboard and explore your example project
 3. /query          Run SQL queries and save results to database
-4. /start          Start the web dashboard
+4. /create-project Create a new analysis project
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ALL COMMANDS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  /setup           Configure DATABASE_URL and create your user
+  /setup           Configure environment, create user & example project
   /create-project  Create a new analysis project in the database
   /query           Execute SQL queries against Snowflake
   /report          Create or edit markdown reports
@@ -81,10 +81,12 @@ Provide a concise summary of the workflow and key usage examples from that skill
 ### "How do I get started?"
 
 Direct them to:
-1. Get `DATABASE_URL` from admin (or Vercel dashboard)
-2. Set it in `.env` along with `RIPPLING_ACCOUNT_EMAIL`
-3. Run `/setup` to configure environment and create user
-4. Run `/create-project` to start their first analysis
+1. Get database URLs from admin (or Vercel dashboard)
+2. Set them in `.env` along with `RIPPLING_ACCOUNT_EMAIL`
+3. Run `/setup` to configure environment, create user, and get an example project
+4. Run `/start` to launch the dashboard and explore your example project
+5. Run queries on the example project to see data populate
+6. Run `/create-project` when ready to start your own analysis
 
 ### "How do I run a SQL query?"
 
@@ -92,6 +94,10 @@ Explain `/query` usage:
 - Run `/query` with project name and query name
 - Results save to database automatically
 - Optionally add to dashboard as chart/metric/table
+
+**Important:** Snowflake returns UPPERCASE column names. When adding widgets:
+- Use `WEEK` not `week`
+- Use `TOTAL_OPPORTUNITIES` not `total_opportunities`
 
 ### "How do I see my dashboard?"
 
@@ -139,10 +145,14 @@ Explain the sharing model:
 Required in `.env`:
 ```
 DATABASE_URL=postgres://...
+POSTGRES_URL=postgres://...
+PRISMA_DATABASE_URL=prisma+postgres://...
+AUTH_SECRET=your-generated-secret
 RIPPLING_ACCOUNT_EMAIL=your.email@rippling.com
+BYPASS_AUTH=true
 ```
 
-For local development:
-```
-BYPASS_AUTH=true
+**Note:** Symlink `.env` to `web/.env`:
+```bash
+ln -sf ../.env web/.env
 ```

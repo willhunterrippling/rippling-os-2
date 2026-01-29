@@ -74,11 +74,23 @@ export default async function DashboardLayout({
   const session = await auth();
   const { projects, users } = await getProjectsAndUsers();
 
+  // When BYPASS_AUTH is enabled in dev, create a mock user
+  const bypassAuth =
+    process.env.NODE_ENV === "development" &&
+    process.env.BYPASS_AUTH === "true";
+
+  const currentUser = session?.user || (bypassAuth
+    ? {
+        email: process.env.RIPPLING_ACCOUNT_EMAIL || "dev@rippling.com",
+        name: "Dev User",
+      }
+    : null);
+
   return (
     <DashboardShell
       projects={projects}
       users={users}
-      currentUser={session?.user || null}
+      currentUser={currentUser}
     >
       {children}
     </DashboardShell>

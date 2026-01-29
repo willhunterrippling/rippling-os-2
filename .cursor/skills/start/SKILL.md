@@ -73,14 +73,15 @@ This starts the Next.js development server at **http://localhost:3000**.
 | `npm run start` | Start production server |
 | `npm run query` | Run Snowflake queries |
 
-## Local Auth Bypass
+## Local Auth Setup
 
-For local development, add to your `.env`:
+For local development, your `.env` needs:
 ```
-BYPASS_AUTH=true
+AUTH_SECRET=your-generated-secret    # Required: openssl rand -base64 32
+BYPASS_AUTH=true                      # Skips magic link email flow
 ```
 
-This skips the magic link authentication flow.
+**Note:** Even with `BYPASS_AUTH=true`, `AUTH_SECRET` is required for NextAuth to function.
 
 ## Troubleshooting
 

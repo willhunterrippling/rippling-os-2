@@ -25,7 +25,9 @@ import { PrismaClient } from '@prisma/client';
 // Load environment variables
 dotenv.config();
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
 
 // Parse command line arguments
 interface Args {
@@ -105,22 +107,16 @@ function getConnectionConfig(): snowflake.ConnectionOptions {
 
 // Connect to Snowflake
 async function connect(config: snowflake.ConnectionOptions): Promise<snowflake.Connection> {
-  return new Promise((resolve, reject) => {
-    console.log('🔗 Connecting to Snowflake...');
-    console.log('📱 A browser window will open for SSO authentication.');
-    console.log('');
-    
-    const connection = snowflake.createConnection(config);
-    
-    connection.connect((err, conn) => {
-      if (err) {
-        reject(err);
-      } else {
-        console.log('✅ Connected to Snowflake');
-        resolve(conn);
-      }
-    });
-  });
+  console.log('🔗 Connecting to Snowflake...');
+  console.log('📱 A browser window will open for SSO authentication.');
+  console.log('');
+  
+  const connection = snowflake.createConnection(config);
+  
+  // Use connectAsync for external browser authentication
+  await connection.connectAsync();
+  console.log('✅ Connected to Snowflake');
+  return connection;
 }
 
 // Execute query
@@ -240,7 +236,7 @@ async function main() {
     results = await executeQuery(connection, sql);
   } catch (err) {
     console.error('❌ Query failed:', err);
-    connection.destroy(() => {});
+    await new Promise<void>((resolve) => connection.destroy(() => resolve()));
     await prisma.$disconnect();
     process.exit(1);
   }
@@ -265,13 +261,18 @@ async function main() {
   });
   
   // Destroy connection and disconnect Prisma
-  connection.destroy(async () => {
-    await prisma.$disconnect();
-    console.log('');
-    console.log('✅ Done!');
-    console.log(`📊 Results saved: ${results.length} rows`);
-    console.log(`🔗 View at: /projects/${projectSlug}/dashboards/main`);
+  await new Promise<void>((resolve) => {
+    connection.destroy(() => {
+      resolve();
+    });
   });
+  
+  await prisma.$disconnect();
+  
+  console.log('');
+  console.log('✅ Done!');
+  console.log(`📊 Results saved: ${results.length} rows`);
+  console.log(`🔗 View at: /projects/${projectSlug}/dashboards/main`);
 }
 
 // Run

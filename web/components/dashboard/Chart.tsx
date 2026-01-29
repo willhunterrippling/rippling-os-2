@@ -29,14 +29,35 @@ interface CustomTooltipProps {
   label?: string;
 }
 
+// Format date for tooltip display (more detailed than axis)
+function formatTooltipDate(value: string | undefined): string {
+  if (!value) return "";
+  
+  const isoDateRegex = /^\d{4}-\d{2}-\d{2}(T|$)/;
+  if (isoDateRegex.test(value)) {
+    const date = new Date(value);
+    if (!isNaN(date.getTime())) {
+      return date.toLocaleDateString("en-US", { 
+        month: "short", 
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+  }
+  
+  return value;
+}
+
 function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload || !payload.length) {
     return null;
   }
 
+  const formattedLabel = formatTooltipDate(label);
+
   return (
     <div className="bg-popover text-popover-foreground border border-border rounded-md shadow-lg px-3 py-2">
-      <p className="font-medium text-sm mb-1">{label}</p>
+      <p className="font-medium text-sm mb-1">{formattedLabel}</p>
       {payload.map((entry, index) => (
         <p key={index} className="text-sm" style={{ color: entry.color }}>
           {entry.name}: {entry.value?.toLocaleString()}
@@ -63,6 +84,26 @@ const COLORS = [
   "hsl(var(--chart-5))",
 ];
 
+// Format date values for display on axis
+function formatAxisValue(value: unknown): string {
+  if (typeof value !== "string") return String(value);
+  
+  // Check if it's an ISO date string
+  const isoDateRegex = /^\d{4}-\d{2}-\d{2}(T|$)/;
+  if (isoDateRegex.test(value)) {
+    const date = new Date(value);
+    if (!isNaN(date.getTime())) {
+      // Format as "Jan 12" for cleaner display
+      return date.toLocaleDateString("en-US", { 
+        month: "short", 
+        day: "numeric" 
+      });
+    }
+  }
+  
+  return value;
+}
+
 export function Chart({ title, data, chartType, xKey, yKey, color = "hsl(var(--chart-1))" }: ChartProps) {
   const renderChart = () => {
     switch (chartType) {
@@ -74,6 +115,7 @@ export function Chart({ title, data, chartType, xKey, yKey, color = "hsl(var(--c
               dataKey={xKey} 
               className="text-xs" 
               tick={{ fill: "hsl(var(--muted-foreground))" }}
+              tickFormatter={formatAxisValue}
             />
             <YAxis 
               className="text-xs"
@@ -98,6 +140,7 @@ export function Chart({ title, data, chartType, xKey, yKey, color = "hsl(var(--c
               dataKey={xKey} 
               className="text-xs"
               tick={{ fill: "hsl(var(--muted-foreground))" }}
+              tickFormatter={formatAxisValue}
             />
             <YAxis 
               className="text-xs"
@@ -116,6 +159,7 @@ export function Chart({ title, data, chartType, xKey, yKey, color = "hsl(var(--c
               dataKey={xKey} 
               className="text-xs"
               tick={{ fill: "hsl(var(--muted-foreground))" }}
+              tickFormatter={formatAxisValue}
             />
             <YAxis 
               className="text-xs"

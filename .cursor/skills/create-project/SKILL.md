@@ -26,8 +26,12 @@ User says "create project", "/create-project [name]", or "new project".
    
    Use Prisma to create the project:
    ```typescript
-   const { PrismaClient } = require('@prisma/client');
-   const prisma = new PrismaClient();
+   import 'dotenv/config';
+   import { PrismaClient } from '@prisma/client';
+   
+   const prisma = new PrismaClient({
+     accelerateUrl: process.env.PRISMA_DATABASE_URL,
+   });
    
    // Get or create user
    const user = await prisma.user.upsert({
@@ -93,10 +97,14 @@ Run this to create a project:
 
 ```bash
 npx tsx -e "
-const { PrismaClient } = require('@prisma/client');
-const { execSync } = require('child_process');
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+import { execSync } from 'child_process';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
+
 const email = execSync('git config user.email', { encoding: 'utf-8' }).trim();
 const slug = 'my-analysis';
 const name = 'My Analysis';
@@ -128,7 +136,10 @@ async function main() {
   await prisma.\$disconnect();
 }
 
-main();
+main().catch(e => {
+  console.error(e);
+  process.exit(1);
+});
 "
 ```
 

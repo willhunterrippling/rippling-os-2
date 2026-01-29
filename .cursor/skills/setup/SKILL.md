@@ -38,14 +38,24 @@ git config user.email
    ```
 3. Check for required variables:
    - `DATABASE_URL` - **Required** for database connection
+   - `POSTGRES_URL` - **Required** for Prisma migrations (same as DATABASE_URL)
+   - `PRISMA_DATABASE_URL` - **Required** for Prisma Accelerate connection
+   - `AUTH_SECRET` - **Required** for NextAuth session encryption
    - `RIPPLING_ACCOUNT_EMAIL` - Required for Snowflake SSO
-4. If `DATABASE_URL` is missing:
-   - Tell user: "You need a DATABASE_URL from Vercel Postgres. Contact the admin for the connection string."
-   - Provide the format: `postgres://user:password@host:5432/database?sslmode=require`
-5. Ensure `BYPASS_AUTH=true` is set for local development (skips email magic link auth)
-6. If `RIPPLING_ACCOUNT_EMAIL` is missing:
+4. If database URLs are missing:
+   - Tell user: "You need database URLs from Vercel/Prisma Postgres. Contact the admin for the connection strings."
+   - All three URLs come from the Vercel dashboard when you connect Prisma Postgres
+5. If `AUTH_SECRET` is missing:
+   - Generate one: `openssl rand -base64 32`
+   - Add to `.env`
+6. Ensure `BYPASS_AUTH=true` is set for local development (skips email magic link auth)
+7. If `RIPPLING_ACCOUNT_EMAIL` is missing:
    - Ask user for their Rippling email
    - Update `.env`
+8. Create symlink for Next.js to read `.env`:
+   ```bash
+   ln -sf ../.env web/.env
+   ```
 
 ### Step 2: Install Dependencies (if any `node_modules/` missing)
 
@@ -89,7 +99,121 @@ npx prisma generate
    
    Note: This can be done by running a simple script or inline with tsx.
 
-### Step 5: Output Summary
+### Step 5: Create Example Project
+
+Create a starter example project to help the user get familiar with the system:
+
+1. Check if user already has an example project (slug: `example-[username]`)
+2. If not, create one with sample queries and dashboard widgets
+
+```typescript
+// Get username from email (before @)
+const username = email.split('@')[0].replace(/[^a-z0-9]/gi, '-').toLowerCase();
+const exampleSlug = `example-${username}`;
+const exampleName = `Example Project (${username})`;
+
+// Check if already exists
+const existing = await prisma.project.findUnique({
+  where: { slug: exampleSlug },
+});
+
+if (!existing) {
+  // Create the example project
+  const project = await prisma.project.create({
+    data: {
+      slug: exampleSlug,
+      name: exampleName,
+      description: 'A starter project with example queries and dashboard widgets',
+      ownerId: user.id,
+    },
+  });
+
+  // Create example queries
+  const metricsQuery = await prisma.query.create({
+    data: {
+      projectId: project.id,
+      name: 'pipeline_metrics',
+      sql: `-- Pipeline metrics overview
+SELECT
+    COUNT(DISTINCT CASE WHEN is_deleted = FALSE THEN id END) as total_opportunities,
+    COUNT(DISTINCT CASE WHEN sqo_qualified_date_c IS NOT NULL AND is_deleted = FALSE THEN id END) as qualified_opportunities,
+    ROUND(
+        COUNT(DISTINCT CASE WHEN sqo_qualified_date_c IS NOT NULL AND is_deleted = FALSE THEN id END) * 100.0 /
+        NULLIF(COUNT(DISTINCT CASE WHEN is_deleted = FALSE THEN id END), 0),
+        1
+    ) as conversion_rate
+FROM prod_rippling_dwh.sfdc.opportunity
+WHERE is_deleted = FALSE
+  AND _fivetran_deleted = FALSE
+  AND created_date >= DATEADD(day, -30, CURRENT_DATE())
+LIMIT 1;`,
+    },
+  });
+
+  const weeklyTrendQuery = await prisma.query.create({
+    data: {
+      projectId: project.id,
+      name: 'weekly_trend',
+      sql: `-- Weekly opportunity creation trend
+SELECT
+    DATE_TRUNC('week', created_date) as week,
+    COUNT(DISTINCT id) as new_opportunities
+FROM prod_rippling_dwh.sfdc.opportunity
+WHERE is_deleted = FALSE
+  AND _fivetran_deleted = FALSE
+  AND created_date >= DATEADD(day, -90, CURRENT_DATE())
+GROUP BY DATE_TRUNC('week', created_date)
+ORDER BY week DESC
+LIMIT 12;`,
+    },
+  });
+
+  // Create dashboard with widgets referencing the queries
+  // NOTE: Use UPPERCASE keys to match Snowflake column names
+  await prisma.dashboard.create({
+    data: {
+      projectId: project.id,
+      name: 'main',
+      config: {
+        title: exampleName,
+        widgets: [
+          {
+            type: 'metric',
+            queryName: 'pipeline_metrics',
+            title: 'Total Opportunities (30d)',
+            valueKey: 'TOTAL_OPPORTUNITIES',
+          },
+          {
+            type: 'metric',
+            queryName: 'pipeline_metrics',
+            title: 'Qualified (30d)',
+            valueKey: 'QUALIFIED_OPPORTUNITIES',
+          },
+          {
+            type: 'metric',
+            queryName: 'pipeline_metrics',
+            title: 'Conversion Rate',
+            valueKey: 'CONVERSION_RATE',
+            suffix: '%',
+          },
+          {
+            type: 'chart',
+            queryName: 'weekly_trend',
+            title: 'Weekly New Opportunities',
+            chartType: 'bar',
+            xKey: 'WEEK',
+            yKey: 'NEW_OPPORTUNITIES',
+          },
+        ],
+      },
+    },
+  });
+
+  console.log('Created example project:', exampleSlug);
+}
+```
+
+### Step 6: Output Summary
 
 ```
 ✅ Setup complete!
@@ -99,14 +223,19 @@ What was configured:
   [✓] Dependencies: root & web node_modules installed
   [✓] Prisma: Client generated
   [✓] User: will.smith@rippling.com (auto-created in database)
+  [✓] Example Project: example-will-smith created with sample queries
 
 Next steps:
-  1. /create-project  - Start a new analysis
-  2. /query           - Run SQL queries
-  3. /start           - Launch the dashboard
+  1. /start           - Launch the dashboard and explore your example project
+  2. /query           - Run SQL queries against Snowflake
+  3. /create-project  - Start a new analysis project
 
-To view dashboards in browser, visit the web app and sign in 
-with your email (one-time magic link for web access).
+Your example project includes:
+  - Sample pipeline metrics query
+  - Weekly trend query
+  - Dashboard with metric cards and chart
+
+View it at: /projects/example-will-smith
 ```
 
 ## Partial Setup
@@ -120,6 +249,7 @@ If some steps are already complete, skip them and only run what's needed:
 | `web/node_modules/` exists | Skip web install in Step 2 |
 | `.prisma` client exists | Skip Step 3 |
 | User already in database | Skip user creation in Step 4 |
+| Example project exists | Skip example project creation in Step 5 |
 
 ## No More Branches
 
@@ -147,15 +277,17 @@ git pull origin main
 
 Required in `.env`:
 ```
-DATABASE_URL=postgres://...          # From Vercel Postgres dashboard
+DATABASE_URL=postgres://...          # From Vercel/Prisma Postgres
+POSTGRES_URL=postgres://...          # Same as DATABASE_URL (for migrations)
+PRISMA_DATABASE_URL=prisma+postgres://...  # Prisma Accelerate URL
+AUTH_SECRET=...                      # Generate with: openssl rand -base64 32
 RIPPLING_ACCOUNT_EMAIL=you@rippling.com  # For Snowflake SSO
 BYPASS_AUTH=true                     # For local development (skip magic link auth)
 ```
 
-Optional (for auth, only needed for production):
+For production (Vercel):
 ```
-AUTH_SECRET=...                      # For NextAuth (generate with: openssl rand -base64 32)
-AUTH_RESEND_KEY=re_...               # For magic link emails
+AUTH_RESEND_KEY=re_...               # For magic link emails (from Resend dashboard)
 ```
 
 Optional (have defaults):
@@ -166,20 +298,31 @@ SNOWFLAKE_ROLE=PROD_RIPPLING_MARKETING
 SNOWFLAKE_WAREHOUSE=PROD_RIPPLING_INTEGRATION_DWH
 ```
 
+**Note:** The `.env` file must be symlinked to `web/.env` for Next.js to load it:
+```bash
+ln -sf ../.env web/.env
+```
+
 ## User Creation Script
 
 For auto-creating the user, you can run this inline:
 
 ```bash
 npx tsx -e "
-const { PrismaClient } = require('@prisma/client');
-const { execSync } = require('child_process');
-const prisma = new PrismaClient();
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+import { execSync } from 'child_process';
+
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
+
 const email = execSync('git config user.email', { encoding: 'utf-8' }).trim();
 if (!email.endsWith('@rippling.com')) {
   console.error('Error: Git email must be @rippling.com');
   process.exit(1);
 }
+
 prisma.user.upsert({
   where: { email },
   create: { email },
@@ -190,6 +333,122 @@ prisma.user.upsert({
 }).catch(err => {
   console.error('Error:', err);
   prisma.\$disconnect();
+  process.exit(1);
+});
+"
+```
+
+## Example Project Creation Script
+
+For creating the example project with sample queries:
+
+```bash
+npx tsx -e "
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+import { execSync } from 'child_process';
+
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
+
+async function createExampleProject() {
+  const email = execSync('git config user.email', { encoding: 'utf-8' }).trim();
+  if (!email.endsWith('@rippling.com')) {
+    console.error('Error: Git email must be @rippling.com');
+    process.exit(1);
+  }
+  
+  const user = await prisma.user.upsert({
+    where: { email },
+    create: { email },
+    update: {},
+  });
+  
+  const username = email.split('@')[0].replace(/[^a-z0-9]/gi, '-').toLowerCase();
+  const exampleSlug = 'example-' + username;
+  const exampleName = 'Example Project (' + username + ')';
+  
+  const existing = await prisma.project.findUnique({
+    where: { slug: exampleSlug },
+  });
+  
+  if (existing) {
+    console.log('Example project already exists:', exampleSlug);
+    await prisma.\$disconnect();
+    return;
+  }
+  
+  const project = await prisma.project.create({
+    data: {
+      slug: exampleSlug,
+      name: exampleName,
+      description: 'A starter project with example queries and dashboard widgets',
+      ownerId: user.id,
+    },
+  });
+  
+  await prisma.query.create({
+    data: {
+      projectId: project.id,
+      name: 'pipeline_metrics',
+      sql: \`SELECT
+    COUNT(DISTINCT CASE WHEN is_deleted = FALSE THEN id END) as total_opportunities,
+    COUNT(DISTINCT CASE WHEN sqo_qualified_date_c IS NOT NULL AND is_deleted = FALSE THEN id END) as qualified_opportunities,
+    ROUND(
+        COUNT(DISTINCT CASE WHEN sqo_qualified_date_c IS NOT NULL AND is_deleted = FALSE THEN id END) * 100.0 /
+        NULLIF(COUNT(DISTINCT CASE WHEN is_deleted = FALSE THEN id END), 0),
+        1
+    ) as conversion_rate
+FROM prod_rippling_dwh.sfdc.opportunity
+WHERE is_deleted = FALSE
+  AND _fivetran_deleted = FALSE
+  AND created_date >= DATEADD(day, -30, CURRENT_DATE())
+LIMIT 1;\`,
+    },
+  });
+  
+  await prisma.query.create({
+    data: {
+      projectId: project.id,
+      name: 'weekly_trend',
+      sql: \`SELECT
+    DATE_TRUNC('week', created_date) as week,
+    COUNT(DISTINCT id) as new_opportunities
+FROM prod_rippling_dwh.sfdc.opportunity
+WHERE is_deleted = FALSE
+  AND _fivetran_deleted = FALSE
+  AND created_date >= DATEADD(day, -90, CURRENT_DATE())
+GROUP BY DATE_TRUNC('week', created_date)
+ORDER BY week DESC
+LIMIT 12;\`,
+    },
+  });
+  
+  // NOTE: Use UPPERCASE keys to match Snowflake column names
+  await prisma.dashboard.create({
+    data: {
+      projectId: project.id,
+      name: 'main',
+      config: {
+        title: exampleName,
+        widgets: [
+          { type: 'metric', queryName: 'pipeline_metrics', title: 'Total Opportunities (30d)', valueKey: 'TOTAL_OPPORTUNITIES' },
+          { type: 'metric', queryName: 'pipeline_metrics', title: 'Qualified (30d)', valueKey: 'QUALIFIED_OPPORTUNITIES' },
+          { type: 'metric', queryName: 'pipeline_metrics', title: 'Conversion Rate', valueKey: 'CONVERSION_RATE', suffix: '%' },
+          { type: 'chart', queryName: 'weekly_trend', title: 'Weekly New Opportunities', chartType: 'bar', xKey: 'WEEK', yKey: 'NEW_OPPORTUNITIES' },
+        ],
+      },
+    },
+  });
+  
+  console.log('Created example project:', exampleSlug);
+  console.log('View at: /projects/' + exampleSlug);
+  await prisma.\$disconnect();
+}
+
+createExampleProject().catch(e => {
+  console.error(e);
   process.exit(1);
 });
 "

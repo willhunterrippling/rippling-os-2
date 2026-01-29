@@ -117,10 +117,13 @@ Note: This action cannot be undone.
 
 ```bash
 npx tsx -e "
-const { PrismaClient } = require('@prisma/client');
-const { execSync } = require('child_process');
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+import { execSync } from 'child_process';
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
 
 async function deleteQuery(projectSlug, queryName) {
   const email = execSync('git config user.email', { encoding: 'utf-8' }).trim();

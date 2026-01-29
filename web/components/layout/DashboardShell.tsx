@@ -56,7 +56,7 @@ export function DashboardShell({
         <header className="h-14 border-b border-border bg-background px-6 flex items-center justify-between">
           <h1 className="text-lg font-semibold">Rippling OS</h1>
           <div className="flex items-center gap-4">
-            {users.length > 0 && currentUser?.email && (
+            {currentUser?.email && (
               <UserSwitcher
                 users={users}
                 currentUserEmail={currentUser.email}

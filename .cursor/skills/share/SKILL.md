@@ -32,8 +32,12 @@ git config user.email
 ### 3. Add Share to Database
 
 ```typescript
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
 
 // Find or create target user
 const targetUser = await prisma.user.upsert({

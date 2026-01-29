@@ -29,8 +29,12 @@ Ask user for:
 ### 3. Save to Database
 
 ```typescript
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
 
 // Get project
 const project = await prisma.project.findUnique({
@@ -113,8 +117,12 @@ Based on the `weekly_s1_count` query:
 
 ```bash
 npx tsx -e "
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
 
 async function main() {
   const project = await prisma.project.findUnique({

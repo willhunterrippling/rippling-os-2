@@ -63,13 +63,13 @@ What type of chart?
 2. Bar chart
 3. Area chart
 
-What's the X-axis key? (e.g., "week", "date")
-What's the Y-axis key? (e.g., "count", "total")
+What's the X-axis key? (e.g., "WEEK", "DATE")
+What's the Y-axis key? (e.g., "COUNT", "TOTAL")
 ```
 
 **For Metric:**
 ```
-What value should be displayed? (e.g., "total_s1", "count")
+What value should be displayed? (e.g., "TOTAL_S1", "COUNT")
 What label for the metric? (e.g., "Total S1 Leads")
 ```
 
@@ -78,10 +78,25 @@ What label for the metric? (e.g., "Total S1 Leads")
 Which columns to display? (comma-separated, or 'all')
 ```
 
+**IMPORTANT: Snowflake returns UPPERCASE column names!**
+
+When the user runs a query like:
+```sql
+SELECT COUNT(*) as total, DATE_TRUNC('week', date) as week FROM ...
+```
+
+Snowflake returns: `{ "TOTAL": 123, "WEEK": "2026-01-20" }` (uppercase keys)
+
+So when adding widgets, always use UPPERCASE keys:
+- Use `TOTAL` not `total`
+- Use `WEEK` not `week`
+- Use `NEW_OPPORTUNITIES` not `new_opportunities`
+
 Then update the dashboard config in the database:
 
 ```typescript
 // Add widget to dashboard config
+// IMPORTANT: Use UPPERCASE keys to match Snowflake output
 const dashboard = await prisma.dashboard.findUnique({...});
 const config = dashboard.config;
 config.widgets.push({
@@ -89,8 +104,8 @@ config.widgets.push({
   queryName: queryName,
   title: 'My Chart',
   chartType: 'line',
-  xKey: 'week',
-  yKey: 'count',
+  xKey: 'WEEK',       // UPPERCASE!
+  yKey: 'COUNT',      // UPPERCASE!
 });
 await prisma.dashboard.update({
   where: { id: dashboard.id },
@@ -135,6 +150,8 @@ npm run query -- --project my-analysis --name weekly_trend
 ## Environment Requirements
 
 - `DATABASE_URL` must be set in `.env` for database access
+- `POSTGRES_URL` must be set (same as DATABASE_URL)
+- `PRISMA_DATABASE_URL` must be set for Prisma Accelerate
 - `RIPPLING_ACCOUNT_EMAIL` must be set for Snowflake SSO
 
 ## Safety Rules
@@ -156,7 +173,9 @@ npm run query -- --project my-analysis --name weekly_trend
 
 ## Widget-Query Linking
 
-Dashboard widgets reference queries by name:
+Dashboard widgets reference queries by name.
+
+**IMPORTANT:** Use UPPERCASE keys for `valueKey`, `xKey`, `yKey` to match Snowflake output:
 
 ```json
 {
@@ -165,11 +184,26 @@ Dashboard widgets reference queries by name:
       "type": "chart",
       "queryName": "weekly_s1_count",
       "chartType": "line",
-      "xKey": "week",
-      "yKey": "count"
+      "xKey": "WEEK",
+      "yKey": "COUNT"
+    },
+    {
+      "type": "metric",
+      "queryName": "pipeline_metrics",
+      "title": "Total Opportunities",
+      "valueKey": "TOTAL_OPPORTUNITIES"
     }
   ]
 }
 ```
 
 The web app resolves `queryName` to actual data at render time.
+
+### Common Snowflake Column Name Mappings
+
+| SQL Alias | Snowflake Returns |
+|-----------|-------------------|
+| `as count` | `COUNT` |
+| `as week` | `WEEK` |
+| `as total_opportunities` | `TOTAL_OPPORTUNITIES` |
+| `as conversion_rate` | `CONVERSION_RATE` |
