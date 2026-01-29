@@ -47,7 +47,7 @@ export function ShareDialog({
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(window.location.href);
+      await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
@@ -190,7 +190,7 @@ export function ShareDialog({
                 <div className="flex-1 flex items-center gap-2 py-2 px-3 bg-muted/50 rounded-md overflow-hidden">
                   <Link className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   <span className="text-sm truncate text-muted-foreground">
-                    {typeof window !== "undefined" ? window.location.href : ""}
+                    {shareUrl}
                   </span>
                 </div>
                 <Button

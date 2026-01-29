@@ -1,9 +1,13 @@
-import { auth } from "@/lib/auth";
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export default auth((req) => {
-  const isLoggedIn = !!req.auth;
-  const { pathname } = req.nextUrl;
+/**
+ * Edge-compatible middleware for basic auth route protection.
+ * Checks for session cookie presence only - actual validation
+ * happens server-side where Prisma is available.
+ */
+export function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
   // Allow auth API routes
   if (pathname.startsWith("/api/auth")) {
@@ -18,23 +22,30 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  // Login page is always accessible
+  // Check for NextAuth session cookie
+  const sessionCookie =
+    request.cookies.get("authjs.session-token") ||
+    request.cookies.get("__Secure-authjs.session-token");
+
+  const isLoggedIn = !!sessionCookie;
   const isLoginPage = pathname === "/login";
 
   // Redirect unauthenticated users to login
   if (!isLoggedIn && !isLoginPage) {
-    const loginUrl = new URL("/login", req.url);
+    const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("callbackUrl", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
   // Redirect authenticated users away from login page
   if (isLoggedIn && isLoginPage) {
-    return NextResponse.redirect(new URL("/", req.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return NextResponse.next();
-});
+}
+
+export default middleware;
 
 export const config = {
   matcher: [
