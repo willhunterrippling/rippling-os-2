@@ -23,12 +23,33 @@ This starts the Next.js development server at **http://localhost:3000**.
 
 ## Workflow
 
-1. **Check if Server is Already Running**
-   - List terminals to see if a dev server is already running
-   - If running, just provide the URL
-
-2. **Start the Server**
+1. **Check if Server is Already Running (CRITICAL)**
+   
+   **ALWAYS check before starting.** Running multiple dev servers causes Turbopack cache corruption.
+   
    ```bash
+   # Check what's using port 3000
+   lsof -ti:3000
+   ```
+   
+   **If port 3000 is in use:**
+   - Tell the user a server is already running
+   - Provide the URL (http://localhost:3000)
+   - Ask if they want you to restart it (kill + start fresh)
+   - **DO NOT start a second server** - this corrupts the `.next` cache
+   
+   **Also check terminals folder** for any running `npm run dev` processes.
+
+2. **Start the Server (only if nothing running)**
+   ```bash
+   npm run dev
+   ```
+   
+   **If you need to restart** (user confirms):
+   ```bash
+   # Kill existing, clear cache, start fresh
+   pkill -f "next dev" || true
+   rm -rf web/.next
    npm run dev
    ```
 
@@ -94,6 +115,14 @@ BYPASS_AUTH=true                      # Skips magic link email flow
 - **Module not found**: Run `npm install` in both root and `web/` directories
 - **Database errors**: Check `DATABASE_URL` is set in `.env`
 - **Prisma errors**: Run `npx prisma generate` first
+- **Turbopack cache corruption** (panics, "corrupted database" errors, constant error spam):
+  ```bash
+  # Kill all dev servers and clear cache
+  pkill -f "next dev" || true
+  rm -rf web/.next
+  npm run dev
+  ```
+  This happens when multiple dev servers run simultaneously and fight over the `.next` cache.
 
 ## Related Skills
 

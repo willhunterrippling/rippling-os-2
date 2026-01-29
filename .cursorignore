@@ -4,3 +4,7 @@
 # Allow Cursor to read the import staging folder (even though it's gitignored)
 !context/import/
 !context/import/**
+
+# Allow Cursor to read the QA folder (even though it's gitignored)
+!QA/
+!QA/**

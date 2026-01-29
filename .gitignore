@@ -37,6 +37,9 @@ context/import/*
 # Legacy: Local project data (now in database)
 projects/*/data/
 
+# QA folder (internal testing)
+QA/
+
 # OS files
 .DS_Store
 Thumbs.db
