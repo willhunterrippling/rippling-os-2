@@ -1,0 +1,11 @@
+{
+  "projects": [
+    {
+      "slug": "example-analysis",
+      "name": "Example Pipeline Analysis",
+      "description": "Sample dashboard demonstrating Rippling OS capabilities with mock data",
+      "createdAt": "2026-01-28",
+      "author": "example"
+    }
+  ]
+}

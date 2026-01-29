@@ -1,0 +1,23 @@
+{
+  "name": "rippling-os-2",
+  "version": "1.0.0",
+  "description": "Rippling OS 2.0 - AI-assisted Snowflake querying and dashboard platform",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix web",
+    "build": "npm run build --prefix web",
+    "start": "npm run start --prefix web",
+    "query": "npx tsx scripts/run-query.ts",
+    "setup-branch": "./scripts/setup-branch.sh",
+    "save": "./scripts/save.sh",
+    "sync": "./scripts/sync.sh"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "snowflake-sdk": "^1.9.0",
+    "dotenv": "^16.3.1"
+  }
+}

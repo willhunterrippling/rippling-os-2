@@ -1,0 +1,97 @@
+---
+description: Snowflake query rules and best practices
+globs: ["**/*.sql", "**/queries/**"]
+---
+
+# Snowflake Query Rules
+
+## Query Safety
+- ALWAYS use `LIMIT` when exploring data (default: 1000)
+- NEVER run `DELETE`, `UPDATE`, `DROP`, or `TRUNCATE` statements
+- ALWAYS filter by `is_deleted = FALSE` for SFDC tables
+- ALWAYS filter by `_fivetran_deleted = FALSE` for Fivetran-synced tables
+
+## S1/S2 Pipeline Definitions
+
+### S1 (Stage 1 Opportunities)
+- S1 = ANY opportunity where `is_deleted = FALSE`
+- NEVER filter S1 by stage name (stage name is NOT the definition)
+- Include all opportunities regardless of stage
+
+### S2 (Stage 2 / SQO Qualified)
+- S2 = Opportunities where `sqo_qualified_date_c IS NOT NULL`
+- Use the field value, NOT stage name
+- This represents Sales Qualified Opportunities
+
+## Attribution Rules
+- Default attribution window: **45 days**
+- Use `sequence_state.created_at` for timing (not enrollment date)
+- Must have `relationship_sequence_id IS NOT NULL`
+- Must have `deliver_count > 0` for valid sequence states
+
+## Join Patterns
+
+### Prospect to SFDC Linking
+```sql
+-- CORRECT: Link Outreach prospects to Salesforce contacts/leads
+JOIN data_connection dc
+  ON dc.parent_id = prospect_id
+  AND dc.type IN ('Contact', 'Lead')
+  AND dc._fivetran_deleted = FALSE
+
+-- WRONG: dc.parent_type doesn't exist!
+```
+
+### Opportunity Attribution
+```sql
+-- Link to opportunities via contact roles
+JOIN opportunity_contact_role ocr
+  ON ocr.contact_id = dc.external_id
+  AND ocr.is_deleted = FALSE
+JOIN opportunity opp
+  ON opp.id = ocr.opportunity_id
+  AND opp.is_deleted = FALSE
+```
+
+## Sequence Tags (Case-Sensitive!)
+```sql
+-- CORRECT: Case-sensitive tag matching
+WHERE tag_name = 'EmailProgram-MechOutreach'
+
+-- WRONG: Don't use LOWER()
+WHERE LOWER(tag_name) = 'emailprogram-mechoutreach'
+```
+
+## Common Sequence Tag Values
+- `'EmailProgram-MechOutreach'` - Mechanical outreach programs
+- `'EmailProgram-DirectMail'` - Direct mail campaigns
+- `'include_attribution'` - Include in attribution reporting
+
+## Table References
+
+### Outreach Schema (`prod_rippling_dwh.outreach`)
+- `prospect` - Contact/lead records
+- `sequence` - Email sequence definitions
+- `sequence_state` - Prospect enrollment in sequences
+- `sequence_step` - Individual steps within sequences
+- `mailing` - Email communications
+- `data_connection` - Maps Outreach to Salesforce
+
+### SFDC Schema (`prod_rippling_dwh.sfdc`)
+- `opportunity` - Sales opportunities
+- `lead` - Lead records
+- `contact` - Contact records
+- `account` - Account records
+- `opportunity_contact_role` - Links opportunities to contacts
+
+## Query Template
+```sql
+-- Always include these filters
+SELECT 
+    column1,
+    column2
+FROM prod_rippling_dwh.schema.table t
+WHERE t.is_deleted = FALSE
+  AND t._fivetran_deleted = FALSE
+LIMIT 1000;
+```

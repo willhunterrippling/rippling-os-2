@@ -1,0 +1,38 @@
+---
+description: Global safety rules for Rippling OS - always applied
+globs: ["**/*"]
+---
+
+# Global Rules for Rippling OS
+
+## Branch Safety
+- NEVER commit directly to main branch
+- ALWAYS work on user branch (user/[email-prefix])
+- NEVER delete other users' branches
+- ALWAYS use `/save` or `scripts/save.sh` to commit changes
+
+## File Safety
+- NEVER modify files in other users' project folders
+- NEVER edit `context/global/` without explicit user approval
+- NEVER commit credentials, secrets, or `.env` files
+- ALWAYS respect `.gitignore` patterns
+
+## Project Structure
+- User projects live in `projects/[project-name]/`
+- Each project should have:
+  - `README.md` - Project description
+  - `queries/` - SQL query files
+  - `data/` - Cached JSON results
+  - `dashboard.yaml` - Dashboard configuration
+
+## Git Workflow
+1. Run `/setup` to create your user branch
+2. Create projects with `/create-project`
+3. Run queries with `/query` to cache results as JSON
+4. Save work with `/save` to commit and push
+5. Sync with main using `/update-os`
+
+## Environment
+- User email is in `RIPPLING_ACCOUNT_EMAIL` env var
+- Branch name format: `user/[email-prefix]` (e.g., `user/will.smith`)
+- Preview URL format: `https://rippling-os-2-git-user-[name].vercel.app`

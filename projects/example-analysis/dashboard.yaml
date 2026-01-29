@@ -1,0 +1,42 @@
+title: "Example Pipeline Analysis"
+description: "Sample dashboard demonstrating Rippling OS capabilities"
+layout: grid
+
+widgets:
+  - type: metric
+    title: "Total S1"
+    data: data/metrics.json
+    valueKey: total_s1
+
+  - type: metric
+    title: "Total S2"
+    data: data/metrics.json
+    valueKey: total_s2
+
+  - type: metric
+    title: "Conversion Rate"
+    data: data/metrics.json
+    valueKey: conversion_rate
+
+  - type: metric
+    title: "Active Sequences"
+    data: data/metrics.json
+    valueKey: active_sequences
+
+  - type: chart
+    title: "S1 by Week"
+    data: data/weekly_trend.json
+    chartType: line
+    xKey: week
+    yKey: s1_count
+
+  - type: chart
+    title: "S1 vs S2 by Week"
+    data: data/weekly_trend.json
+    chartType: bar
+    xKey: week
+    yKey: s2_count
+
+  - type: table
+    title: "Top Sequences by Performance"
+    data: data/top_sequences.json
