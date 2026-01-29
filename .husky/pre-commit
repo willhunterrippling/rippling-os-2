@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "Running TypeScript type check..."
+cd web && npx tsc --noEmit
+
+if [ $? -ne 0 ]; then
+  echo "TypeScript check failed. Please fix the errors above before committing."
+  exit 1
+fi
+
+echo "TypeScript check passed!"
