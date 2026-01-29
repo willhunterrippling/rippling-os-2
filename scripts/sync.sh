@@ -1,38 +1,20 @@
 #!/bin/bash
 
-# Sync user branch with latest main
+# Sync with latest from origin
 # Usage: ./scripts/sync.sh
 
 set -e
 
 # Colors for output
-RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
+RED='\033[0;31m'
 NC='\033[0m' # No Color
 
 # Get current branch
 CURRENT_BRANCH=$(git branch --show-current)
 
-# Safety check: don't run on main
-if [ "$CURRENT_BRANCH" = "main" ]; then
-    echo -e "${RED}Error: Already on main branch${NC}"
-    echo ""
-    echo "Run ./scripts/setup-branch.sh to create your user branch"
-    exit 1
-fi
-
-# Check if on a user branch
-if [[ ! "$CURRENT_BRANCH" =~ ^user/ ]]; then
-    echo -e "${YELLOW}Warning: Not on a user branch (current: $CURRENT_BRANCH)${NC}"
-    read -p "Continue anyway? (y/N) " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        exit 1
-    fi
-fi
-
-echo -e "${YELLOW}Syncing $CURRENT_BRANCH with main...${NC}"
+echo -e "${YELLOW}Syncing $CURRENT_BRANCH with origin...${NC}"
 echo ""
 
 # Check for uncommitted changes
@@ -43,16 +25,15 @@ if [ -n "$(git status --porcelain)" ]; then
     STASHED=true
 fi
 
-# Fetch latest from origin
+# Fetch and pull latest
 echo "Fetching latest from origin..."
-git fetch origin main
+git fetch origin
 
-# Rebase onto main
-echo "Rebasing onto main..."
-if git rebase origin/main; then
-    echo -e "${GREEN}Rebase successful${NC}"
+echo "Pulling latest changes..."
+if git pull origin "$CURRENT_BRANCH" --rebase; then
+    echo -e "${GREEN}Pull successful${NC}"
 else
-    echo -e "${RED}Rebase failed - conflicts detected${NC}"
+    echo -e "${RED}Pull failed - conflicts detected${NC}"
     echo ""
     echo "Conflicting files:"
     git diff --name-only --diff-filter=U
@@ -83,13 +64,8 @@ if [ "$STASHED" = true ]; then
     }
 fi
 
-# Push updated branch
-echo ""
-echo "Pushing updated branch..."
-git push origin "$CURRENT_BRANCH" --force-with-lease
-
 echo ""
 echo -e "${GREEN}✅ Branch updated!${NC}"
 echo ""
-echo "Your branch is now up to date with main."
+echo "Your branch is now up to date with origin."
 echo "Branch: $CURRENT_BRANCH"

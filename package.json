@@ -9,7 +9,7 @@
     "start": "npm run start --prefix web",
     "typecheck": "npm run typecheck --prefix web",
     "query": "npx tsx scripts/run-query.ts",
-    "setup-branch": "./scripts/setup-branch.sh",
+    "setup": "./scripts/setup.sh",
     "save": "./scripts/save.sh",
     "sync": "./scripts/sync.sh",
     "sync-prisma": "./scripts/sync-prisma.sh",
