@@ -35,10 +35,10 @@ ALL COMMANDS
 
   /setup           Configure environment, create user & example project
   /create-project  Create a new analysis project in the database
-  /query           Execute SQL queries against Snowflake
-  /report          Create or edit markdown reports
+  /query           Execute SQL queries (temp or saved to dashboard/report)
+  /report          Create or edit markdown reports with queries
   /share           Share projects with other users
-  /delete          Delete projects, queries, or reports
+  /delete          Delete projects, dashboards, or reports
   /start           Start the web dashboard dev server
   /update-os       Pull latest code from main
   /ingest-context  Import files from context/import/ to global or personal context
@@ -91,9 +91,15 @@ Direct them to:
 ### "How do I run a SQL query?"
 
 Explain `/query` usage:
-- Run `/query` with project name and query name
-- Results save to database automatically
-- Optionally add to dashboard as chart/metric/table
+- **Temp queries**: Run SQL and see results without saving (for exploration)
+- **Saved queries**: Attach to a dashboard or report
+- Results for saved queries are stored in the database
+- Dashboard queries can be displayed as charts/metrics/tables
+
+**Workflow:**
+1. Run a temp query to explore data
+2. If you want to keep it, save to a dashboard or report
+3. Agent will ask where to attach it
 
 **Important:** Snowflake returns UPPERCASE column names. When adding widgets:
 - Use `WEEK` not `week`
@@ -137,8 +143,8 @@ Explain the sharing model:
 - Home: `/`
 - Project overview: `/projects/[slug]`
 - Dashboards: `/projects/[slug]/dashboards/[name]`
-- Queries: `/projects/[slug]/queries/[name]`
 - Reports: `/projects/[slug]/reports/[name]`
+- Queries: `/projects/[slug]/queries/[name]` (linked from dashboards/reports)
 
 ## Environment Setup
 

@@ -140,7 +140,7 @@ This prevents bugs like:
 
 ### 3. Gather Data (Save All Queries!)
 
-**IMPORTANT:** When you need to run queries to gather data for the report, you MUST save each query to the project.
+**IMPORTANT:** When you need to run queries to gather data for the report, you MUST save each query and link it to the report.
 
 **Query iteratively** - let each result inform the next:
 
@@ -152,20 +152,28 @@ This prevents bugs like:
 This approach leads to better insights than planning all queries upfront.
 
 ```bash
-# Run a query and save to the project
-npm run query -- --project [slug] --name report_initial_analysis --sql query.sql
+# Run a query and link to this report
+npm run query -- --project [slug] --name report_initial_analysis --sql query.sql --report [report-name]
 
 # Review results, then run follow-up based on what you learned
-npm run query -- --project [slug] --name report_deep_dive --sql followup.sql
+npm run query -- --project [slug] --name report_deep_dive --sql followup.sql --report [report-name]
 ```
+
+**Note:** Always use the `--report [report-name]` flag to link queries to the report. This:
+- Creates the query-report relationship in the database
+- Shows the query in the "Queries Used" section on the report page
+- Enables reproducibility and audit trail
 
 This ensures:
 - Better insights - each query builds on previous learnings
 - Reproducibility - queries can be re-run to refresh data
 - Transparency - audit trail shows where numbers came from
-- Reuse - queries can power dashboards later
+- Reuse - queries can also power dashboards later
 
-**Note:** If you have multiple truly independent questions that don't depend on each other, batch mode is available (see `/help query`).
+**Note:** If you have multiple truly independent questions that don't depend on each other, batch mode is available:
+```bash
+npm run query -- --project [slug] --batch queries.json --report [report-name]
+```
 
 ### Query Naming Convention
 
