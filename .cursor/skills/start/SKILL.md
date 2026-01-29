@@ -36,14 +36,31 @@ This starts the Next.js development server at **http://localhost:3000**.
    Pages:
    - Home:       http://localhost:3000
    - Projects:   http://localhost:3000/projects/[slug]
-   - Dashboards: http://localhost:3000/dashboards/[id]
+   - Dashboards: http://localhost:3000/projects/[slug]/dashboards/[name]
+   - Queries:    http://localhost:3000/projects/[slug]/queries/[name]
+   - Reports:    http://localhost:3000/projects/[slug]/reports/[name]
    ```
+
+4. **Open Browser in Side Panel**
+   After the server starts, open the browser within Cursor using the `cursor-ide-browser` MCP:
+   
+   ```
+   Tool: browser_navigate
+   Server: cursor-ide-browser
+   Arguments:
+     url: "http://localhost:3000"
+     position: "side"
+   ```
+   
+   This opens the app in a side panel so the user can see the dashboard while coding.
 
 ## What the Server Shows
 
 - **Home page**: List of all projects from `projects.json`
-- **Project pages**: Individual project details and dashboards
-- **Dashboard pages**: Interactive visualizations from `dashboard.yaml` files
+- **Project pages**: Folder overview showing dashboards, queries, and reports
+- **Dashboard pages**: Interactive visualizations from `dashboards/*.yaml` files
+- **Query pages**: SQL query content with syntax highlighting
+- **Report pages**: Rendered markdown reports
 
 ## Available npm Scripts (from root)
 

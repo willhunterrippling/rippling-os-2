@@ -14,8 +14,11 @@ Run these checks first to determine what needs to be done:
 # Check for .env file
 test -f .env && echo "ENV_EXISTS" || echo "ENV_MISSING"
 
-# Check for node_modules
-test -d node_modules && echo "DEPS_EXISTS" || echo "DEPS_MISSING"
+# Check for root node_modules
+test -d node_modules && echo "ROOT_DEPS_EXISTS" || echo "ROOT_DEPS_MISSING"
+
+# Check for web node_modules
+test -d web/node_modules && echo "WEB_DEPS_EXISTS" || echo "WEB_DEPS_MISSING"
 
 # Check current branch
 git branch --show-current
@@ -36,14 +39,19 @@ git branch --show-current
    RIPPLING_ACCOUNT_EMAIL=their.email@rippling.com
    ```
 
-### Step 2: Install Dependencies (if `node_modules/` missing)
+### Step 2: Install Dependencies (if any `node_modules/` missing)
 
-1. Check if `node_modules/` exists
-2. If missing, run:
+1. Check if root `node_modules/` exists
+2. If missing, run from repo root:
    ```bash
    npm install
    ```
-3. Wait for installation to complete
+3. Check if `web/node_modules/` exists
+4. If missing, run from repo root:
+   ```bash
+   npm install --prefix web
+   ```
+5. Wait for both installations to complete
 
 ### Step 3: Branch Setup (if not on `user/*` branch)
 
@@ -85,7 +93,7 @@ Show what was done and the final state:
 
 What was configured:
   [✓] Environment: .env file created
-  [✓] Dependencies: node_modules installed  
+  [✓] Dependencies: root & web node_modules installed  
   [✓] Branch: user/[email-prefix]
 
 Your details:
@@ -106,7 +114,8 @@ If some steps are already complete, skip them and only run what's needed:
 | State | Action |
 |-------|--------|
 | `.env` exists | Skip Step 1 |
-| `node_modules/` exists | Skip Step 2 |
+| `node_modules/` exists | Skip root install in Step 2 |
+| `web/node_modules/` exists | Skip web install in Step 2 |
 | Already on `user/*` branch | Skip Step 3 |
 
 Show checkmarks for completed items in the summary.
@@ -121,6 +130,7 @@ For branch setup only: `./scripts/setup-branch.sh`
 |-------|----------|
 | `.env.template` doesn't exist | Create `.env` manually with `RIPPLING_ACCOUNT_EMAIL` |
 | `npm install` fails | Check Node.js is installed, try `npm cache clean --force` |
+| `npm install --prefix web` fails | Run `cd web && npm install` directly |
 | Git push fails | Check git credentials, ensure repo access |
 | Branch already exists locally | Run `git checkout user/[name]` directly |
 

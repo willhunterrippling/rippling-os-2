@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
-import { getProject, getDashboardWithData } from "@/lib/projects";
-import { DashboardRenderer } from "@/components/dashboard/DashboardRenderer";
-import { Card, CardContent } from "@/components/ui/card";
+import Link from "next/link";
+import { getProject, getProjectOverview } from "@/lib/projects";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface ProjectPageProps {
   params: Promise<{
@@ -11,13 +17,13 @@ interface ProjectPageProps {
 
 export default async function ProjectPage({ params }: ProjectPageProps) {
   const { slug } = await params;
-  const project = await getProject(slug);
+  const overview = await getProjectOverview(slug);
 
-  if (!project) {
+  if (!overview) {
     notFound();
   }
 
-  const dashboard = await getDashboardWithData(slug);
+  const { project, dashboards, queries, reports } = overview;
 
   return (
     <div className="space-y-6">
@@ -26,19 +32,218 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         {project.description && (
           <p className="text-muted-foreground mt-2">{project.description}</p>
         )}
+        {project.author && (
+          <p className="text-sm text-muted-foreground mt-1">
+            Created by {project.author}
+            {project.createdAt && ` on ${project.createdAt}`}
+          </p>
+        )}
+        <p className="text-xs text-muted-foreground/70 mt-3 flex items-center gap-1.5">
+          <svg
+            className="w-3 h-3"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M13 10V3L4 14h7v7l9-11h-7z"
+            />
+          </svg>
+          Prompt Cursor to create queries, dashboards, or reports
+        </p>
       </div>
 
-      {dashboard ? (
-        <DashboardRenderer config={dashboard} />
-      ) : (
-        <Card className="bg-muted/50">
-          <CardContent className="py-12 text-center">
-            <p className="text-muted-foreground">
-              No dashboard configured for this project.
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Create a <code className="bg-background px-1 py-0.5 rounded">dashboard.yaml</code> file in your project folder to add visualizations.
-            </p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Dashboards Card */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-muted-foreground"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+              Dashboards
+            </CardTitle>
+            <CardDescription>Interactive visualizations</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {dashboards.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic">
+                No dashboards yet
+              </p>
+            ) : (
+              <ul className="space-y-1">
+                {dashboards.map((dashboard) => (
+                  <li key={dashboard.name}>
+                    <Link
+                      href={`/projects/${slug}/dashboards/${dashboard.name}`}
+                      className="text-sm text-primary hover:underline flex items-center gap-1"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                      {dashboard.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Queries Card */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-muted-foreground"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+                />
+              </svg>
+              Queries
+            </CardTitle>
+            <CardDescription>SQL query files</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {queries.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic">
+                No queries yet
+              </p>
+            ) : (
+              <ul className="space-y-1">
+                {queries.map((query) => (
+                  <li key={query.name}>
+                    <Link
+                      href={`/projects/${slug}/queries/${query.name}`}
+                      className="text-sm text-primary hover:underline flex items-center gap-1"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                      {query.name}.sql
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Reports Card */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <svg
+                className="w-5 h-5 text-muted-foreground"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              Reports
+            </CardTitle>
+            <CardDescription>Written documentation</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {reports.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic">
+                No reports yet
+              </p>
+            ) : (
+              <ul className="space-y-1">
+                {reports.map((report) => (
+                  <li key={report.name}>
+                    <Link
+                      href={`/projects/${slug}/reports/${report.name}`}
+                      className="text-sm text-primary hover:underline flex items-center gap-1"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                      {report.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick access to first dashboard if available */}
+      {dashboards.length > 0 && (
+        <Card className="bg-muted/30">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium">Quick Access</p>
+                <p className="text-sm text-muted-foreground">
+                  View the main dashboard for this project
+                </p>
+              </div>
+              <Link
+                href={`/projects/${slug}/dashboards/${dashboards[0].name}`}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+              >
+                Open Dashboard
+              </Link>
+            </div>
           </CardContent>
         </Card>
       )}

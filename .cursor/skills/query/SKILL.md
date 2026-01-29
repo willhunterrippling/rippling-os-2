@@ -45,7 +45,7 @@ User says "query", "/query", "run query", "execute SQL", or provides a SQL file 
    [show preview]
    
    Next steps:
-   1. Add this data to your dashboard.yaml
+   1. Add this data to your dashboard (dashboards/main.yaml)
    2. Run /save to commit results
    ```
 
@@ -62,15 +62,18 @@ npm run query -- projects/my-analysis/queries/trend.sql --output projects/my-ana
 
 ## Dashboard Integration
 
-After running a query, add it to `dashboard.yaml`:
+After running a query, add the data to a dashboard in `dashboards/`:
 
 ```yaml
+# In dashboards/main.yaml (or any dashboard file)
 widgets:
   - type: metric
     title: "S1 Count"
     data: data/s1_count.json
     valueKey: count
 ```
+
+View your dashboard at: `/projects/[project]/dashboards/main`
 
 ## Environment Requirements
 

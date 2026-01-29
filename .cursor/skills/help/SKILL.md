@@ -119,13 +119,23 @@ rippling-os-2/
 ├── projects/           # Your analysis projects live here
 │   ├── _templates/     # Templates for new projects
 │   └── [your-project]/ # Individual projects
+│       ├── dashboards/ # Dashboard YAML configs
+│       │   └── main.yaml
 │       ├── queries/    # SQL files
+│       ├── reports/    # Written reports (markdown)
 │       ├── data/       # Cached JSON results
-│       └── dashboard.yaml
+│       └── README.md
 ├── context/global/     # Shared schemas, SQL patterns, definitions
 ├── web/                # Dashboard web app (Next.js)
 └── scripts/            # CLI tools
 ```
+
+## URL Routes
+
+- Project overview: `/projects/[slug]`
+- Dashboards: `/projects/[slug]/dashboards/[name]`
+- Queries: `/projects/[slug]/queries/[name]`
+- Reports: `/projects/[slug]/reports/[name]`
 
 ## Environment Setup
 

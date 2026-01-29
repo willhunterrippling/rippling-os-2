@@ -19,15 +19,18 @@ User says "create project", "/create-project [name]", or "new project".
 
 3. **Create Project Structure**
    ```bash
+   mkdir -p projects/[slug]/dashboards
    mkdir -p projects/[slug]/queries
+   mkdir -p projects/[slug]/reports
    mkdir -p projects/[slug]/data
    ```
 
 4. **Copy Template Files**
    - Copy from `projects/_templates/basic-analysis/`:
      - `README.md` → customize with project name
-     - `dashboard.yaml` → empty template
-   - Create `.gitkeep` files in empty directories
+     - `dashboards/main.yaml` → empty dashboard template
+   - Create `.gitkeep` files in empty directories:
+     - `projects/[slug]/reports/.gitkeep`
 
 5. **Update projects.json**
    - Read current `projects.json`
@@ -52,15 +55,18 @@ User says "create project", "/create-project [name]", or "new project".
    
    Structure:
    ├── README.md
-   ├── dashboard.yaml
+   ├── dashboards/
+   │   └── main.yaml
    ├── queries/
+   ├── reports/
    └── data/
    
    Next steps:
    1. Add SQL queries to queries/ folder
    2. Run /query to execute SQL and cache results
-   3. Configure widgets in dashboard.yaml
-   4. Run /save to commit your project
+   3. Configure widgets in dashboards/main.yaml
+   4. Add written reports to reports/ folder
+   5. Run /save to commit your project
    ```
 
 ## Project Structure
@@ -68,12 +74,23 @@ User says "create project", "/create-project [name]", or "new project".
 ```
 projects/[slug]/
 ├── README.md           # Project description
-├── dashboard.yaml      # Dashboard configuration
+├── dashboards/         # Dashboard YAML configs
+│   └── main.yaml       # Main dashboard
 ├── queries/            # SQL query files
 │   └── example.sql
+├── reports/            # Written reports (markdown)
+│   └── findings.md
 └── data/               # Cached JSON results
     └── example.json
 ```
+
+## URL Routes
+
+After creating a project, it will be accessible at:
+- Project overview: `/projects/[slug]`
+- Dashboards: `/projects/[slug]/dashboards/[name]`
+- Queries: `/projects/[slug]/queries/[name]`
+- Reports: `/projects/[slug]/reports/[name]`
 
 ## Error Handling
 

@@ -15,8 +15,27 @@ import {
   Cell,
   AreaChart,
   Area,
+  TooltipProps,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+// Custom tooltip component with proper styling
+function CustomTooltip({ active, payload, label }: TooltipProps<number, string>) {
+  if (!active || !payload || !payload.length) {
+    return null;
+  }
+
+  return (
+    <div className="bg-popover text-popover-foreground border border-border rounded-md shadow-lg px-3 py-2">
+      <p className="font-medium text-sm mb-1">{label}</p>
+      {payload.map((entry, index) => (
+        <p key={index} className="text-sm" style={{ color: entry.color }}>
+          {entry.name}: {entry.value?.toLocaleString()}
+        </p>
+      ))}
+    </div>
+  );
+}
 
 interface ChartProps {
   title: string;
@@ -51,13 +70,7 @@ export function Chart({ title, data, chartType, xKey, yKey, color = "hsl(var(--c
               className="text-xs"
               tick={{ fill: "hsl(var(--muted-foreground))" }}
             />
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: "hsl(var(--popover))", 
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "var(--radius)",
-              }}
-            />
+            <Tooltip content={<CustomTooltip />} />
             <Line 
               type="monotone" 
               dataKey={yKey} 
@@ -81,13 +94,7 @@ export function Chart({ title, data, chartType, xKey, yKey, color = "hsl(var(--c
               className="text-xs"
               tick={{ fill: "hsl(var(--muted-foreground))" }}
             />
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: "hsl(var(--popover))", 
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "var(--radius)",
-              }}
-            />
+            <Tooltip content={<CustomTooltip />} />
             <Bar dataKey={yKey} fill={color} radius={[4, 4, 0, 0]} />
           </BarChart>
         );
@@ -105,13 +112,7 @@ export function Chart({ title, data, chartType, xKey, yKey, color = "hsl(var(--c
               className="text-xs"
               tick={{ fill: "hsl(var(--muted-foreground))" }}
             />
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: "hsl(var(--popover))", 
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "var(--radius)",
-              }}
-            />
+            <Tooltip content={<CustomTooltip />} />
             <Area 
               type="monotone" 
               dataKey={yKey} 
@@ -138,13 +139,7 @@ export function Chart({ title, data, chartType, xKey, yKey, color = "hsl(var(--c
                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: "hsl(var(--popover))", 
-                border: "1px solid hsl(var(--border))",
-                borderRadius: "var(--radius)",
-              }}
-            />
+            <Tooltip content={<CustomTooltip />} />
           </PieChart>
         );
 
