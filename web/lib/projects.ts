@@ -1,392 +1,423 @@
-import fs from "fs";
-import path from "path";
-import yaml from "js-yaml";
+import { prisma } from "./db";
+
+// ==================== TYPES ====================
 
 export interface Project {
+  id: string;
   slug: string;
   name: string;
-  description?: string;
-  createdAt?: string;
-  author?: string;
+  description?: string | null;
+  ownerId: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-export interface ProjectsManifest {
-  projects: Project[];
+export interface ProjectWithOwner extends Project {
+  owner: {
+    email: string;
+    name: string | null;
+  };
 }
 
 export interface DashboardWidget {
   type: "metric" | "chart" | "table";
-  title: string;
-  data: string; // Path to JSON file relative to project
+  title?: string;
+  queryName: string; // References a query by name
   valueKey?: string;
   chartType?: "line" | "bar" | "area" | "pie";
   xKey?: string;
   yKey?: string;
   columns?: string[];
+  hidden?: boolean;
 }
 
 export interface DashboardConfig {
-  title: string;
+  title?: string;
   description?: string;
   layout?: "grid" | "stack";
   widgets: DashboardWidget[];
 }
 
 export interface ProjectItem {
-  name: string; // filename without extension
-  path: string; // relative path from project root
+  id: string;
+  name: string;
 }
 
 export interface ProjectOverview {
-  project: Project;
+  project: ProjectWithOwner;
   dashboards: ProjectItem[];
   queries: ProjectItem[];
   reports: ProjectItem[];
-  readme?: string; // README content if exists
 }
 
-const PROJECTS_JSON_PATH = path.join(process.cwd(), "..", "projects.json");
-const PROJECTS_DIR = path.join(process.cwd(), "..", "projects");
-
-export async function getProjects(): Promise<Project[]> {
-  try {
-    const content = fs.readFileSync(PROJECTS_JSON_PATH, "utf-8");
-    const manifest: ProjectsManifest = JSON.parse(content);
-    return manifest.projects || [];
-  } catch (error) {
-    console.error("Error reading projects.json:", error);
-    return [];
-  }
-}
-
-export async function getProject(slug: string): Promise<Project | null> {
-  const projects = await getProjects();
-  return projects.find((p) => p.slug === slug) || null;
-}
-
-/**
- * Simplified project with contents for sidebar display
- */
 export interface ProjectWithContents {
   slug: string;
   name: string;
-  dashboards: string[]; // Just names for sidebar
+  description?: string | null;
+  owner?: string;
+  dashboards: string[];
   queries: string[];
   reports: string[];
 }
 
-/**
- * Get all projects with their contents for sidebar navigation
- */
+// ==================== PROJECT FUNCTIONS ====================
+
+export async function getProjects(): Promise<ProjectWithOwner[]> {
+  const projects = await prisma.project.findMany({
+    include: {
+      owner: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return projects;
+}
+
+export async function getProject(slug: string): Promise<ProjectWithOwner | null> {
+  const project = await prisma.project.findUnique({
+    where: { slug },
+    include: {
+      owner: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return project;
+}
+
+export async function getProjectById(id: string): Promise<ProjectWithOwner | null> {
+  const project = await prisma.project.findUnique({
+    where: { id },
+    include: {
+      owner: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return project;
+}
+
 export async function getProjectsWithContents(): Promise<ProjectWithContents[]> {
-  const projects = await getProjects();
+  const projects = await prisma.project.findMany({
+    include: {
+      owner: {
+        select: {
+          email: true,
+        },
+      },
+      dashboards: {
+        select: {
+          name: true,
+        },
+      },
+      queries: {
+        select: {
+          name: true,
+        },
+      },
+      reports: {
+        select: {
+          name: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
-  return Promise.all(
-    projects.map(async (project) => {
-      const [dashboards, queries, reports] = await Promise.all([
-        getProjectDashboards(project.slug),
-        getProjectQueries(project.slug),
-        getProjectReports(project.slug),
-      ]);
-
-      return {
-        slug: project.slug,
-        name: project.name,
-        dashboards: dashboards.map((d) => d.name),
-        queries: queries.map((q) => q.name),
-        reports: reports.map((r) => r.name),
-      };
-    })
-  );
+  return projects.map((project) => ({
+    slug: project.slug,
+    name: project.name,
+    description: project.description,
+    owner: project.owner.email,
+    dashboards: project.dashboards.map((d) => d.name),
+    queries: project.queries.map((q) => q.name),
+    reports: project.reports.map((r) => r.name),
+  }));
 }
 
-/**
- * List all dashboards in a project's dashboards/ folder
- */
-export async function getProjectDashboards(
-  projectSlug: string
-): Promise<ProjectItem[]> {
-  try {
-    const dashboardsDir = path.join(PROJECTS_DIR, projectSlug, "dashboards");
-
-    if (!fs.existsSync(dashboardsDir)) {
-      // Backward compatibility: check for root dashboard.yaml
-      const legacyPath = path.join(PROJECTS_DIR, projectSlug, "dashboard.yaml");
-      if (fs.existsSync(legacyPath)) {
-        return [{ name: "main", path: "dashboard.yaml" }];
-      }
-      return [];
-    }
-
-    const files = fs.readdirSync(dashboardsDir);
-    return files
-      .filter((f) => f.endsWith(".yaml") || f.endsWith(".yml"))
-      .map((f) => ({
-        name: f.replace(/\.(yaml|yml)$/, ""),
-        path: `dashboards/${f}`,
-      }));
-  } catch (error) {
-    console.error(`Error reading dashboards for ${projectSlug}:`, error);
-    return [];
-  }
-}
-
-/**
- * List all SQL queries in a project's queries/ folder
- */
-export async function getProjectQueries(
-  projectSlug: string
-): Promise<ProjectItem[]> {
-  try {
-    const queriesDir = path.join(PROJECTS_DIR, projectSlug, "queries");
-
-    if (!fs.existsSync(queriesDir)) {
-      return [];
-    }
-
-    const files = fs.readdirSync(queriesDir);
-    return files
-      .filter((f) => f.endsWith(".sql"))
-      .map((f) => ({
-        name: f.replace(/\.sql$/, ""),
-        path: `queries/${f}`,
-      }));
-  } catch (error) {
-    console.error(`Error reading queries for ${projectSlug}:`, error);
-    return [];
-  }
-}
-
-/**
- * List all reports (markdown files) in a project's reports/ folder
- */
-export async function getProjectReports(
-  projectSlug: string
-): Promise<ProjectItem[]> {
-  try {
-    const reportsDir = path.join(PROJECTS_DIR, projectSlug, "reports");
-
-    if (!fs.existsSync(reportsDir)) {
-      return [];
-    }
-
-    const files = fs.readdirSync(reportsDir);
-    return files
-      .filter((f) => f.endsWith(".md"))
-      .map((f) => ({
-        name: f.replace(/\.md$/, ""),
-        path: `reports/${f}`,
-      }));
-  } catch (error) {
-    console.error(`Error reading reports for ${projectSlug}:`, error);
-    return [];
-  }
-}
-
-/**
- * Get a full overview of a project including all its contents
- */
 export async function getProjectOverview(
   projectSlug: string
 ): Promise<ProjectOverview | null> {
-  const project = await getProject(projectSlug);
+  const project = await prisma.project.findUnique({
+    where: { slug: projectSlug },
+    include: {
+      owner: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+      dashboards: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      queries: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      reports: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
   if (!project) {
     return null;
   }
 
-  const [dashboards, queries, reports] = await Promise.all([
-    getProjectDashboards(projectSlug),
-    getProjectQueries(projectSlug),
-    getProjectReports(projectSlug),
-  ]);
-
-  // Try to read README
-  let readme: string | undefined;
-  try {
-    const readmePath = path.join(PROJECTS_DIR, projectSlug, "README.md");
-    if (fs.existsSync(readmePath)) {
-      readme = fs.readFileSync(readmePath, "utf-8");
-    }
-  } catch {
-    // README is optional
-  }
-
   return {
     project,
-    dashboards,
-    queries,
-    reports,
-    readme,
+    dashboards: project.dashboards,
+    queries: project.queries,
+    reports: project.reports,
   };
 }
 
-/**
- * Get dashboard config - supports both new dashboards/ folder and legacy root dashboard.yaml
- */
+// ==================== DASHBOARD FUNCTIONS ====================
+
 export async function getDashboardConfig(
   projectSlug: string,
-  dashboardName?: string
-): Promise<DashboardConfig | null> {
-  try {
-    let dashboardPath: string;
+  dashboardName: string = "main"
+): Promise<{ id: string; config: DashboardConfig } | null> {
+  const project = await prisma.project.findUnique({
+    where: { slug: projectSlug },
+    select: { id: true },
+  });
 
-    if (dashboardName) {
-      // Look in dashboards/ folder
-      dashboardPath = path.join(
-        PROJECTS_DIR,
-        projectSlug,
-        "dashboards",
-        `${dashboardName}.yaml`
-      );
-      // Try .yml extension if .yaml doesn't exist
-      if (!fs.existsSync(dashboardPath)) {
-        dashboardPath = path.join(
-          PROJECTS_DIR,
-          projectSlug,
-          "dashboards",
-          `${dashboardName}.yml`
-        );
-      }
-    } else {
-      // Default: try dashboards/main.yaml first, then fall back to root dashboard.yaml
-      dashboardPath = path.join(
-        PROJECTS_DIR,
-        projectSlug,
-        "dashboards",
-        "main.yaml"
-      );
-      if (!fs.existsSync(dashboardPath)) {
-        dashboardPath = path.join(
-          PROJECTS_DIR,
-          projectSlug,
-          "dashboards",
-          "main.yml"
-        );
-      }
-      if (!fs.existsSync(dashboardPath)) {
-        // Backward compatibility: root dashboard.yaml
-        dashboardPath = path.join(PROJECTS_DIR, projectSlug, "dashboard.yaml");
-      }
-    }
-
-    if (!fs.existsSync(dashboardPath)) {
-      return null;
-    }
-
-    const content = fs.readFileSync(dashboardPath, "utf-8");
-    const config = yaml.load(content) as DashboardConfig;
-    return config;
-  } catch (error) {
-    console.error(`Error reading dashboard config for ${projectSlug}:`, error);
+  if (!project) {
     return null;
   }
-}
 
-/**
- * Read the content of a SQL query file
- */
-export async function getQueryContent(
-  projectSlug: string,
-  queryName: string
-): Promise<string | null> {
-  try {
-    const queryPath = path.join(
-      PROJECTS_DIR,
-      projectSlug,
-      "queries",
-      `${queryName}.sql`
-    );
+  const dashboard = await prisma.dashboard.findUnique({
+    where: {
+      projectId_name: {
+        projectId: project.id,
+        name: dashboardName,
+      },
+    },
+  });
 
-    if (!fs.existsSync(queryPath)) {
-      return null;
-    }
-
-    return fs.readFileSync(queryPath, "utf-8");
-  } catch (error) {
-    console.error(`Error reading query ${queryName} for ${projectSlug}:`, error);
+  if (!dashboard) {
     return null;
   }
-}
 
-/**
- * Read the content of a report markdown file
- */
-export async function getReportContent(
-  projectSlug: string,
-  reportName: string
-): Promise<string | null> {
-  try {
-    const reportPath = path.join(
-      PROJECTS_DIR,
-      projectSlug,
-      "reports",
-      `${reportName}.md`
-    );
-
-    if (!fs.existsSync(reportPath)) {
-      return null;
-    }
-
-    return fs.readFileSync(reportPath, "utf-8");
-  } catch (error) {
-    console.error(`Error reading report ${reportName} for ${projectSlug}:`, error);
-    return null;
-  }
-}
-
-export async function loadWidgetData(
-  projectSlug: string,
-  dataPath: string
-): Promise<Record<string, unknown>[]> {
-  try {
-    const fullPath = path.join(PROJECTS_DIR, projectSlug, dataPath);
-    
-    if (!fs.existsSync(fullPath)) {
-      console.warn(`Data file not found: ${fullPath}`);
-      return [];
-    }
-
-    const content = fs.readFileSync(fullPath, "utf-8");
-    const data = JSON.parse(content);
-    
-    // Handle both array and object with data property
-    if (Array.isArray(data)) {
-      return data;
-    } else if (data.data && Array.isArray(data.data)) {
-      return data.data;
-    } else {
-      // Single object - wrap in array
-      return [data];
-    }
-  } catch (error) {
-    console.error(`Error loading widget data from ${dataPath}:`, error);
-    return [];
-  }
+  return {
+    id: dashboard.id,
+    config: dashboard.config as unknown as DashboardConfig,
+  };
 }
 
 export async function getDashboardWithData(
   projectSlug: string,
-  dashboardName?: string
+  dashboardName: string = "main"
 ) {
-  const config = await getDashboardConfig(projectSlug, dashboardName);
+  const project = await prisma.project.findUnique({
+    where: { slug: projectSlug },
+    select: { id: true },
+  });
 
-  if (!config) {
+  if (!project) {
     return null;
   }
 
-  // Load data for each widget
-  const widgetsWithData = await Promise.all(
-    config.widgets.map(async (widget) => {
-      const data = await loadWidgetData(projectSlug, widget.data);
-      return {
-        ...widget,
-        data,
-      };
-    })
-  );
+  const dashboard = await prisma.dashboard.findUnique({
+    where: {
+      projectId_name: {
+        projectId: project.id,
+        name: dashboardName,
+      },
+    },
+  });
+
+  if (!dashboard) {
+    return null;
+  }
+
+  const config = dashboard.config as unknown as DashboardConfig;
+
+  // Get all queries for this project with their results
+  const queries = await prisma.query.findMany({
+    where: { projectId: project.id },
+    include: {
+      result: true,
+    },
+  });
+
+  // Build a map of query name to result data
+  const queryDataMap = new Map<string, unknown[]>();
+  for (const query of queries) {
+    if (query.result?.data) {
+      const data = query.result.data;
+      // Handle both array and object with data property
+      if (Array.isArray(data)) {
+        queryDataMap.set(query.name, data);
+      } else if (typeof data === "object" && data !== null && "data" in data) {
+        queryDataMap.set(query.name, (data as { data: unknown[] }).data);
+      } else {
+        queryDataMap.set(query.name, [data]);
+      }
+    }
+  }
+
+  // Attach data to each widget
+  const widgetsWithData = config.widgets
+    .filter((widget) => !widget.hidden)
+    .map((widget) => ({
+      ...widget,
+      data: queryDataMap.get(widget.queryName) || [],
+    }));
 
   return {
-    ...config,
+    id: dashboard.id,
+    title: config.title,
+    description: config.description,
+    layout: config.layout,
     widgets: widgetsWithData,
   };
+}
+
+// ==================== QUERY FUNCTIONS ====================
+
+export async function getQueryContent(
+  projectSlug: string,
+  queryName: string
+): Promise<{ id: string; sql: string; result?: unknown[] } | null> {
+  const project = await prisma.project.findUnique({
+    where: { slug: projectSlug },
+    select: { id: true },
+  });
+
+  if (!project) {
+    return null;
+  }
+
+  const query = await prisma.query.findUnique({
+    where: {
+      projectId_name: {
+        projectId: project.id,
+        name: queryName,
+      },
+    },
+    include: {
+      result: true,
+    },
+  });
+
+  if (!query) {
+    return null;
+  }
+
+  return {
+    id: query.id,
+    sql: query.sql,
+    result: query.result?.data as unknown[] | undefined,
+  };
+}
+
+// ==================== REPORT FUNCTIONS ====================
+
+export async function getReportContent(
+  projectSlug: string,
+  reportName: string
+): Promise<{ id: string; content: string } | null> {
+  const project = await prisma.project.findUnique({
+    where: { slug: projectSlug },
+    select: { id: true },
+  });
+
+  if (!project) {
+    return null;
+  }
+
+  const report = await prisma.report.findUnique({
+    where: {
+      projectId_name: {
+        projectId: project.id,
+        name: reportName,
+      },
+    },
+  });
+
+  if (!report) {
+    return null;
+  }
+
+  return {
+    id: report.id,
+    content: report.content,
+  };
+}
+
+// ==================== PERMISSION HELPERS ====================
+
+export async function canUserEditProject(
+  userEmail: string,
+  projectId: string
+): Promise<boolean> {
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    include: {
+      owner: true,
+      shares: {
+        where: {
+          user: { email: userEmail },
+          permission: { in: ["EDIT", "ADMIN"] },
+        },
+      },
+    },
+  });
+
+  if (!project) {
+    return false;
+  }
+
+  return project.owner.email === userEmail || project.shares.length > 0;
+}
+
+export async function canUserAdminProject(
+  userEmail: string,
+  projectId: string
+): Promise<boolean> {
+  const project = await prisma.project.findUnique({
+    where: { id: projectId },
+    include: {
+      owner: true,
+      shares: {
+        where: {
+          user: { email: userEmail },
+          permission: "ADMIN",
+        },
+      },
+    },
+  });
+
+  if (!project) {
+    return false;
+  }
+
+  return project.owner.email === userEmail || project.shares.length > 0;
 }

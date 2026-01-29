@@ -32,10 +32,9 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         {project.description && (
           <p className="text-muted-foreground mt-2">{project.description}</p>
         )}
-        {project.author && (
+        {project.owner && (
           <p className="text-sm text-muted-foreground mt-1">
-            Created by {project.author}
-            {project.createdAt && ` on ${project.createdAt}`}
+            By {project.owner.name || project.owner.email.split("@")[0]}
           </p>
         )}
         <p className="text-xs text-muted-foreground/70 mt-3 flex items-center gap-1.5">

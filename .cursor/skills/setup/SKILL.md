@@ -1,6 +1,6 @@
 # /setup - Complete Repository Setup
 
-Set up everything needed to work in Rippling OS: environment, dependencies, and personal branch.
+Set up everything needed to work in Rippling OS: environment, dependencies, and database connection.
 
 ## Trigger
 
@@ -20,91 +20,93 @@ test -d node_modules && echo "ROOT_DEPS_EXISTS" || echo "ROOT_DEPS_MISSING"
 # Check for web node_modules
 test -d web/node_modules && echo "WEB_DEPS_EXISTS" || echo "WEB_DEPS_MISSING"
 
-# Check current branch
-git branch --show-current
+# Check for Prisma client
+test -d node_modules/.prisma && echo "PRISMA_EXISTS" || echo "PRISMA_MISSING"
+
+# Get git email
+git config user.email
 ```
 
 ## Workflow
 
-### Step 1: Environment Setup (if `.env` missing)
+### Step 1: Environment Setup (if `.env` missing or incomplete)
 
 1. Check if `.env` exists
 2. If missing:
    ```bash
    cp .env.template .env
    ```
-3. Ask the user for their Rippling email address
-4. Update the `.env` file with their email:
-   ```
-   RIPPLING_ACCOUNT_EMAIL=their.email@rippling.com
-   ```
+3. Check for required variables:
+   - `DATABASE_URL` - **Required** for database connection
+   - `RIPPLING_ACCOUNT_EMAIL` - Required for Snowflake SSO
+4. If `DATABASE_URL` is missing:
+   - Tell user: "You need a DATABASE_URL from Vercel Postgres. Contact the admin for the connection string."
+   - Provide the format: `postgres://user:password@host:5432/database?sslmode=require`
+5. Ensure `BYPASS_AUTH=true` is set for local development (skips email magic link auth)
+6. If `RIPPLING_ACCOUNT_EMAIL` is missing:
+   - Ask user for their Rippling email
+   - Update `.env`
 
 ### Step 2: Install Dependencies (if any `node_modules/` missing)
 
 1. Check if root `node_modules/` exists
-2. If missing, run from repo root:
+2. If missing, run:
    ```bash
    npm install
    ```
 3. Check if `web/node_modules/` exists
-4. If missing, run from repo root:
+4. If missing, run:
    ```bash
    npm install --prefix web
    ```
-5. Wait for both installations to complete
 
-### Step 3: Branch Setup (if not on `user/*` branch)
+### Step 3: Generate Prisma Client (if missing)
 
-1. **Get User Email**
-   - Read from `RIPPLING_ACCOUNT_EMAIL` in `.env` file
-   - Should already be set from Step 1
+```bash
+npx prisma generate
+```
 
-2. **Extract Branch Name**
-   - Take the prefix before `@` (e.g., `will.smith` from `will.smith@rippling.com`)
-   - Branch name format: `user/[email-prefix]`
+### Step 4: Verify/Create User in Database
 
-3. **Check Branch Existence**
+1. Get git email:
    ```bash
-   git fetch origin
-   git branch -r | grep "origin/user/[email-prefix]"
+   git config user.email
    ```
 
-4. **Create or Switch to Branch**
-   - If branch doesn't exist:
-     ```bash
-     git checkout main
-     git pull origin main
-     git checkout -b user/[email-prefix]
-     git push -u origin user/[email-prefix]
-     ```
-   - If branch exists:
-     ```bash
-     git fetch origin
-     git checkout user/[email-prefix]
-     git pull origin user/[email-prefix]
-     ```
+2. Validate email ends with `@rippling.com`:
+   - If not: Show error "Your git email must be @rippling.com to use Rippling OS"
+   - Tell user to run: `git config user.email "you@rippling.com"`
 
-### Step 4: Output Summary
+3. Check if user exists in database and create if not:
+   ```typescript
+   // Using Prisma in a script or directly
+   const user = await prisma.user.upsert({
+     where: { email: gitEmail },
+     create: { email: gitEmail },
+     update: {},
+   });
+   ```
+   
+   Note: This can be done by running a simple script or inline with tsx.
 
-Show what was done and the final state:
+### Step 5: Output Summary
 
 ```
 ✅ Setup complete!
 
 What was configured:
-  [✓] Environment: .env file created
-  [✓] Dependencies: root & web node_modules installed  
-  [✓] Branch: user/[email-prefix]
-
-Your details:
-  Branch:      user/[email-prefix]
-  Preview URL: https://rippling-os-2-git-user-[email-prefix]-ripplings-projects.vercel.app
+  [✓] Environment: .env file configured
+  [✓] Dependencies: root & web node_modules installed
+  [✓] Prisma: Client generated
+  [✓] User: will.smith@rippling.com (auto-created in database)
 
 Next steps:
   1. /create-project  - Start a new analysis
-  2. /query           - Run SQL queries  
+  2. /query           - Run SQL queries
   3. /start           - Launch the dashboard
-  4. /save            - Commit your work
+
+To view dashboards in browser, visit the web app and sign in 
+with your email (one-time magic link for web access).
 ```
 
 ## Partial Setup
@@ -113,38 +115,82 @@ If some steps are already complete, skip them and only run what's needed:
 
 | State | Action |
 |-------|--------|
-| `.env` exists | Skip Step 1 |
+| `.env` exists with DATABASE_URL | Skip Step 1 |
 | `node_modules/` exists | Skip root install in Step 2 |
 | `web/node_modules/` exists | Skip web install in Step 2 |
-| Already on `user/*` branch | Skip Step 3 |
+| `.prisma` client exists | Skip Step 3 |
+| User already in database | Skip user creation in Step 4 |
 
-Show checkmarks for completed items in the summary.
+## No More Branches
 
-## Shell Script Alternative
+**Important:** We no longer use user branches. Everyone works on `main` branch. 
+User data is isolated in the database, not via git branches.
 
-For branch setup only: `./scripts/setup-branch.sh`
+If user is on a `user/*` branch, suggest:
+```
+git checkout main
+git pull origin main
+```
 
 ## Error Handling
 
 | Error | Solution |
 |-------|----------|
-| `.env.template` doesn't exist | Create `.env` manually with `RIPPLING_ACCOUNT_EMAIL` |
+| `.env.template` doesn't exist | Create `.env` manually with DATABASE_URL and RIPPLING_ACCOUNT_EMAIL |
+| `DATABASE_URL` not set | Contact admin for Vercel Postgres connection string |
 | `npm install` fails | Check Node.js is installed, try `npm cache clean --force` |
-| `npm install --prefix web` fails | Run `cd web && npm install` directly |
-| Git push fails | Check git credentials, ensure repo access |
-| Branch already exists locally | Run `git checkout user/[name]` directly |
+| Prisma generate fails | Check DATABASE_URL is valid, try `npx prisma generate --schema=prisma/schema.prisma` |
+| Git email not @rippling.com | Run `git config user.email "you@rippling.com"` |
+| Database connection fails | Verify DATABASE_URL, check network access |
 
 ## Environment Variables Reference
 
 Required in `.env`:
 ```
-RIPPLING_ACCOUNT_EMAIL=your.email@rippling.com
+DATABASE_URL=postgres://...          # From Vercel Postgres dashboard
+RIPPLING_ACCOUNT_EMAIL=you@rippling.com  # For Snowflake SSO
+BYPASS_AUTH=true                     # For local development (skip magic link auth)
 ```
 
-Optional (have defaults in code):
+Optional (for auth, only needed for production):
+```
+AUTH_SECRET=...                      # For NextAuth (generate with: openssl rand -base64 32)
+AUTH_RESEND_KEY=re_...               # For magic link emails
+```
+
+Optional (have defaults):
 ```
 SNOWFLAKE_ACCOUNT=RIPPLINGORG-RIPPLING
 SNOWFLAKE_DATABASE=PROD_RIPPLING_DWH
 SNOWFLAKE_ROLE=PROD_RIPPLING_MARKETING
 SNOWFLAKE_WAREHOUSE=PROD_RIPPLING_INTEGRATION_DWH
+```
+
+## User Creation Script
+
+For auto-creating the user, you can run this inline:
+
+```bash
+npx tsx -e "
+const { PrismaClient } = require('@prisma/client');
+const { execSync } = require('child_process');
+const prisma = new PrismaClient();
+const email = execSync('git config user.email', { encoding: 'utf-8' }).trim();
+if (!email.endsWith('@rippling.com')) {
+  console.error('Error: Git email must be @rippling.com');
+  process.exit(1);
+}
+prisma.user.upsert({
+  where: { email },
+  create: { email },
+  update: {},
+}).then(user => {
+  console.log('User ready:', user.email);
+  prisma.\$disconnect();
+}).catch(err => {
+  console.error('Error:', err);
+  prisma.\$disconnect();
+  process.exit(1);
+});
+"
 ```

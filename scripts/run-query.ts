@@ -3,53 +3,82 @@
 /**
  * Snowflake Query Runner
  * 
- * Execute SQL queries against Snowflake and save results as JSON.
+ * Execute SQL queries against Snowflake and save results to the database.
  * Uses externalbrowser authentication (SSO).
  * 
  * Usage:
- *   npm run query -- <sql-file> [--output <json-file>]
- *   npx tsx scripts/run-query.ts <sql-file> [--output <json-file>]
+ *   npm run query -- --project <project-slug> --name <query-name> [--sql <sql-file>]
+ *   npm run query -- -p <project-slug> -n <query-name> [-s <sql-file>]
  * 
  * Examples:
- *   npm run query -- projects/my-analysis/queries/count.sql
- *   npm run query -- projects/my-analysis/queries/count.sql --output projects/my-analysis/data/count.json
+ *   npm run query -- --project my-analysis --name weekly_s1 --sql query.sql
+ *   npm run query -- -p my-analysis -n weekly_s1
  */
 
 import * as snowflake from 'snowflake-sdk';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+import { execSync } from 'child_process';
+import { PrismaClient } from '@prisma/client';
 
 // Load environment variables
 dotenv.config();
 
+const prisma = new PrismaClient();
+
 // Parse command line arguments
-function parseArgs(): { sqlFile: string; outputFile: string | null } {
+interface Args {
+  projectSlug: string;
+  queryName: string;
+  sqlFile?: string;
+  sql?: string;
+}
+
+function parseArgs(): Args {
   const args = process.argv.slice(2);
   
-  if (args.length === 0) {
-    console.error('Usage: npm run query -- <sql-file> [--output <json-file>]');
-    process.exit(1);
-  }
-  
-  let sqlFile = '';
-  let outputFile: string | null = null;
+  let projectSlug = '';
+  let queryName = '';
+  let sqlFile: string | undefined;
   
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--output' || args[i] === '-o') {
-      outputFile = args[i + 1];
-      i++;
-    } else if (!args[i].startsWith('-')) {
-      sqlFile = args[i];
+    const arg = args[i];
+    if (arg === '--project' || arg === '-p') {
+      projectSlug = args[++i];
+    } else if (arg === '--name' || arg === '-n') {
+      queryName = args[++i];
+    } else if (arg === '--sql' || arg === '-s') {
+      sqlFile = args[++i];
     }
   }
   
-  if (!sqlFile) {
-    console.error('Error: SQL file is required');
+  if (!projectSlug || !queryName) {
+    console.error('Usage: npm run query -- --project <project-slug> --name <query-name> [--sql <sql-file>]');
+    console.error('');
+    console.error('Options:');
+    console.error('  -p, --project  Project slug (required)');
+    console.error('  -n, --name     Query name (required)');
+    console.error('  -s, --sql      SQL file path (optional, will use existing query from DB if not provided)');
     process.exit(1);
   }
   
-  return { sqlFile, outputFile };
+  return { projectSlug, queryName, sqlFile };
+}
+
+// Get git user email for identity
+function getGitEmail(): string {
+  try {
+    const email = execSync('git config user.email', { encoding: 'utf-8' }).trim();
+    if (!email) {
+      throw new Error('Git email not configured');
+    }
+    return email;
+  } catch {
+    console.error('Error: Could not get git user email');
+    console.error('Please configure git: git config user.email "you@rippling.com"');
+    process.exit(1);
+  }
 }
 
 // Get connection configuration
@@ -118,26 +147,80 @@ async function executeQuery(
 
 // Main function
 async function main() {
-  const { sqlFile, outputFile } = parseArgs();
+  const { projectSlug, queryName, sqlFile } = parseArgs();
+  const userEmail = getGitEmail();
   
-  // Read SQL file
-  if (!fs.existsSync(sqlFile)) {
-    console.error(`Error: SQL file not found: ${sqlFile}`);
+  console.log(`👤 Running as: ${userEmail}`);
+  console.log(`📁 Project: ${projectSlug}`);
+  console.log(`📝 Query: ${queryName}`);
+  console.log('');
+  
+  // Find the project in the database
+  const project = await prisma.project.findUnique({
+    where: { slug: projectSlug },
+  });
+  
+  if (!project) {
+    console.error(`Error: Project not found: ${projectSlug}`);
+    console.error('Run /create-project first to create the project.');
+    await prisma.$disconnect();
     process.exit(1);
   }
   
-  const sql = fs.readFileSync(sqlFile, 'utf-8');
-  console.log(`📄 Reading SQL from: ${sqlFile}`);
+  // Get or read SQL
+  let sql: string;
   
-  // Determine output file
-  let output = outputFile;
-  if (!output) {
-    // Default: same name as SQL file, but in data/ folder with .json extension
-    const dir = path.dirname(sqlFile);
-    const base = path.basename(sqlFile, '.sql');
-    const dataDir = path.join(dir, '..', 'data');
-    output = path.join(dataDir, `${base}.json`);
+  if (sqlFile) {
+    // Read SQL from file
+    if (!fs.existsSync(sqlFile)) {
+      console.error(`Error: SQL file not found: ${sqlFile}`);
+      await prisma.$disconnect();
+      process.exit(1);
+    }
+    sql = fs.readFileSync(sqlFile, 'utf-8');
+    console.log(`📄 Reading SQL from: ${sqlFile}`);
+  } else {
+    // Try to get SQL from existing query in database
+    const existingQuery = await prisma.query.findUnique({
+      where: {
+        projectId_name: {
+          projectId: project.id,
+          name: queryName,
+        },
+      },
+    });
+    
+    if (!existingQuery) {
+      console.error(`Error: Query not found in database: ${queryName}`);
+      console.error('Provide a SQL file with --sql or create the query first.');
+      await prisma.$disconnect();
+      process.exit(1);
+    }
+    
+    sql = existingQuery.sql;
+    console.log(`📄 Using SQL from database`);
   }
+  
+  // Create or update the query record
+  const query = await prisma.query.upsert({
+    where: {
+      projectId_name: {
+        projectId: project.id,
+        name: queryName,
+      },
+    },
+    create: {
+      projectId: project.id,
+      name: queryName,
+      sql,
+    },
+    update: {
+      sql,
+    },
+  });
+  
+  console.log(`💾 Query saved to database: ${query.id}`);
+  console.log('');
   
   // Connect to Snowflake
   const config = getConnectionConfig();
@@ -147,6 +230,7 @@ async function main() {
     connection = await connect(config);
   } catch (err) {
     console.error('❌ Connection failed:', err);
+    await prisma.$disconnect();
     process.exit(1);
   }
   
@@ -157,30 +241,42 @@ async function main() {
   } catch (err) {
     console.error('❌ Query failed:', err);
     connection.destroy(() => {});
+    await prisma.$disconnect();
     process.exit(1);
   }
   
-  // Ensure output directory exists
-  const outputDir = path.dirname(output);
-  if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
-  }
+  // Save results to database (upsert to overwrite previous results)
+  console.log('💾 Saving results to database...');
   
-  // Save results
-  console.log(`💾 Saving results to: ${output}`);
-  fs.writeFileSync(output, JSON.stringify(results, null, 2));
+  await prisma.queryResult.upsert({
+    where: { queryId: query.id },
+    create: {
+      queryId: query.id,
+      data: results,
+      rowCount: results.length,
+      executedBy: userEmail,
+    },
+    update: {
+      data: results,
+      rowCount: results.length,
+      executedAt: new Date(),
+      executedBy: userEmail,
+    },
+  });
   
-  // Destroy connection
-  connection.destroy(() => {
+  // Destroy connection and disconnect Prisma
+  connection.destroy(async () => {
+    await prisma.$disconnect();
     console.log('');
     console.log('✅ Done!');
-    console.log(`📁 Results saved to: ${output}`);
-    console.log(`📊 Total rows: ${results.length}`);
+    console.log(`📊 Results saved: ${results.length} rows`);
+    console.log(`🔗 View at: /projects/${projectSlug}/dashboards/main`);
   });
 }
 
 // Run
-main().catch((err) => {
+main().catch(async (err) => {
   console.error('❌ Error:', err);
+  await prisma.$disconnect();
   process.exit(1);
 });

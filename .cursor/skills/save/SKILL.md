@@ -1,59 +1,42 @@
-# /save - Commit & Push Changes
+# /save - DEPRECATED
 
-Save your work by committing and pushing to your user branch.
+**This skill is deprecated.** Data is now stored in the database, not git.
 
-## Trigger
+## Why Deprecated?
 
-User says "save", "/save", "commit", or "push my changes".
+With the new database architecture:
+- Projects, queries, dashboards, and reports are stored in Vercel Postgres
+- No local files to commit
+- Changes are saved to the database immediately when you use `/query`, `/report`, etc.
+- No user branches - everyone works on `main`
 
-## Workflow
+## What to Use Instead
 
-1. **Verify User Branch**
-   - Check current branch is a user branch (starts with `user/`)
-   - If on main, warn and abort
+| Old Workflow | New Workflow |
+|--------------|--------------|
+| `/query` then `/save` | Just `/query` - results saved to DB automatically |
+| Edit dashboard, `/save` | Edit via web UI or `/query` with widget add |
+| Create report, `/save` | Just `/report` - saved to DB automatically |
 
-2. **Check for Changes**
-   - Run: `git status --porcelain`
-   - If no changes, inform user and exit
+## If User Asks to Save
 
-3. **Stage Changes**
-   - Stage all changes: `git add -A`
-   - Or stage specific project folder if specified
+Tell them:
+```
+Your changes are already saved! With the new database architecture,
+all your work is automatically saved when you run commands like
+/query or /report.
 
-4. **Generate Commit Message**
-   - If user provided a message, use it
-   - Otherwise, generate from the diff:
-     - Look at changed files
-     - Summarize: "Update [project-name]: [brief description]"
+There's no need to commit anymore - your data is safely stored
+in the cloud database.
+```
 
-5. **Commit and Push**
-   ```bash
-   git commit -m "[generated or provided message]"
-   git push origin [current-branch]
-   ```
+## Legacy Support
 
-6. **Output Confirmation**
-   ```
-   ✅ Changes saved!
-   
-   Committed: [commit hash]
-   Branch: user/[email-prefix]
-   Preview URL: https://rippling-os-2-git-user-[email-prefix].vercel.app
-   
-   Changes will be deployed in ~1-2 minutes.
-   ```
+If you need to commit actual code changes (not data), use standard git:
+```bash
+git add -A
+git commit -m "Your message"
+git push
+```
 
-## Shell Script Alternative
-
-Users can also run: `./scripts/save.sh "optional commit message"`
-
-## Safety Checks
-
-- NEVER commit to main branch
-- NEVER commit `.env` files
-- Warn if committing large files (>1MB)
-
-## Error Handling
-
-- If not on a user branch, **ask the user** if they'd like to set up their personal branch first—if yes, run `/setup` and then retry the save
-- If push fails due to conflicts, suggest running `/update-os`
+But note: user data should NOT be in git anymore.

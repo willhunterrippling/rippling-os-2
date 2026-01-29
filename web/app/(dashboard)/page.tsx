@@ -22,10 +22,10 @@ export default async function Home() {
             <CardDescription>New to Rippling OS?</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted-foreground">
-            <p>1. Run <code className="bg-muted px-1 py-0.5 rounded">/setup</code> to create your branch</p>
+            <p>1. Run <code className="bg-muted px-1 py-0.5 rounded">/setup</code> to create your account</p>
             <p>2. Run <code className="bg-muted px-1 py-0.5 rounded">/create-project</code> to start a new analysis</p>
-            <p>3. Run <code className="bg-muted px-1 py-0.5 rounded">/query</code> to execute SQL and cache results</p>
-            <p>4. Run <code className="bg-muted px-1 py-0.5 rounded">/save</code> to commit your work</p>
+            <p>3. Run <code className="bg-muted px-1 py-0.5 rounded">/query</code> to execute SQL and save results</p>
+            <p>4. View your dashboards here in the web app!</p>
           </CardContent>
         </Card>
 
@@ -37,10 +37,11 @@ export default async function Home() {
           <CardContent className="space-y-2">
             <div className="flex flex-wrap gap-2">
               <Badge variant="secondary">/setup</Badge>
-              <Badge variant="secondary">/save</Badge>
-              <Badge variant="secondary">/update-os</Badge>
-              <Badge variant="secondary">/query</Badge>
               <Badge variant="secondary">/create-project</Badge>
+              <Badge variant="secondary">/query</Badge>
+              <Badge variant="secondary">/report</Badge>
+              <Badge variant="secondary">/share</Badge>
+              <Badge variant="secondary">/delete</Badge>
             </div>
           </CardContent>
         </Card>
@@ -67,10 +68,10 @@ export default async function Home() {
                       <CardDescription>{project.description}</CardDescription>
                     )}
                   </CardHeader>
-                  {project.author && (
+                  {project.owner && (
                     <CardContent>
                       <p className="text-xs text-muted-foreground">
-                        By {project.author}
+                        By {project.owner.name || project.owner.email.split("@")[0]}
                       </p>
                     </CardContent>
                   )}

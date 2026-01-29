@@ -62,7 +62,7 @@ export default async function ReportPage({ params }: ReportPageProps) {
       {content ? (
         <article
           className="prose prose-slate dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+          dangerouslySetInnerHTML={{ __html: renderMarkdown(content.content) }}
         />
       ) : (
         <Card className="bg-muted/50">

@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 interface ProjectWithContents {
   slug: string;
   name: string;
+  description?: string | null;
+  owner?: string;
   dashboards: string[];
   queries: string[];
   reports: string[];
@@ -15,6 +17,7 @@ interface ProjectWithContents {
 
 interface SidebarProps {
   projects: ProjectWithContents[];
+  currentUserEmail?: string | null;
 }
 
 function ChevronIcon({ expanded }: { expanded: boolean }) {
@@ -38,7 +41,7 @@ function ChevronIcon({ expanded }: { expanded: boolean }) {
   );
 }
 
-export function Sidebar({ projects }: SidebarProps) {
+export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
   const pathname = usePathname();
   const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
     new Set()
@@ -137,7 +140,12 @@ export function Sidebar({ projects }: SidebarProps) {
                           !hasContents && "ml-5"
                         )}
                       >
-                        {project.name}
+                        <span className="flex items-center gap-1.5">
+                          {project.name}
+                          {project.owner && project.owner === currentUserEmail && (
+                            <span className="text-[10px] text-muted-foreground">(you)</span>
+                          )}
+                        </span>
                       </Link>
                     </div>
 

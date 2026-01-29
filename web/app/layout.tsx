@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/Sidebar";
-import { Header } from "@/components/layout/Header";
-import { getProjectsWithContents } from "@/lib/projects";
+import { Providers } from "@/components/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,22 +23,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const projects = await getProjectsWithContents();
-  
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex min-h-screen">
-          <Sidebar projects={projects} />
-          <div className="flex-1 flex flex-col">
-            <Header />
-            <main className="flex-1 p-6 bg-muted/30">
-              {children}
-            </main>
-          </div>
-        </div>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

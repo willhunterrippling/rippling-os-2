@@ -15,12 +15,21 @@ import {
   Cell,
   AreaChart,
   Area,
-  TooltipProps,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 // Custom tooltip component with proper styling
-function CustomTooltip({ active, payload, label }: TooltipProps<number, string>) {
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: Array<{
+    name?: string;
+    value?: number;
+    color?: string;
+  }>;
+  label?: string;
+}
+
+function CustomTooltip({ active, payload, label }: CustomTooltipProps) {
   if (!active || !payload || !payload.length) {
     return null;
   }

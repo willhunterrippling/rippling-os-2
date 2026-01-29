@@ -41,12 +41,12 @@ export default async function QueryPage({ params }: QueryPageProps) {
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-normal text-muted-foreground">
-              queries/{name}.sql
+              {name}.sql
             </CardTitle>
           </CardHeader>
           <CardContent>
             <pre className="bg-muted rounded-lg p-4 overflow-x-auto text-sm">
-              <code className="language-sql">{content}</code>
+              <code className="language-sql">{content.sql}</code>
             </pre>
           </CardContent>
         </Card>
