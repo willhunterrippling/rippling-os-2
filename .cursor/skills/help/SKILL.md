@@ -41,7 +41,7 @@ ALL COMMANDS
   /delete          Delete projects, queries, or reports
   /start           Start the web dashboard dev server
   /update-os       Pull latest code from main
-  /ingest-context  Add schemas, SQL patterns, or code to shared context
+  /ingest-context  Import files from context/import/ to global or personal context
   /help            Show this help message
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

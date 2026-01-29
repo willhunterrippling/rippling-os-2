@@ -1,3 +1,8 @@
+---
+name: delete
+description: Delete projects, queries, dashboards, or reports from the database. Use when the user says "/delete", wants to remove resources, or clean up unused items.
+---
+
 # /delete - Delete Resources
 
 Delete projects, queries, dashboards, or reports from the database.

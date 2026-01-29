@@ -1,3 +1,8 @@
+---
+name: setup
+description: Complete repository setup including environment, dependencies, and database connection. Use when the user says "/setup", needs initial configuration, or the repo hasn't been set up yet.
+---
+
 # /setup - Complete Repository Setup
 
 Set up everything needed to work in Rippling OS: environment, dependencies, and database connection.

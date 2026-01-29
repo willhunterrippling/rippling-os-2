@@ -2,12 +2,14 @@ import Link from "next/link";
 import { getProjects } from "@/lib/projects";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { AutoRefresh } from "@/components/AutoRefresh";
 
 export default async function Home() {
   const projects = await getProjects();
 
   return (
     <div className="space-y-6">
+      <AutoRefresh interval={5000} />
       <div>
         <h1 className="text-3xl font-bold">Welcome to Rippling OS</h1>
         <p className="text-muted-foreground mt-2">

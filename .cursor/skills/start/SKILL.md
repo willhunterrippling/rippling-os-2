@@ -1,3 +1,8 @@
+---
+name: start
+description: Start the web dashboard development server. Use when the user says "/start", wants to preview dashboards, run the dev server, or view projects locally.
+---
+
 # /start - Start Development Server
 
 Start the Rippling OS web dashboard for viewing projects and dashboards.

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getProject, getProjectOverview } from "@/lib/projects";
+import { getProject, getProjectOverview, canUserAdminProject } from "@/lib/projects";
+import { auth } from "@/lib/auth";
 import {
   Card,
   CardContent,
@@ -8,6 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { ShareButton } from "@/components/project/ShareDialog";
+import { AutoRefresh } from "@/components/AutoRefresh";
 
 interface ProjectPageProps {
   params: Promise<{
@@ -24,35 +27,49 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   const { project, dashboards, queries, reports } = overview;
+  
+  // Check if current user can manage shares
+  const session = await auth();
+  const canManageShares = session?.user?.email
+    ? await canUserAdminProject(session.user.email, project.id)
+    : false;
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">{project.name}</h1>
-        {project.description && (
-          <p className="text-muted-foreground mt-2">{project.description}</p>
-        )}
-        {project.owner && (
-          <p className="text-sm text-muted-foreground mt-1">
-            By {project.owner.name || project.owner.email.split("@")[0]}
+      <AutoRefresh interval={5000} />
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">{project.name}</h1>
+          {project.description && (
+            <p className="text-muted-foreground mt-2">{project.description}</p>
+          )}
+          {project.owner && (
+            <p className="text-sm text-muted-foreground mt-1">
+              By {project.owner.name || project.owner.email.split("@")[0]}
+            </p>
+          )}
+          <p className="text-xs text-muted-foreground/70 mt-3 flex items-center gap-1.5">
+            <svg
+              className="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 10V3L4 14h7v7l9-11h-7z"
+              />
+            </svg>
+            Prompt Cursor to create queries, dashboards, or reports
           </p>
-        )}
-        <p className="text-xs text-muted-foreground/70 mt-3 flex items-center gap-1.5">
-          <svg
-            className="w-3 h-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 10V3L4 14h7v7l9-11h-7z"
-            />
-          </svg>
-          Prompt Cursor to create queries, dashboards, or reports
-        </p>
+        </div>
+        <ShareButton
+          projectId={project.id}
+          projectName={project.name}
+          canManageShares={canManageShares}
+        />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

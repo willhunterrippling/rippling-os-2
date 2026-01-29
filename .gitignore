@@ -30,6 +30,10 @@ temp/*
 context/personal/*
 !context/personal/.gitkeep
 
+# Import staging folder (for /ingest-context workflow)
+context/import/*
+!context/import/.gitkeep
+
 # Legacy: Local project data (now in database)
 projects/*/data/
 

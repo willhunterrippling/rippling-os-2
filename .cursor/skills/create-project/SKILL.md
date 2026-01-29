@@ -1,3 +1,8 @@
+---
+name: create-project
+description: Create a new analysis project in the database. Use when the user says "/create-project", wants to start a new project, or needs a new analysis workspace.
+---
+
 # /create-project - Create New Project
 
 Create a new analysis project in the database.

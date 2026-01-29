@@ -1,3 +1,8 @@
+---
+name: report
+description: Create or edit markdown reports saved to the database. Use when the user says "/report", wants to create documentation, write findings, or add a report to a project.
+---
+
 # /report - Create or Edit Report
 
 Create or edit markdown reports saved to the database.
@@ -14,19 +19,51 @@ Ask user for:
 - **Project**: Which project should this report belong to?
 - **Report name**: What should this report be called? (e.g., "findings", "summary")
 
-### 2. Get or Edit Content
+### 2. Gather Data (Save All Queries!)
+
+**IMPORTANT:** When you need to run queries to gather data for the report, you MUST save each query to the project.
+
+**USE BATCH MODE** to avoid multiple browser authentication prompts:
+
+1. **Prepare all queries** in a JSON file with `report_` prefix names
+2. **Run batch mode** - single authentication for all queries
+3. **Reference saved queries** in your report markdown
+
+```bash
+# Create a batch file with all report queries
+cat > /tmp/report_queries.json << 'EOF'
+[
+  { "name": "report_weekly_s1_count", "sql": "SELECT ..." },
+  { "name": "report_conversion_rate", "sql": "SELECT ..." },
+  { "name": "report_pipeline_metrics", "sql": "SELECT ..." }
+]
+EOF
+
+# Run all queries with single authentication
+npm run query -- --project [slug] --batch /tmp/report_queries.json
+```
+
+This ensures:
+- **Single auth** - only one browser tab opens for all queries
+- Reproducibility - queries can be re-run to refresh data
+- Transparency - audit trail shows where numbers came from
+- Reuse - queries can power dashboards later
+
+### 3. Get or Edit Content
 
 **For new report:**
 - Ask user what the report should contain
-- Generate markdown content based on user description
-- Include relevant data from project's queries if applicable
+- Run and save any queries needed to answer questions
+- Generate markdown content referencing the saved queries
+- Include relevant data from project's queries
 
 **For existing report:**
 - Fetch current content from database
 - Ask user what changes to make
+- Run and save any new queries needed
 - Edit the markdown accordingly
 
-### 3. Save to Database
+### 4. Save Report to Database
 
 ```typescript
 import 'dotenv/config';
@@ -62,13 +99,14 @@ await prisma.report.upsert({
 await prisma.$disconnect();
 ```
 
-### 4. Output Confirmation
+### 5. Output Confirmation
 
 ```
 ✅ Report saved!
 
 Project: [project-name]
 Report: [report-name]
+Queries saved: [list of query names created for this report]
 
 Preview:
 [first 500 chars of markdown]
@@ -103,14 +141,40 @@ Detailed analysis...
 
 ## Integration with Queries
 
-If the project has query results, you can include them:
+**Always reference saved queries in your report.** This creates a clear audit trail:
 
 ```markdown
 ## Data Summary
 
-Based on the `weekly_s1_count` query:
-- Total S1 leads this week: [value]
-- Week over week change: [value]%
+Based on the `report_weekly_s1_count` query:
+- Total S1 leads this week: 1,234
+- Week over week change: +12%
+
+Based on the `report_conversion_rate` query:
+- S1 to S2 conversion: 45%
+- S2 to Closed Won: 23%
+```
+
+### Fetching Query Results for Reports
+
+To include data from saved queries in your report:
+
+```typescript
+// Get project with its queries and results
+const project = await prisma.project.findUnique({
+  where: { slug: projectSlug },
+  include: {
+    queries: {
+      include: { result: true }
+    }
+  }
+});
+
+// Access query results
+for (const query of project.queries) {
+  console.log(`Query: ${query.name}`);
+  console.log(`Results: ${JSON.stringify(query.result?.data)}`);
+}
 ```
 
 ## Example Script

@@ -2,39 +2,14 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProject, getReportContent } from "@/lib/projects";
 import { Card, CardContent } from "@/components/ui/card";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 interface ReportPageProps {
   params: Promise<{
     slug: string;
     name: string;
   }>;
-}
-
-// Simple markdown to HTML conversion for basic formatting
-function renderMarkdown(content: string): string {
-  return content
-    // Headers
-    .replace(/^### (.*$)/gm, '<h3 class="text-lg font-semibold mt-6 mb-2">$1</h3>')
-    .replace(/^## (.*$)/gm, '<h2 class="text-xl font-semibold mt-8 mb-3">$1</h2>')
-    .replace(/^# (.*$)/gm, '<h1 class="text-2xl font-bold mt-8 mb-4">$1</h1>')
-    // Bold and italic
-    .replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>')
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    // Code blocks
-    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre class="bg-muted rounded-lg p-4 overflow-x-auto text-sm my-4"><code>$2</code></pre>')
-    // Inline code
-    .replace(/`([^`]+)`/g, '<code class="bg-muted px-1 py-0.5 rounded text-sm">$1</code>')
-    // Links
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" class="text-primary hover:underline">$1</a>')
-    // Unordered lists
-    .replace(/^\- (.*$)/gm, '<li class="ml-4">$1</li>')
-    // Horizontal rules
-    .replace(/^---$/gm, '<hr class="my-6 border-border" />')
-    // Paragraphs (simple version - wrap non-tag lines)
-    .replace(/^(?!<[a-z])(.*[^\s].*)$/gm, '<p class="my-2">$1</p>')
-    // Clean up list items into ul
-    .replace(/(<li.*<\/li>\n?)+/g, '<ul class="list-disc my-4">$&</ul>');
 }
 
 export default async function ReportPage({ params }: ReportPageProps) {
@@ -60,10 +35,51 @@ export default async function ReportPage({ params }: ReportPageProps) {
       </div>
 
       {content ? (
-        <article
-          className="prose prose-slate dark:prose-invert max-w-none"
-          dangerouslySetInnerHTML={{ __html: renderMarkdown(content.content) }}
-        />
+        <article className="prose prose-slate dark:prose-invert max-w-none">
+          <Markdown
+            remarkPlugins={[remarkGfm]}
+            components={{
+              table: ({ children }) => (
+                <div className="overflow-x-auto my-4">
+                  <table className="min-w-full border-collapse border border-border">
+                    {children}
+                  </table>
+                </div>
+              ),
+              thead: ({ children }) => (
+                <thead className="bg-muted">{children}</thead>
+              ),
+              th: ({ children }) => (
+                <th className="border border-border px-4 py-2 text-left font-semibold">
+                  {children}
+                </th>
+              ),
+              td: ({ children }) => (
+                <td className="border border-border px-4 py-2">{children}</td>
+              ),
+              tr: ({ children }) => (
+                <tr className="even:bg-muted/50">{children}</tr>
+              ),
+              code: ({ children, className }) => {
+                const isInline = !className;
+                return isInline ? (
+                  <code className="bg-muted px-1 py-0.5 rounded text-sm">
+                    {children}
+                  </code>
+                ) : (
+                  <code className={className}>{children}</code>
+                );
+              },
+              pre: ({ children }) => (
+                <pre className="bg-muted rounded-lg p-4 overflow-x-auto text-sm my-4">
+                  {children}
+                </pre>
+              ),
+            }}
+          >
+            {content.content}
+          </Markdown>
+        </article>
       ) : (
         <Card className="bg-muted/50">
           <CardContent className="py-12 text-center">

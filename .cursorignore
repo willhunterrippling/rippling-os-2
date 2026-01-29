@@ -1,0 +1,6 @@
+# Cursorignore - Controls what Cursor AI can access
+# By default, Cursor respects .gitignore patterns
+
+# Allow Cursor to read the import staging folder (even though it's gitignored)
+!context/import/
+!context/import/**

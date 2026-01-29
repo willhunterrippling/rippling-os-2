@@ -1,3 +1,8 @@
+---
+name: share
+description: Share projects with other Rippling users. Use when the user says "/share", wants to add collaborators, share access, or manage project permissions.
+---
+
 # /share - Share Project
 
 Share a project with other Rippling users via CLI.

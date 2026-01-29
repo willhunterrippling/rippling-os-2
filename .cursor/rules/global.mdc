@@ -16,6 +16,7 @@ globs: ["**/*"]
 - NEVER edit `context/global/` without explicit user approval
 - NEVER commit credentials, secrets, or `.env` files
 - ALWAYS respect `.gitignore` patterns
+- Use `/ingest-context` to add files to context (via `context/import/` staging folder)
 
 ## Project Structure
 - User projects live in `projects/[project-name]/`

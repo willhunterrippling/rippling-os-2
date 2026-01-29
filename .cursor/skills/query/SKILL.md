@@ -1,3 +1,8 @@
+---
+name: query
+description: Execute SQL queries against Snowflake and save results to the database. Use when the user says "/query", wants to run SQL, execute a query, or add data to their project.
+---
+
 # /query - Execute SQL Query
 
 Execute SQL queries against Snowflake and save results to the database.
@@ -131,6 +136,8 @@ View at: /projects/[slug]/dashboards/main
 
 ## CLI Usage
 
+### Single Query Mode
+
 ```bash
 # Execute query and save to database
 npm run query -- --project my-analysis --name weekly_trend --sql query.sql
@@ -138,6 +145,35 @@ npm run query -- --project my-analysis --name weekly_trend --sql query.sql
 # Re-run existing query from database
 npm run query -- --project my-analysis --name weekly_trend
 ```
+
+### Batch Mode (Multiple Queries, Single Auth)
+
+When you need to run multiple queries (e.g., for a report), use batch mode to authenticate only once:
+
+```bash
+# Execute multiple queries from a JSON file
+npm run query -- --project my-analysis --batch queries.json
+```
+
+**queries.json format:**
+```json
+[
+  { "name": "report_weekly_s1", "sql": "SELECT COUNT(*) as count FROM table1" },
+  { "name": "report_conversion", "sqlFile": "path/to/query.sql" },
+  { "name": "existing_query" }
+]
+```
+
+Each query item can have:
+- `name` (required): The query name to save under
+- `sql`: Inline SQL string
+- `sqlFile`: Path to a SQL file
+- Neither: Uses existing query SQL from database
+
+**Benefits of batch mode:**
+- Single browser authentication for all queries
+- Faster execution (no reconnection overhead)
+- Better for reports that need multiple data sources
 
 ## No Local Files
 

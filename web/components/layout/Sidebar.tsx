@@ -177,32 +177,6 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
                           </div>
                         )}
 
-                        {project.queries.length > 0 && (
-                          <div>
-                            <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
-                              Queries
-                            </div>
-                            <ul className="space-y-0.5">
-                              {project.queries.map((name) => (
-                                <li key={name}>
-                                  <Link
-                                    href={`/projects/${project.slug}/queries/${name}`}
-                                    className={cn(
-                                      "block px-3 py-1.5 rounded-md text-xs transition-colors",
-                                      pathname ===
-                                        `/projects/${project.slug}/queries/${name}`
-                                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                                        : "text-sidebar-foreground hover:bg-sidebar-accent/50"
-                                    )}
-                                  >
-                                    {name}.sql
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
                         {project.reports.length > 0 && (
                           <div>
                             <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
@@ -222,6 +196,32 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
                                     )}
                                   >
                                     {name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {project.queries.length > 0 && (
+                          <div>
+                            <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
+                              Queries
+                            </div>
+                            <ul className="space-y-0.5">
+                              {project.queries.map((name) => (
+                                <li key={name}>
+                                  <Link
+                                    href={`/projects/${project.slug}/queries/${name}`}
+                                    className={cn(
+                                      "block px-3 py-1.5 rounded-md text-xs transition-colors",
+                                      pathname ===
+                                        `/projects/${project.slug}/queries/${name}`
+                                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                        : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                                    )}
+                                  >
+                                    {name}.sql
                                   </Link>
                                 </li>
                               ))}

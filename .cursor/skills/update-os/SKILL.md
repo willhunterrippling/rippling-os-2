@@ -1,3 +1,8 @@
+---
+name: update-os
+description: Sync local repository with the latest changes from main. Use when the user says "/update-os", wants to pull latest, sync branches, or update the codebase.
+---
+
 # /update-os - Sync with Main
 
 Update your user branch with the latest changes from main.
