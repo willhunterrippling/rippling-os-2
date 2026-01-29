@@ -32,6 +32,17 @@ globs: ["**/*"]
 4. Save work with `/save` to commit and push
 5. Sync with main using `/update-os`
 
+## Branch Check Before Project Work
+
+**BEFORE creating any query, dashboard, or project files:**
+
+1. Check current branch: `git branch --show-current`
+2. If on `main` or not on a `user/*` branch:
+   - **ASK the user**: "You're currently on [branch]. Would you like me to set up your personal branch first? This will create `user/[your-name]` where your work will be saved."
+   - If user says yes → run the `/setup` workflow
+   - If user says no → proceed but remind them changes won't be saved to a personal branch
+3. If already on a `user/*` branch → proceed normally
+
 ## Environment
 - User email is in `RIPPLING_ACCOUNT_EMAIL` env var
 - Branch name format: `user/[email-prefix]` (e.g., `user/will.smith`)

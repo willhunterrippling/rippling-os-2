@@ -3,6 +3,11 @@
 .env.local
 .env.*.local
 
+# Snowflake credentials (if using key-pair auth)
+*.p8
+*.pem
+rsa_key.*
+
 # Dependencies
 node_modules/
 
@@ -30,6 +35,9 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Generated MCP config (user-specific, created by setup script)
+.cursor/mcp.json
 
 # Logs
 *.log

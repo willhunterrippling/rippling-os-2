@@ -86,6 +86,7 @@ widgets:
 
 ## Error Handling
 
+- If not on a user branch, **ask the user** if they'd like to set up their personal branch first—query results will be saved to the project's data folder
 - If connection fails, check environment variables
 - If query fails, show the error and suggest fixes
 - If output directory doesn't exist, create it

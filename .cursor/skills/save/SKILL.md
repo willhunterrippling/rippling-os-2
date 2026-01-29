@@ -55,5 +55,5 @@ Users can also run: `./scripts/save.sh "optional commit message"`
 
 ## Error Handling
 
-- If not on a user branch, prompt to run `/setup` first
+- If not on a user branch, **ask the user** if they'd like to set up their personal branch first—if yes, run `/setup` and then retry the save
 - If push fails due to conflicts, suggest running `/update-os`

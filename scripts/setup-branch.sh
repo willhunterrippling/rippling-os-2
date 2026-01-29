@@ -53,6 +53,18 @@ else
     git push -u origin "$BRANCH_NAME"
 fi
 
+# Generate MCP configuration from template
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(dirname "$SCRIPT_DIR")"
+MCP_TEMPLATE="$REPO_ROOT/.cursor/mcp.json.template"
+MCP_CONFIG="$REPO_ROOT/.cursor/mcp.json"
+
+if [ -f "$MCP_TEMPLATE" ]; then
+    echo "Generating MCP configuration..."
+    sed "s|{{REPO_ROOT}}|$REPO_ROOT|g" "$MCP_TEMPLATE" > "$MCP_CONFIG"
+    echo -e "${GREEN}✅ MCP config generated at .cursor/mcp.json${NC}"
+fi
+
 echo ""
 echo -e "${GREEN}✅ Setup complete!${NC}"
 echo ""
@@ -60,6 +72,7 @@ echo "Your branch: $BRANCH_NAME"
 echo "Preview URL: https://rippling-os-2-git-${USERNAME//./-}.vercel.app"
 echo ""
 echo "Next steps:"
-echo "  1. Run /create-project to start a new analysis"
-echo "  2. Run /query to execute SQL and cache results"
-echo "  3. Run /save to commit your work"
+echo "  1. Restart Cursor to load the Snowflake MCP"
+echo "  2. Run /create-project to start a new analysis"
+echo "  3. Run /query to execute SQL and cache results"
+echo "  4. Run /save to commit your work"

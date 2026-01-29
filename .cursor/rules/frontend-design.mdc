@@ -1,0 +1,50 @@
+---
+description: Frontend design standards - avoid generic AI aesthetics
+globs: ["**/*.tsx", "**/*.css", "web/**/*"]
+---
+
+# Frontend Design Standards
+
+Create distinctive interfaces that avoid generic "AI slop" aesthetics.
+
+## Anti-Patterns (NEVER Use)
+
+- **Fonts**: Inter, Roboto, Arial, system fonts, generic sans-serifs
+- **Colors**: Purple gradients on white, safe corporate palettes
+- **Layouts**: Predictable, cookie-cutter patterns lacking character
+
+## Typography
+
+- Choose characterful, distinctive fonts
+- Pair a display font with a refined body font
+- Avoid overused defaults
+
+## Color & Theme
+
+- Use CSS variables for consistency
+- Commit to a cohesive aesthetic direction
+- Dominant colors with sharp accents > evenly-distributed palettes
+
+## Spatial Composition
+
+Create unexpected layouts:
+- Asymmetry and overlap
+- Grid-breaking elements
+- Generous negative space OR controlled density
+
+## Visual Details
+
+Add atmosphere and depth:
+- Gradient meshes, noise textures
+- Layered transparencies, dramatic shadows
+- Decorative borders, grain overlays
+
+## Motion
+
+- Prioritize CSS-only animations
+- Focus on high-impact moments (page load, scroll-trigger, hover)
+- Use `animation-delay` for staggered reveals
+
+## Guiding Principle
+
+**Intentionality over intensity**: Bold maximalism and refined minimalism both work. The key is a clear aesthetic point-of-view executed with precision.
