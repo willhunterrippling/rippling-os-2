@@ -42,7 +42,7 @@ export async function PATCH(
   // Check if user has edit permission
   const isOwner = dashboard.project.owner.email === session.user.email;
   const hasEditPermission = dashboard.project.shares.some(
-    (s) => s.permission === "EDIT" || s.permission === "ADMIN"
+    (s: { permission: string }) => s.permission === "EDIT" || s.permission === "ADMIN"
   );
 
   if (!isOwner && !hasEditPermission) {

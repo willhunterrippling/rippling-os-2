@@ -46,7 +46,7 @@ export async function GET(
 
   return NextResponse.json({
     owner: project.owner,
-    shares: project.shares.map((s) => ({
+    shares: project.shares.map((s: typeof project.shares[number]) => ({
       id: s.id,
       user: s.user,
       permission: s.permission,
@@ -111,7 +111,7 @@ export async function POST(
 
   const isOwner = project.owner.email === userEmail;
   const hasAdminShare = project.shares.some(
-    (s) => s.permission === "ADMIN"
+    (s: { permission: string }) => s.permission === "ADMIN"
   );
 
   if (!isOwner && !hasAdminShare) {
@@ -205,7 +205,7 @@ export async function DELETE(
 
   const isOwner = project.owner.email === userEmail;
   const hasAdminShare = project.shares.some(
-    (s) => s.permission === "ADMIN"
+    (s: { permission: string }) => s.permission === "ADMIN"
   );
 
   if (!isOwner && !hasAdminShare) {

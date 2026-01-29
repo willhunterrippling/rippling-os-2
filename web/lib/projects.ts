@@ -141,14 +141,14 @@ export async function getProjectsWithContents(): Promise<ProjectWithContents[]> 
     },
   });
 
-  return projects.map((project) => ({
+  return projects.map((project: typeof projects[number]) => ({
     slug: project.slug,
     name: project.name,
     description: project.description,
     owner: project.owner.email,
-    dashboards: project.dashboards.map((d) => d.name),
-    queries: project.queries.map((q) => q.name),
-    reports: project.reports.map((r) => r.name),
+    dashboards: project.dashboards.map((d: { name: string }) => d.name),
+    queries: project.queries.map((q: { name: string }) => q.name),
+    reports: project.reports.map((r: { name: string }) => r.name),
   }));
 }
 
