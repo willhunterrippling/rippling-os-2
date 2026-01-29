@@ -5,14 +5,19 @@ import { Sidebar } from "./Sidebar";
 import { Header } from "./Header";
 import { UserSwitcher } from "@/components/auth/UserSwitcher";
 
+interface SidebarItem {
+  name: string;
+  title: string;
+}
+
 interface ProjectWithContents {
   slug: string;
   name: string;
   description?: string | null;
   owner?: string;
-  dashboards: string[];
-  queries: string[];
-  reports: string[];
+  dashboards: SidebarItem[];
+  queries: SidebarItem[];
+  reports: SidebarItem[];
 }
 
 interface UserWithProjects {
