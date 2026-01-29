@@ -92,7 +92,7 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
 
   // Get the current section type from path
   const getSectionFromPath = () => {
-    const match = pathname.match(/^\/projects\/([^/]+)\/(dashboards|queries|reports)/);
+    const match = pathname.match(/^\/projects\/([^/]+)\/(dashboards|reports)/);
     return match ? { project: match[1], section: match[2] } : null;
   };
 
@@ -124,9 +124,6 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
         }
         if (project.reports.length <= 10 && project.reports.length > 0) {
           autoExpandKeys.add(`${project.slug}-reports`);
-        }
-        if (project.queries.length <= 10 && project.queries.length > 0) {
-          autoExpandKeys.add(`${project.slug}-queries`);
         }
       }
     }
@@ -187,7 +184,6 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
                 const isExpanded = expandedProjects.has(project.slug);
                 const hasContents =
                   project.dashboards.length > 0 ||
-                  project.queries.length > 0 ||
                   project.reports.length > 0;
 
                 return (
@@ -276,40 +272,6 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
                                         "block px-2 py-1 rounded-md text-xs transition-colors truncate",
                                         pathname ===
                                           `/projects/${project.slug}/reports/${item.name}`
-                                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                                          : "text-sidebar-foreground hover:bg-sidebar-accent/50"
-                                      )}
-                                      title={item.title}
-                                    >
-                                      {item.title}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        )}
-
-                        {project.queries.length > 0 && (
-                          <div>
-                            <button
-                              onClick={() => toggleSection(`${project.slug}-queries`)}
-                              className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground font-medium hover:text-foreground w-full text-left"
-                            >
-                              <ChevronIcon expanded={expandedSections.has(`${project.slug}-queries`)} />
-                              <span>Queries</span>
-                              <span className="text-[10px] opacity-60">({project.queries.length})</span>
-                            </button>
-                            {expandedSections.has(`${project.slug}-queries`) && (
-                              <ul className="space-y-0.5 ml-4">
-                                {[...project.queries].sort(naturalSort).map((item) => (
-                                  <li key={item.name} className="overflow-hidden">
-                                    <Link
-                                      href={`/projects/${project.slug}/queries/${item.name}`}
-                                      className={cn(
-                                        "block px-2 py-1 rounded-md text-xs transition-colors truncate",
-                                        pathname ===
-                                          `/projects/${project.slug}/queries/${item.name}`
                                           ? "bg-sidebar-accent text-sidebar-accent-foreground"
                                           : "text-sidebar-foreground hover:bg-sidebar-accent/50"
                                       )}

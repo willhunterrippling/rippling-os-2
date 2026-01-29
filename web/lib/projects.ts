@@ -302,6 +302,19 @@ export async function getDashboardWithData(
         name: dashboardName,
       },
     },
+    include: {
+      queries: {
+        include: {
+          query: {
+            select: {
+              id: true,
+              name: true,
+              sql: true,
+            },
+          },
+        },
+      },
+    },
   });
 
   if (!dashboard) {
@@ -342,12 +355,24 @@ export async function getDashboardWithData(
       data: queryDataMap.get(widget.queryName) || [],
     }));
 
+  // Get linked queries with their widget types
+  const linkedQueries = dashboard.queries.map((dq) => {
+    // Find which widget uses this query
+    const widget = config.widgets.find((w) => w.queryName === dq.query.name);
+    return {
+      name: dq.query.name,
+      widgetType: widget?.type || null,
+      widgetTitle: widget?.title || null,
+    };
+  });
+
   return {
     id: dashboard.id,
     title: config.title,
     description: config.description,
     layout: config.layout,
     widgets: widgetsWithData,
+    linkedQueries,
   };
 }
 
@@ -394,7 +419,11 @@ export async function getQueryContent(
 export async function getReportContent(
   projectSlug: string,
   reportName: string
-): Promise<{ id: string; content: string } | null> {
+): Promise<{
+  id: string;
+  content: string;
+  linkedQueries: { name: string }[];
+} | null> {
   const project = await prisma.project.findUnique({
     where: { slug: projectSlug },
     select: { id: true },
@@ -411,6 +440,22 @@ export async function getReportContent(
         name: reportName,
       },
     },
+    include: {
+      queries: {
+        include: {
+          query: {
+            select: {
+              name: true,
+            },
+          },
+        },
+        orderBy: {
+          query: {
+            name: 'asc',
+          },
+        },
+      },
+    },
   });
 
   if (!report) {
@@ -420,6 +465,7 @@ export async function getReportContent(
   return {
     id: report.id,
     content: report.content,
+    linkedQueries: report.queries.map((rq) => ({ name: rq.query.name })),
   };
 }
 

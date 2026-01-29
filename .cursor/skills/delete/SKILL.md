@@ -1,25 +1,26 @@
 ---
 name: delete
-description: Delete projects, queries, dashboards, or reports from the database. Use when the user says "/delete", wants to remove resources, or clean up unused items.
+description: Delete projects, dashboards, or reports from the database. Use when the user says "/delete", wants to remove resources, or clean up unused items.
 ---
 
 # /delete - Delete Resources
 
-Delete projects, queries, dashboards, or reports from the database.
+Delete projects, dashboards, or reports from the database.
+
+**Note:** Queries cannot be deleted directly - they are linked to dashboards and reports. Delete the parent resource to remove associated queries.
 
 ## Trigger
 
-User says "delete", "/delete", "remove", "drop project/query/dashboard/report".
+User says "delete", "/delete", "remove", "drop project/dashboard/report".
 
 ## Workflow
 
 ### 1. Identify What to Delete
 
 Ask user what they want to delete:
-- **Project** - Deletes the entire project and all its contents
-- **Query** - Deletes a specific query and its results
-- **Dashboard** - Deletes a specific dashboard
-- **Report** - Deletes a specific report
+- **Project** - Deletes the entire project and all its contents (dashboards, reports, queries)
+- **Dashboard** - Deletes a specific dashboard (queries remain for other dashboards/reports)
+- **Report** - Deletes a specific report (queries remain for other dashboards/reports)
 
 ### 2. Validate Permission
 
@@ -57,23 +58,6 @@ await prisma.project.delete({
 // This automatically deletes all dashboards, queries, reports, and shares
 ```
 
-**Delete Query (and its result):**
-```typescript
-const project = await prisma.project.findUnique({
-  where: { slug: projectSlug },
-});
-
-await prisma.query.delete({
-  where: {
-    projectId_name: {
-      projectId: project.id,
-      name: queryName,
-    },
-  },
-});
-// QueryResult is deleted via cascade
-```
-
 **Delete Dashboard:**
 ```typescript
 await prisma.dashboard.delete({
@@ -84,6 +68,8 @@ await prisma.dashboard.delete({
     },
   },
 });
+// Note: Queries linked only to this dashboard will become orphaned
+// but the query data itself remains for potential reuse
 ```
 
 **Delete Report:**
@@ -96,6 +82,8 @@ await prisma.report.delete({
     },
   },
 });
+// Note: Queries linked only to this report will become orphaned
+// but the query data itself remains for potential reuse
 ```
 
 ### 5. Output Confirmation
@@ -113,7 +101,6 @@ Note: This action cannot be undone.
 
 ```
 /delete project my-old-analysis
-/delete query pipeline-report weekly_trend
 /delete dashboard pipeline-report summary
 /delete report my-analysis findings
 ```
@@ -130,7 +117,7 @@ const prisma = new PrismaClient({
   accelerateUrl: process.env.PRISMA_DATABASE_URL,
 });
 
-async function deleteQuery(projectSlug, queryName) {
+async function deleteDashboard(projectSlug, dashboardName) {
   const email = execSync('git config user.email', { encoding: 'utf-8' }).trim();
   
   const project = await prisma.project.findUnique({
@@ -152,39 +139,50 @@ async function deleteQuery(projectSlug, queryName) {
     }
   }
   
-  await prisma.query.delete({
+  await prisma.dashboard.delete({
     where: {
       projectId_name: {
         projectId: project.id,
-        name: queryName,
+        name: dashboardName,
       },
     },
   });
   
-  console.log('Query deleted:', queryName);
+  console.log('Dashboard deleted:', dashboardName);
   await prisma.\$disconnect();
 }
 
-deleteQuery('my-project', 'old-query');
+deleteDashboard('my-project', 'old-dashboard');
 "
 ```
 
 ## Cascade Behavior
 
 When deleting a project, all related data is automatically deleted:
+- All dashboards (and their DashboardQuery links)
+- All reports (and their ReportQuery links)
 - All queries (and their results)
-- All dashboards
-- All reports
 - All project shares
 
 This is configured in the Prisma schema with `onDelete: Cascade`.
+
+## Query Behavior
+
+Queries are linked to dashboards and reports via junction tables:
+- `DashboardQuery` - links queries to dashboards
+- `ReportQuery` - links queries to reports
+
+When you delete a dashboard or report:
+- The junction table entries are deleted (cascade)
+- The queries themselves remain in the database
+- Orphaned queries (not linked to anything) may be cleaned up later
 
 ## Safety Features
 
 1. **Permission check** - Only owner or admin can delete
 2. **Confirmation required** - Always ask before deleting
 3. **No soft delete** - Data is permanently removed
-4. **Audit via git** - No git history since data is in database
+4. **Query preservation** - Queries remain after dashboard/report deletion for potential reuse
 
 ## Error Handling
 

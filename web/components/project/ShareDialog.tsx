@@ -58,7 +58,10 @@ export function ShareDialog({
   useEffect(() => {
     if (isOpen) {
       fetchShares();
-      setShareUrl(window.location.href);
+      // Always use production URL for share links
+      const prodUrl = process.env.NEXT_PUBLIC_APP_URL || "https://rippling-os-2.vercel.app";
+      const pathname = window.location.pathname;
+      setShareUrl(`${prodUrl}${pathname}`);
     }
   }, [isOpen, projectId]);
 

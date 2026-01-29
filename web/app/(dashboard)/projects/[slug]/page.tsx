@@ -24,7 +24,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     notFound();
   }
 
-  const { project, dashboards, queries, reports } = overview;
+  const { project, dashboards, reports } = overview;
   
   // Check if current user can manage shares
   const session = await auth();
@@ -60,7 +60,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                 d="M13 10V3L4 14h7v7l9-11h-7z"
               />
             </svg>
-            Prompt Cursor to create queries, dashboards, or reports
+            Prompt Cursor to create dashboards or reports
           </p>
         </div>
         <ShareButton
@@ -114,55 +114,6 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
                     />
                   </svg>
                   {dashboard.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </CollapsibleSection>
-
-        {/* Queries Section */}
-        <CollapsibleSection
-          title="Queries"
-          description="SQL query files"
-          count={queries.length}
-          emptyMessage="No queries yet"
-          icon={
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
-              />
-            </svg>
-          }
-        >
-          <ul className="space-y-1">
-            {queries.map((query) => (
-              <li key={query.name}>
-                <Link
-                  href={`/projects/${slug}/queries/${query.name}`}
-                  className="text-sm text-primary hover:underline flex items-center gap-1"
-                >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                  {query.name}.sql
                 </Link>
               </li>
             ))}
