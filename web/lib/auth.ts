@@ -12,7 +12,6 @@ function generateOTP(): string {
 const resendClient = new ResendClient(process.env.AUTH_RESEND_KEY);
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  debug: process.env.NODE_ENV === "development",
   adapter: PrismaAdapter(prisma),
   providers: [
     Resend({
