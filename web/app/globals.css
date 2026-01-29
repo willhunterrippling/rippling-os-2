@@ -164,9 +164,10 @@
     @apply bg-muted/50;
   }
 
-  /* Better code block styling */
+  /* Better code block styling - whitespace-pre is critical for ASCII art diagrams */
   .prose pre {
     @apply bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-4 overflow-x-auto text-sm border border-slate-300 dark:border-slate-700 font-mono;
+    white-space: pre !important;
   }
 
   .prose code:not(pre code) {

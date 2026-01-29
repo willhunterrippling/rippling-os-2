@@ -104,7 +104,34 @@ npx prisma generate
    
    Note: This can be done by running a simple script or inline with tsx.
 
-### Step 5: Create Example Project
+### Step 5: Test Snowflake Connection
+
+Before proceeding, verify Snowflake connectivity works. This is critical because:
+- The query runner uses `externalbrowser` SSO (opens a browser for Okta login)
+- First-time auth requires human interaction to complete the SSO flow
+- SSO tokens are cached after the first successful login
+
+**Run a test query:**
+
+```bash
+npm run query -- --project example-analysis --name test_connection --sql /dev/stdin <<< "SELECT CURRENT_USER(), CURRENT_ROLE(), CURRENT_DATABASE() LIMIT 1"
+```
+
+**What happens:**
+1. A browser window opens for Okta/SSO authentication
+2. User completes SSO login
+3. Token is cached locally for future queries
+4. Query executes and shows results
+
+**If the user is using Cursor agent to run queries:**
+- The agent MUST request `all` permissions when running `npm run query`
+- User should **approve** the permission prompt when it appears
+- Without permissions, the agent cannot connect to Snowflake or run tsx scripts
+
+**Important:** Tell the user:
+> "When the Cursor agent runs queries, you'll see a permission prompt asking for 'all' access. You need to approve this for Snowflake queries to work. The first time you run a query, a browser window will open for Okta login."
+
+### Step 6: Create Example Project
 
 Create a starter example project to help the user get familiar with the system:
 
@@ -218,7 +245,7 @@ LIMIT 12;`,
 }
 ```
 
-### Step 6: Output Summary
+### Step 7: Output Summary
 
 ```
 ✅ Setup complete!
@@ -228,6 +255,7 @@ What was configured:
   [✓] Dependencies: root & web node_modules installed
   [✓] Prisma: Client generated
   [✓] User: will.smith@rippling.com (auto-created in database)
+  [✓] Snowflake: Connection tested (SSO token cached)
   [✓] Example Project: example-will-smith created with sample queries
 
 Next steps:
@@ -243,6 +271,9 @@ Your example project includes:
 View it at: /projects/example-will-smith
 ```
 
+**IMPORTANT for Cursor Agents:**
+When the agent runs `/query`, it needs full system access. You'll see a permission prompt - approve it to allow Snowflake queries to work.
+
 ## Partial Setup
 
 If some steps are already complete, skip them and only run what's needed:
@@ -254,7 +285,8 @@ If some steps are already complete, skip them and only run what's needed:
 | `web/node_modules/` exists | Skip web install in Step 2 |
 | `.prisma` client exists | Skip Step 3 |
 | User already in database | Skip user creation in Step 4 |
-| Example project exists | Skip example project creation in Step 5 |
+| SSO token already cached | Skip Step 5 (test query) |
+| Example project exists | Skip example project creation in Step 6 |
 
 ## No More Branches
 

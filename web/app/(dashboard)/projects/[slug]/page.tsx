@@ -5,12 +5,10 @@ import { auth } from "@/lib/auth";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { ShareButton } from "@/components/project/ShareDialog";
 import { AutoRefresh } from "@/components/AutoRefresh";
+import { CollapsibleSection } from "@/components/project/CollapsibleSection";
 
 interface ProjectPageProps {
   params: Promise<{
@@ -72,174 +70,153 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* Dashboards Card */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-                />
-              </svg>
-              Dashboards
-            </CardTitle>
-            <CardDescription>Interactive visualizations</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {dashboards.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic">
-                No dashboards yet
-              </p>
-            ) : (
-              <ul className="space-y-1">
-                {dashboards.map((dashboard) => (
-                  <li key={dashboard.name}>
-                    <Link
-                      href={`/projects/${slug}/dashboards/${dashboard.name}`}
-                      className="text-sm text-primary hover:underline flex items-center gap-1"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                      {dashboard.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </CardContent>
-        </Card>
+      <div className="space-y-3">
+        {/* Dashboards Section */}
+        <CollapsibleSection
+          title="Dashboards"
+          description="Interactive visualizations"
+          count={dashboards.length}
+          emptyMessage="No dashboards yet"
+          icon={
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+              />
+            </svg>
+          }
+        >
+          <ul className="space-y-1">
+            {dashboards.map((dashboard) => (
+              <li key={dashboard.name}>
+                <Link
+                  href={`/projects/${slug}/dashboards/${dashboard.name}`}
+                  className="text-sm text-primary hover:underline flex items-center gap-1"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                  {dashboard.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </CollapsibleSection>
 
-        {/* Queries Card */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
-                />
-              </svg>
-              Queries
-            </CardTitle>
-            <CardDescription>SQL query files</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {queries.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic">
-                No queries yet
-              </p>
-            ) : (
-              <ul className="space-y-1">
-                {queries.map((query) => (
-                  <li key={query.name}>
-                    <Link
-                      href={`/projects/${slug}/queries/${query.name}`}
-                      className="text-sm text-primary hover:underline flex items-center gap-1"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                      {query.name}.sql
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </CardContent>
-        </Card>
+        {/* Queries Section */}
+        <CollapsibleSection
+          title="Queries"
+          description="SQL query files"
+          count={queries.length}
+          emptyMessage="No queries yet"
+          icon={
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+              />
+            </svg>
+          }
+        >
+          <ul className="space-y-1">
+            {queries.map((query) => (
+              <li key={query.name}>
+                <Link
+                  href={`/projects/${slug}/queries/${query.name}`}
+                  className="text-sm text-primary hover:underline flex items-center gap-1"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                  {query.name}.sql
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </CollapsibleSection>
 
-        {/* Reports Card */}
-        <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <svg
-                className="w-5 h-5 text-muted-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              Reports
-            </CardTitle>
-            <CardDescription>Written documentation</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {reports.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic">
-                No reports yet
-              </p>
-            ) : (
-              <ul className="space-y-1">
-                {reports.map((report) => (
-                  <li key={report.name}>
-                    <Link
-                      href={`/projects/${slug}/reports/${report.name}`}
-                      className="text-sm text-primary hover:underline flex items-center gap-1"
-                    >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                      {report.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </CardContent>
-        </Card>
+        {/* Reports Section */}
+        <CollapsibleSection
+          title="Reports"
+          description="Written documentation"
+          count={reports.length}
+          emptyMessage="No reports yet"
+          icon={
+            <svg
+              className="w-5 h-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
+            </svg>
+          }
+        >
+          <ul className="space-y-1">
+            {reports.map((report) => (
+              <li key={report.name}>
+                <Link
+                  href={`/projects/${slug}/reports/${report.name}`}
+                  className="text-sm text-primary hover:underline flex items-center gap-1"
+                >
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                  {report.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </CollapsibleSection>
       </div>
 
       {/* Quick access to first dashboard if available */}

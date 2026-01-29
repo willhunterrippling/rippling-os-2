@@ -15,8 +15,47 @@ User says "query", "/query", "run query", "execute SQL", or provides SQL to run.
 
 ### 1. Identify Project and Query
 
+#### Clarifying the Project (IMPORTANT)
+
+Before proceeding, you MUST know which project to use. **If the project is unclear, ask the user to clarify.** A project is unclear when:
+
+- The user didn't specify a project name
+- Multiple projects exist and the user said something generic like "run this query"
+- The conversation context doesn't make it obvious which project they mean
+
+**How to clarify:**
+
+1. Query the database for the user's projects:
+   ```typescript
+   const projects = await prisma.project.findMany({
+     where: { ownerId: userId },
+     select: { slug: true, name: true },
+     orderBy: { updatedAt: 'desc' },
+     take: 10
+   });
+   ```
+
+2. Present options to the user:
+   ```
+   Which project should this query belong to?
+   
+   Your recent projects:
+   - project-alpha
+   - sales-analysis  
+   - q4-review
+   
+   Or specify a different project name.
+   ```
+
+3. Wait for the user's response before proceeding.
+
+**When you DON'T need to ask:**
+- User explicitly named the project (e.g., "run this query in project-alpha")
+- You just created/queried a project in this conversation
+- Only one project exists for the user
+
 Ask user for:
-- **Project**: Which project should this query belong to?
+- **Project**: Which project should this query belong to? (clarify if unclear)
 - **Query name**: What should this query be called? (e.g., "weekly_s1_count")
 - **SQL**: The SQL to execute (inline or from a file)
 
@@ -28,14 +67,18 @@ Ask user for:
 
 ### 3. Execute Query
 
+**IMPORTANT:** When running via Cursor agent, you MUST use `required_permissions: ["all"]` to allow network/tsx access.
+
 Run the query runner with the new syntax:
 
 ```bash
+# Execute with required_permissions: ["all"]
 npm run query -- --project [project-slug] --name [query-name] --sql [sql-file]
 ```
 
 Or if SQL is inline, first save it to a temp file:
 ```bash
+# Execute with required_permissions: ["all"]  
 echo "[SQL]" > /tmp/query.sql
 npm run query -- --project [project-slug] --name [query-name] --sql /tmp/query.sql
 ```
@@ -195,6 +238,30 @@ For most research and report work, **iterative querying is preferred** - run a q
 - `POSTGRES_URL` must be set (same as DATABASE_URL)
 - `PRISMA_DATABASE_URL` must be set for Prisma Accelerate
 - `RIPPLING_ACCOUNT_EMAIL` must be set for Snowflake SSO
+
+## Cursor Agent Permissions (CRITICAL)
+
+**When running queries via Cursor agent, you MUST request `all` permissions.**
+
+The query runner requires:
+1. **Network access** - connects to Snowflake over HTTPS
+2. **tsx execution** - runs TypeScript scripts
+3. **Browser SSO** - uses `externalbrowser` auth (opens browser for Okta login)
+
+Without `all` permissions, the agent will fail with sandbox errors like:
+- "Query runner failed in this environment (tsx/sandbox)"
+- "tsx can't run in this environment"
+
+**Correct approach:**
+```bash
+# When executing this, request required_permissions: ["all"]
+npm run query -- --project my-analysis --name my_query --sql query.sql
+```
+
+**First-time users:**
+The first query execution opens a browser window for Okta SSO login. After successful authentication, the token is cached locally, and subsequent queries run without browser interaction.
+
+**User needs to approve:** When the agent requests `all` permissions, a dialog appears asking the user to approve. They must click "Allow" for queries to work.
 
 ## Safety Rules
 
@@ -410,6 +477,8 @@ Any query returning 0 rows when you expected data should be investigated before 
 | Query fails | Show error, suggest fixes |
 | User not owner/editor | Need permission to add to project |
 | **Query returns 0 rows unexpectedly** | **Investigate: check column names, filters, and schema docs** |
+| **tsx/sandbox error** | **Agent must request `all` permissions - retry with required_permissions: ["all"]** |
+| **"Can't run in this environment"** | **Missing permissions - user must approve the permission dialog** |
 
 ## Widget-Query Linking
 

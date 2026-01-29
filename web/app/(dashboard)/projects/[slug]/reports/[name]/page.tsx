@@ -116,7 +116,7 @@ export default async function ReportPage({ params }: ReportPageProps) {
                 );
               },
               pre: ({ children }) => (
-                <pre className="bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-4 overflow-x-auto text-sm my-4 border border-slate-300 dark:border-slate-700 font-mono">
+                <pre className="bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-4 overflow-x-auto text-sm my-4 border border-slate-300 dark:border-slate-700 font-mono whitespace-pre">
                   {children}
                 </pre>
               ),

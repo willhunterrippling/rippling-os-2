@@ -11,12 +11,114 @@ Create or edit markdown reports saved to the database.
 
 User says "report", "/report", "create report", "add report", or "edit report".
 
+## Session Continuity (CRITICAL)
+
+**When you create or edit a report, you are in a "report session" for that report.** Follow-up questions from the user should continue editing the SAME report until the user explicitly:
+- Asks to create a different report
+- Switches to a different project
+- Says they're done with the report
+
+### Recognizing Follow-up Questions
+
+These should ALL trigger continued editing of the current report:
+
+| User Says | Action |
+|-----------|--------|
+| "What about X?" | Add section about X to current report |
+| "Can you also look at Y?" | Add section about Y to current report |
+| "Why is that?" | Add explanatory section to current report |
+| "Break that down more" | Expand existing section in current report |
+| "What do you recommend?" | Add recommendations section to current report |
+| "Who owns these?" | Run query, add findings to current report |
+| "Is that normal?" | Add comparison/context section to current report |
+| "How does that compare to Z?" | Add comparison section to current report |
+| "Dig deeper into that" | Expand analysis in current report |
+
+### What NOT to Do
+
+**DO NOT:**
+- Create a new report for each follow-up question
+- Ask "which report?" when there's an obvious active report
+- Lose track of the report context between turns
+- Require the user to say "/report" again to continue editing
+
+**DO:**
+- Remember which project/report you're working on
+- Fetch the current report content and append/update it
+- Save incrementally after each significant addition
+- Keep the report structure cohesive as it grows
+
+### Maintaining Context
+
+Track these across the conversation:
+- **Project slug**: The project the report belongs to
+- **Report name**: The report being edited
+- **Last query number**: For sequential numbering (e.g., `report_04_...`)
+- **Report status**: In Progress, Complete, etc.
+
+When a follow-up comes in, always fetch the current report content first, then update it.
+
 ## Workflow
+
+### 0. Check for Active Report Session (ALWAYS DO THIS FIRST)
+
+Before asking the user anything, check if you're already in a report session:
+
+1. **Review the conversation** - Have you already created/edited a report in this session?
+2. **If YES** - Continue editing that report. Do NOT ask for project/report name again.
+3. **If NO** - Proceed to step 1 to identify the project and report.
+
+```
+Is this a follow-up question about an active report?
+├── YES → Fetch current report, add new findings, save
+└── NO → Ask user for project and report name (step 1)
+```
 
 ### 1. Identify Project and Report
 
+**Only ask these if NOT continuing an existing session:**
+
+#### Clarifying the Project (IMPORTANT)
+
+Before proceeding, you MUST know which project to use. **If the project is unclear, ask the user to clarify.** A project is unclear when:
+
+- The user didn't specify a project name
+- Multiple projects exist and the user said something generic like "create a report"
+- The conversation context doesn't make it obvious which project they mean
+
+**How to clarify:**
+
+1. Query the database for the user's projects:
+   ```typescript
+   const projects = await prisma.project.findMany({
+     where: { ownerId: userId },
+     select: { slug: true, name: true },
+     orderBy: { updatedAt: 'desc' },
+     take: 10
+   });
+   ```
+
+2. Present options to the user:
+   ```
+   Which project should this report belong to?
+   
+   Your recent projects:
+   - project-alpha
+   - sales-analysis  
+   - q4-review
+   
+   Or specify a different project name.
+   ```
+
+3. Wait for the user's response before proceeding.
+
+**When you DON'T need to ask:**
+- User explicitly named the project (e.g., "create a report in project-alpha")
+- You just created/queried a project in this conversation
+- Only one project exists for the user
+
 Ask user for:
-- **Project**: Which project should this report belong to?
+- **Project**: Which project should this report belong to? (clarify if unclear)
 - **Report name**: What should this report be called? (e.g., "findings", "summary")
 
 ### 2. Check Schema Documentation First!
@@ -108,6 +210,26 @@ For status/suppression investigations, run these query types:
 - Run and save any new queries needed
 - Edit the markdown accordingly
 
+**For follow-up questions (most common!):**
+- Fetch current report content from database
+- Run new queries to answer the follow-up question
+- Add a NEW SECTION to the existing report with findings
+- Update the executive summary if there are key new insights
+- Update the appendix with any new queries
+- Save immediately after adding the section
+
+**Example follow-up flow:**
+```
+User: "What about the conversion rates?"
+
+1. Fetch current report: prisma.report.findUnique(...)
+2. Run new query: report_05_conversion_rates
+3. Add new section: "## 5. Conversion Rate Analysis"
+4. Update appendix with new query
+5. Save updated report
+6. Show user what was added
+```
+
 ### 5. Save Report to Database
 
 ```typescript
@@ -146,8 +268,9 @@ await prisma.$disconnect();
 
 ### 6. Output Confirmation
 
+**For new reports:**
 ```
-✅ Report saved!
+✅ Report created!
 
 Project: [project-name]
 Report: [report-name]
@@ -157,6 +280,16 @@ Preview:
 [first 500 chars of markdown]
 
 View at: /projects/[slug]/reports/[name]
+```
+
+**For follow-up additions (use this format to show continuity):**
+```
+✅ Report updated!
+
+Added: "## [N]. [New Section Title]"
+New queries: [list of new query names]
+
+The report now has [X] sections. Ask more questions to continue exploring, or say "done" when finished.
 ```
 
 ## Report Structure
@@ -682,3 +815,20 @@ Further investigation recommended.
 | Database connection fails | Check DATABASE_URL in .env |
 | User not owner/editor | Need permission to edit project |
 | **Query returns 0 rows unexpectedly** | **Investigate before proceeding - check schema docs and column names** |
+| **tsx/sandbox error** | **Agent must request `all` permissions when running queries or tsx scripts** |
+| **"Can't run in this environment"** | **Missing permissions - user must approve the permission dialog** |
+
+## Cursor Agent Permissions
+
+When reports require running queries via `npm run query`, the agent MUST request `all` permissions.
+
+The report workflow often involves:
+1. Running multiple queries to gather data (requires network + tsx)
+2. Saving results to database (requires network)
+3. Creating/updating the report (requires network)
+
+**If queries fail with sandbox errors:**
+- The agent should retry with `required_permissions: ["all"]`
+- User must approve the permission dialog that appears
+
+**First-time users:** The first Snowflake query opens a browser window for Okta SSO. After authentication, the token is cached locally.

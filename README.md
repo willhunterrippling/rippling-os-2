@@ -12,26 +12,22 @@ Rippling OS enables Growth Managers to:
 
 ## Quick Start
 
-### 1. Setup Environment
+### 1. Setup
 
-Copy the environment template and add your email:
-
-```bash
-cp .env.template .env
-# Edit .env and set RIPPLING_ACCOUNT_EMAIL=your.email@rippling.com
-```
-
-### 2. Setup Your Branch
-
-In Cursor, type `/setup` or run:
+Run the setup script (installs dependencies, configures environment):
 
 ```bash
-./scripts/setup-branch.sh
+./scripts/setup.sh
 ```
 
-This creates your personal branch: `user/your.name`
+This will:
+- Create `.env` from template and prompt for your email
+- Install npm dependencies
+- Generate MCP configuration
 
-### 3. Create a Project
+Then restart Cursor to load the Snowflake MCP.
+
+### 2. Create a Project
 
 In Cursor, type `/create-project my-analysis` or manually:
 
@@ -40,7 +36,7 @@ mkdir -p projects/my-analysis/{dashboards,queries,reports,data}
 cp -r projects/_templates/basic-analysis/* projects/my-analysis/
 ```
 
-### 4. Run Queries
+### 3. Run Queries
 
 Create a SQL file in `projects/my-analysis/queries/count.sql`, then:
 
@@ -52,7 +48,7 @@ npm run query -- projects/my-analysis/queries/count.sql
 
 Results are saved to `projects/my-analysis/data/count.json`
 
-### 5. Configure Dashboard
+### 4. Configure Dashboard
 
 Edit `projects/my-analysis/dashboards/main.yaml`:
 
@@ -65,7 +61,7 @@ widgets:
     valueKey: count
 ```
 
-### 6. Save Your Work
+### 5. Save Your Work
 
 In Cursor, type `/save` or run:
 
@@ -73,7 +69,7 @@ In Cursor, type `/save` or run:
 ./scripts/save.sh "Add count analysis"
 ```
 
-### 7. View Dashboard
+### 6. View Dashboard
 
 Start the development server:
 
@@ -90,7 +86,7 @@ Open http://localhost:3000/projects/my-analysis to see the project overview, or 
 
 | Command | Description | Script Alternative |
 |---------|-------------|-------------------|
-| `/setup` | Create/switch to your user branch | `./scripts/setup-branch.sh` |
+| `/setup` | Install dependencies and configure environment | `./scripts/setup.sh` |
 | `/save` | Commit and push changes | `./scripts/save.sh` |
 | `/update-os` | Sync with main branch | `./scripts/sync.sh` |
 | `/create-project` | Create new analysis project | Manual |
@@ -102,7 +98,7 @@ This repo includes a Snowflake MCP (Model Context Protocol) server for direct da
 
 ### How It Works
 
-1. Run `/setup` (or `./scripts/setup-branch.sh`) to generate your MCP config
+1. Run `/setup` (or `./scripts/setup.sh`) to generate your MCP config
 2. Restart Cursor to load the Snowflake MCP server
 3. On your first query, a browser window opens for Okta SSO authentication
 4. After authenticating, you can query Snowflake directly through the AI agent

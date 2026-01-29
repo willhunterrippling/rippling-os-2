@@ -1,0 +1,76 @@
+---
+description: Critical permissions required for Snowflake queries and database operations
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Agent Permissions (CRITICAL)
+
+## When Running Queries or Database Scripts
+
+**ALWAYS request `all` permissions** when running these commands:
+
+```bash
+# Snowflake queries - REQUIRES required_permissions: ["all"]
+npm run query -- --project <slug> --name <name> --sql <file>
+
+# Any tsx scripts - REQUIRES required_permissions: ["all"]
+npx tsx <script>
+
+# Database operations via Prisma - REQUIRES required_permissions: ["all"]
+npx prisma db push
+npx prisma generate
+```
+
+## Why This Matters
+
+Without `all` permissions, commands run in a restricted sandbox that blocks:
+- **Network access** - cannot connect to Snowflake or Prisma database
+- **tsx execution** - TypeScript scripts fail to run
+- **Browser SSO** - Snowflake's `externalbrowser` auth cannot open browser
+
+## Common Error Messages (Fix by Adding Permissions)
+
+If you see these errors, you forgot to request permissions:
+- "Query runner failed in this environment (tsx/sandbox)"
+- "tsx can't run in this environment"
+- "ECONNREFUSED" or network errors
+- "Cannot connect to Snowflake"
+
+**Solution:** Re-run the command with `required_permissions: ["all"]`
+
+## First-Time Snowflake Authentication
+
+The first time a user runs a Snowflake query:
+1. A **browser window opens** for SSO authentication
+2. User logs in with their Rippling credentials
+3. Token is cached locally for future queries
+
+**Tell the user:** "A browser window will open for Snowflake authentication. Please complete the login."
+
+## User Must Approve
+
+When you request `all` permissions, Cursor shows a dialog to the user. They must click **"Allow"** for the command to succeed.
+
+If a command fails and you suspect permission issues, tell the user:
+> "This command needs additional permissions. Please click 'Allow' when the permission dialog appears."
+
+## Permission Request Examples
+
+```bash
+# CORRECT - with permissions
+npm run query -- --project my-analysis --name test --sql query.sql
+# Use: required_permissions: ["all"]
+
+# WRONG - will fail in sandbox
+npm run query -- --project my-analysis --name test --sql query.sql
+# Missing permissions → sandbox error
+```
+
+## Commands That DON'T Need Special Permissions
+
+These work fine in the default sandbox:
+- `npm install` (use `required_permissions: ["network"]` if it fails)
+- `git` commands (use `required_permissions: ["git_write"]` for commits)
+- Reading/writing local files
+- Running linters, formatters
