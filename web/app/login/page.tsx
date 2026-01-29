@@ -1,9 +1,8 @@
 import { Suspense } from "react";
-import { LoginForm, VerifyEmailMessage, ErrorMessage } from "@/components/auth/LoginForm";
+import { LoginForm, ErrorMessage } from "@/components/auth/LoginForm";
 
 interface LoginPageProps {
   searchParams: Promise<{
-    verify?: string;
     error?: string;
     callbackUrl?: string;
   }>;
@@ -11,7 +10,6 @@ interface LoginPageProps {
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
-  const showVerify = params.verify === "1";
   const showError = params.error === "1";
   const callbackUrl = params.callbackUrl || "/";
 
@@ -33,21 +31,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           <div className="flex flex-col items-center">
             {showError ? (
               <ErrorMessage />
-            ) : showVerify ? (
-              <VerifyEmailMessage />
             ) : (
               <Suspense fallback={<div>Loading...</div>}>
-                <div className="space-y-6 w-full">
-                  <div className="text-center">
-                    <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100">
-                      Sign in
-                    </h2>
-                    <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
-                      Enter your Rippling email to receive a magic link
-                    </p>
-                  </div>
-                  <LoginForm callbackUrl={callbackUrl} />
-                </div>
+                <LoginForm callbackUrl={callbackUrl} />
               </Suspense>
             )}
           </div>
