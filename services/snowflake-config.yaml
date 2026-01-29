@@ -1,0 +1,28 @@
+# Snowflake MCP Server Configuration
+# Controls which SQL operations are allowed through the MCP server
+#
+# This configuration aligns with the safety rules in .cursor/rules/snowflake.mdc
+# Key principle: READ-ONLY access for data exploration
+
+other_services:
+  query_manager: True      # Enable SQL execution
+  object_manager: True     # Enable schema exploration (list tables, describe columns)
+  semantic_manager: False  # Enable if using Snowflake Semantic Views
+
+sql_statement_permissions:
+  # Allowed operations (read-only exploration)
+  - Select: True           # Allow SELECT queries
+  - Describe: True         # Allow DESCRIBE TABLE/VIEW
+  - Command: True          # Allow SHOW commands
+  - Use: True              # Allow USE DATABASE/SCHEMA
+  
+  # Blocked operations (data modification)
+  - Delete: False          # BLOCKED - no data deletion
+  - Update: False          # BLOCKED - no data updates
+  - Drop: False            # BLOCKED - no object deletion
+  - TruncateTable: False   # BLOCKED - no table truncation
+  - Insert: False          # BLOCKED - no data insertion
+  - Create: False          # BLOCKED - no object creation
+  - Alter: False           # BLOCKED - no object modification
+  - Merge: False           # BLOCKED - no merge operations
+  - Unknown: False         # BLOCKED - reject unknown statement types

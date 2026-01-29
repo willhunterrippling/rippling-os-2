@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "snowflake": {
+      "command": "bash",
+      "args": [
+        "{{REPO_ROOT}}/scripts/start-snowflake-mcp.sh"
+      ]
+    }
+  }
+}

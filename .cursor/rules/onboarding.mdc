@@ -1,0 +1,79 @@
+---
+description: Detect fresh/unconfigured repo and push users to run setup
+globs: ["**/*"]
+---
+
+# Fresh Repo Detection & Onboarding
+
+## Priority: Run This First
+
+Before responding to ANY user request, check if this is a fresh or unconfigured repository.
+
+## Detection Checks
+
+Run these checks silently (don't output the commands to the user):
+
+### 1. Check for `.env` file
+```bash
+test -f .env && echo "EXISTS" || echo "MISSING"
+```
+
+### 2. Check current branch
+```bash
+git branch --show-current
+```
+
+### 3. Check for `node_modules/`
+```bash
+test -d node_modules && echo "EXISTS" || echo "MISSING"
+```
+
+## Fresh Repo Indicators
+
+The repo needs setup if ANY of these are true:
+- `.env` file is MISSING
+- Current branch is `main` or `master` (not a `user/*` branch)
+- `node_modules/` directory is MISSING
+
+## Response When Fresh Repo Detected
+
+If ANY indicator is true, respond with this BEFORE addressing the user's request:
+
+```
+⚠️ **Setup Required**
+
+This repository hasn't been fully configured yet. Before we proceed, let's get you set up:
+
+[Show which items need attention:]
+- ❌ No `.env` file (environment not configured)
+- ❌ On `main` branch (no personal branch)  
+- ❌ No `node_modules/` (dependencies not installed)
+
+**Run `/setup` now** to:
+1. Create your personal branch (`user/your-name`)
+2. Set up your environment variables
+3. Install dependencies
+
+This only takes a minute and ensures your work is saved properly.
+
+Would you like me to run `/setup` for you now?
+```
+
+## When to Skip This Check
+
+Skip the fresh repo check if:
+- User explicitly says "skip setup" or "I'll set up later"
+- User is asking about the setup process itself (e.g., "/help setup")
+- User is running `/setup` command
+- All three checks pass (repo is properly configured)
+
+## After Setup is Complete
+
+Once setup passes, don't show this message again in the conversation. Proceed normally with user requests.
+
+## Why This Matters
+
+- Work on `main` branch won't be saved to a personal branch
+- Missing `.env` means queries won't work (no Snowflake credentials)
+- Missing `node_modules` means the dev server and scripts won't run
+- Users who skip setup often lose work or hit confusing errors later

@@ -79,4 +79,4 @@ projects/[slug]/
 
 - If project name is empty, prompt for name
 - If project already exists, suggest different name
-- If not on user branch, warn and suggest running `/setup`
+- If not on user branch, **ask the user** if they'd like to set up their personal branch first (run `/setup`), then continue after setup

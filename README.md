@@ -93,6 +93,41 @@ Open http://localhost:3000/projects/my-analysis
 | `/create-project` | Create new analysis project | Manual |
 | `/query` | Execute SQL and cache results | `npm run query` |
 
+## Snowflake MCP Integration
+
+This repo includes a Snowflake MCP (Model Context Protocol) server for direct database access from Cursor.
+
+### How It Works
+
+1. Run `/setup` (or `./scripts/setup-branch.sh`) to generate your MCP config
+2. Restart Cursor to load the Snowflake MCP server
+3. On your first query, a browser window opens for Okta SSO authentication
+4. After authenticating, you can query Snowflake directly through the AI agent
+
+### MCP vs /query
+
+| Use Case | Tool | Output |
+|----------|------|--------|
+| Quick exploration ("What's the S1 count?") | MCP direct | Results shown inline |
+| Dashboard data ("Add to my dashboard") | `/query` skill | Saves JSON to `data/` folder |
+
+### Prerequisites
+
+The MCP server requires `uv` (Python package manager):
+
+```bash
+# Install uv if not already installed
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+### Configuration
+
+- MCP template: `.cursor/mcp.json.template` (committed to repo)
+- MCP config: `.cursor/mcp.json` (generated per-user, gitignored)
+- SQL permissions: `services/snowflake-config.yaml`
+
+The MCP reads your `RIPPLING_ACCOUNT_EMAIL` from `.env` and is configured for **read-only access** - SELECT, DESCRIBE, and SHOW queries only.
+
 ## Project Structure
 
 ```
@@ -107,8 +142,11 @@ rippling-os-2/
 ├── context/
 │   ├── global/            # Shared schema docs & SQL patterns
 │   └── personal/          # Per-user context (gitignored)
+├── services/              # MCP service configurations
+│   └── snowflake-config.yaml
 ├── scripts/               # CLI tools
 └── .cursor/
+    ├── mcp.json           # MCP server registration
     ├── rules/             # Safety guardrails
     └── skills/            # Cursor skills
 ```
