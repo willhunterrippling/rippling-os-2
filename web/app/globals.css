@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -121,5 +122,91 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Custom prose styles for reports */
+@layer components {
+  /* Executive summary / key findings callout */
+  .prose h2:has(+ table:first-of-type),
+  .prose h2:has(+ p + table:first-of-type) {
+    @apply text-primary;
+  }
+
+  /* Better horizontal rule styling */
+  .prose hr {
+    @apply border-border my-8;
+  }
+
+  /* Numbered section headings */
+  .prose h2 {
+    @apply border-b border-border pb-2 mb-4;
+  }
+
+  /* Table improvements */
+  .prose table {
+    @apply text-sm;
+  }
+
+  .prose thead {
+    @apply bg-muted;
+  }
+
+  .prose th {
+    @apply font-semibold text-left px-4 py-2;
+  }
+
+  .prose td {
+    @apply px-4 py-2;
+  }
+
+  .prose tbody tr:nth-child(even) {
+    @apply bg-muted/50;
+  }
+
+  /* Better code block styling */
+  .prose pre {
+    @apply bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-4 overflow-x-auto text-sm border border-slate-300 dark:border-slate-700 font-mono;
+  }
+
+  .prose code:not(pre code) {
+    @apply bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-1.5 py-0.5 rounded text-sm font-mono;
+  }
+
+  .prose pre code {
+    @apply text-slate-900 dark:text-slate-100 bg-transparent p-0 border-0;
+  }
+
+  /* Strong emphasis for key findings */
+  .prose strong {
+    @apply font-semibold text-foreground;
+  }
+
+  /* Better list styling */
+  .prose ul {
+    @apply space-y-1;
+  }
+
+  .prose ol {
+    @apply space-y-2;
+  }
+
+  /* Metadata header styling (Investigation Date, Analyst, etc.) */
+  .prose > p:first-of-type strong {
+    @apply text-muted-foreground;
+  }
+
+  /* Links */
+  .prose a {
+    @apply text-primary underline underline-offset-2 hover:text-primary/80;
+  }
+
+  /* Blockquotes as callouts */
+  .prose blockquote {
+    @apply border-l-4 border-primary bg-muted/50 px-4 py-2 my-4 not-italic;
+  }
+
+  .prose blockquote p {
+    @apply m-0;
   }
 }

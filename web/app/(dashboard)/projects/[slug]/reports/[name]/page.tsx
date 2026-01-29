@@ -54,6 +54,35 @@ export default async function ReportPage({ params }: ReportPageProps) {
           <Markdown
             remarkPlugins={[remarkGfm]}
             components={{
+              // Headings with anchor links
+              h1: ({ children }) => {
+                const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+                return (
+                  <h1 id={id} className="scroll-mt-20 group">
+                    {children}
+                    <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 text-muted-foreground no-underline">#</a>
+                  </h1>
+                );
+              },
+              h2: ({ children }) => {
+                const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+                return (
+                  <h2 id={id} className="scroll-mt-20 border-b border-border pb-2 group">
+                    {children}
+                    <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 text-muted-foreground no-underline">#</a>
+                  </h2>
+                );
+              },
+              h3: ({ children }) => {
+                const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+                return (
+                  <h3 id={id} className="scroll-mt-20 group">
+                    {children}
+                    <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 text-muted-foreground no-underline">#</a>
+                  </h3>
+                );
+              },
+              // Tables
               table: ({ children }) => (
                 <div className="overflow-x-auto my-4">
                   <table className="min-w-full border-collapse border border-border">
@@ -75,20 +104,35 @@ export default async function ReportPage({ params }: ReportPageProps) {
               tr: ({ children }) => (
                 <tr className="even:bg-muted/50">{children}</tr>
               ),
+              // Code
               code: ({ children, className }) => {
                 const isInline = !className;
                 return isInline ? (
-                  <code className="bg-muted px-1 py-0.5 rounded text-sm">
+                  <code className="bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 px-1.5 py-0.5 rounded text-sm font-mono">
                     {children}
                   </code>
                 ) : (
-                  <code className={className}>{children}</code>
+                  <code className={`${className} text-slate-900 dark:text-slate-100`}>{children}</code>
                 );
               },
               pre: ({ children }) => (
-                <pre className="bg-muted rounded-lg p-4 overflow-x-auto text-sm my-4">
+                <pre className="bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg p-4 overflow-x-auto text-sm my-4 border border-slate-300 dark:border-slate-700 font-mono">
                   {children}
                 </pre>
+              ),
+              // Horizontal rules
+              hr: () => (
+                <hr className="border-border my-8" />
+              ),
+              // Blockquotes as callouts
+              blockquote: ({ children }) => (
+                <blockquote className="border-l-4 border-primary bg-muted/50 px-4 py-3 my-4 not-italic rounded-r">
+                  {children}
+                </blockquote>
+              ),
+              // Strong emphasis
+              strong: ({ children }) => (
+                <strong className="font-semibold text-foreground">{children}</strong>
               ),
             }}
           >

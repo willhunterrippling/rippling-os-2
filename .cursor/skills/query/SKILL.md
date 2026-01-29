@@ -146,9 +146,9 @@ npm run query -- --project my-analysis --name weekly_trend --sql query.sql
 npm run query -- --project my-analysis --name weekly_trend
 ```
 
-### Batch Mode (Multiple Queries, Single Auth)
+### Batch Mode (Optional)
 
-When you need to run multiple queries (e.g., for a report), use batch mode to authenticate only once:
+Batch mode runs multiple queries in a single command. Use it when you have multiple **independent** questions.
 
 ```bash
 # Execute multiple queries from a JSON file
@@ -170,10 +170,16 @@ Each query item can have:
 - `sqlFile`: Path to a SQL file
 - Neither: Uses existing query SQL from database
 
-**Benefits of batch mode:**
-- Single browser authentication for all queries
-- Faster execution (no reconnection overhead)
-- Better for reports that need multiple data sources
+**When to use batch mode:**
+- You have multiple **independent** questions that don't depend on each other
+- You already know exactly what queries you need (no discovery required)
+
+**When NOT to use batch mode:**
+- You're exploring or researching (query → learn → query again is better)
+- Later queries depend on what you learn from earlier ones
+- You're investigating an unknown problem
+
+For most research and report work, **iterative querying is preferred** - run a query, analyze results, then decide what to query next based on what you learned.
 
 ## No Local Files
 
@@ -197,6 +203,203 @@ Each query item can have:
 - ALWAYS filter by is_deleted = FALSE for SFDC tables
 - ALWAYS filter by _fivetran_deleted = FALSE
 
+## Schema Reference (Check Before Querying!)
+
+**Before writing queries, check the schema documentation:**
+
+- `context/global/schemas/SFDC_TABLES.md` - Main Salesforce tables
+- `context/global/schemas/SFDC_HISTORY_TABLES.md` - History/audit tables (critical for status transitions!)
+- `context/global/schemas/SNOWFLAKE_TABLES.md` - Growth/DWH tables
+- `context/global/schemas/OUTREACH_TABLES.md` - Outreach integration tables
+
+This prevents bugs like using wrong column names (e.g., `OLD_VALUE__C` vs `OLD_VALUE`).
+
+## Query Patterns for Investigations
+
+### Pattern 1: Status Breakdown with Temporal Analysis
+
+Always include temporal context (30/90 day windows) for richer insights:
+
+```sql
+SELECT 
+    STATUS,
+    COUNT(*) as record_count,
+    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 2) as pct,
+    -- Temporal analysis
+    COUNT(CASE WHEN LAST_MODIFIED_DATE >= DATEADD('day', -30, CURRENT_DATE()) THEN 1 END) as modified_30d,
+    COUNT(CASE WHEN LAST_MODIFIED_DATE >= DATEADD('day', -90, CURRENT_DATE()) THEN 1 END) as modified_90d,
+    MIN(CREATED_DATE) as earliest_created,
+    MAX(LAST_MODIFIED_DATE) as latest_modified
+FROM SFDC.LEAD
+WHERE IS_DELETED = FALSE
+GROUP BY STATUS
+ORDER BY record_count DESC;
+```
+
+### Pattern 2: Status Transitions (History Tables)
+
+Track how records move between statuses:
+
+```sql
+SELECT 
+    OLD_VALUE as from_status,
+    NEW_VALUE as to_status,
+    COUNT(*) as transitions,
+    MIN(CREATED_DATE) as first_transition,
+    MAX(CREATED_DATE) as last_transition
+FROM SFDC.LEAD_HISTORY
+WHERE FIELD = 'Status'
+  AND CREATED_DATE >= DATEADD('day', -90, CURRENT_DATE())
+GROUP BY OLD_VALUE, NEW_VALUE
+ORDER BY transitions DESC;
+```
+
+### Pattern 3: Attribution (Manual vs Automated)
+
+Distinguish human vs automation changes:
+
+```sql
+SELECT 
+    CASE 
+        WHEN u.NAME ILIKE '%integration%' 
+          OR u.NAME ILIKE '%automation%' 
+          OR u.NAME ILIKE '%api%' 
+          OR u.NAME ILIKE '%outreach%'
+        THEN 'Automated'
+        ELSE 'Manual'
+    END as change_type,
+    COUNT(*) as changes,
+    COUNT(DISTINCT lh.LEAD_ID) as distinct_records
+FROM SFDC.LEAD_HISTORY lh
+LEFT JOIN SFDC."USER" u ON lh.CREATED_BY_ID = u.ID
+WHERE lh.FIELD = 'Status'
+  AND lh.CREATED_DATE >= DATEADD('day', -90, CURRENT_DATE())
+GROUP BY change_type;
+```
+
+### Pattern 4: Top Users Making Changes
+
+Identify who is driving changes:
+
+```sql
+SELECT 
+    u.NAME as user_name,
+    u.USER_TYPE,
+    COUNT(*) as changes,
+    COUNT(DISTINCT lh.LEAD_ID) as distinct_records,
+    MAX(lh.CREATED_DATE) as last_change
+FROM SFDC.LEAD_HISTORY lh
+LEFT JOIN SFDC."USER" u ON lh.CREATED_BY_ID = u.ID
+WHERE lh.FIELD = 'Status'
+  AND lh.NEW_VALUE = 'Recycled'
+  AND lh.CREATED_DATE >= DATEADD('day', -30, CURRENT_DATE())
+GROUP BY u.NAME, u.USER_TYPE
+ORDER BY changes DESC
+LIMIT 20;
+```
+
+### Pattern 5: Well-Documented Query with CTEs
+
+Use CTEs and comments for complex queries:
+
+```sql
+-- ============================================================================
+-- Purpose: Analyze [what this query does]
+-- Context: [why this matters]
+-- ============================================================================
+
+WITH 
+-- Step 1: Get base population
+base_records AS (
+    SELECT ID, STATUS, CREATED_DATE
+    FROM SFDC.LEAD
+    WHERE IS_DELETED = FALSE
+),
+
+-- Step 2: Add enrichment
+enriched AS (
+    SELECT 
+        b.*,
+        DATEDIFF('day', b.CREATED_DATE, CURRENT_DATE()) as days_old
+    FROM base_records b
+)
+
+-- Final output
+SELECT 
+    STATUS,
+    COUNT(*) as count,
+    AVG(days_old) as avg_age_days
+FROM enriched
+GROUP BY STATUS
+ORDER BY count DESC;
+```
+
+## Result Validation - Detecting 0-Row Results
+
+**CRITICAL:** Always validate query results. A query returning 0 rows when you expect data is often a bug, not correct behavior.
+
+### When 0 Rows Might Indicate a Bug
+
+| Scenario | Likely Cause | Action |
+|----------|--------------|--------|
+| History table query returns 0 | Wrong column names | Check schema docs - use `OLD_VALUE` not `OLD_VALUE__C` |
+| Filter on date returns 0 | Wrong date format or function | Try different date syntax |
+| JOIN returns 0 | Table/column name mismatch | Verify table and column names exist |
+| Aggregation returns 0 | WHERE clause too restrictive | Remove filters and test incrementally |
+
+### Validation Workflow
+
+**After running a query that returns 0 rows:**
+
+1. **Check if 0 rows is expected** - Is this a query where empty results make sense?
+
+2. **If unexpected, investigate:**
+   ```sql
+   -- First, verify the table has data
+   SELECT COUNT(*) FROM [table];
+   
+   -- Then, check column names exist
+   SELECT * FROM [table] LIMIT 1;
+   
+   -- Finally, loosen filters and test
+   SELECT * FROM [table] WHERE [partial_filter] LIMIT 10;
+   ```
+
+3. **Check schema documentation:**
+   - Read `context/global/schemas/SFDC_HISTORY_TABLES.md` for history table column names
+   - Read `context/global/schemas/SFDC_TABLES.md` for main table schemas
+   - Verify column names match exactly (no `__C` suffix confusion)
+
+4. **Common Column Name Mistakes:**
+
+   | Wrong | Correct | Table |
+   |-------|---------|-------|
+   | `OLD_VALUE__C` | `OLD_VALUE` | LEAD_HISTORY, CONTACT_HISTORY |
+   | `NEW_VALUE__C` | `NEW_VALUE` | LEAD_HISTORY, CONTACT_HISTORY |
+   | `Person_Status_SFDC__c` (contact) | `PERSON_STATUS_SFDC_C` | CONTACT (column name is uppercase in Snowflake) |
+
+5. **If you find a bug, fix and re-run:**
+   - Update the SQL with correct column names
+   - Re-run the query
+   - Verify results are now returned
+
+### Batch Mode Validation
+
+When running batch queries, **review the summary for unexpected 0-row results:**
+
+```
+📊 Batch Summary:
+   ✅ Successful: 8
+   ❌ Failed: 0
+
+   ✅ report_01_status: 12 rows
+   ✅ report_02_breakdown: 15 rows
+   ⚠️ report_03_history: 0 rows     ← INVESTIGATE THIS
+   ⚠️ report_04_transitions: 0 rows ← INVESTIGATE THIS
+```
+
+Any query returning 0 rows when you expected data should be investigated before proceeding.
+
 ## Error Handling
 
 | Error | Solution |
@@ -206,6 +409,7 @@ Each query item can have:
 | Snowflake connection fails | Check RIPPLING_ACCOUNT_EMAIL |
 | Query fails | Show error, suggest fixes |
 | User not owner/editor | Need permission to add to project |
+| **Query returns 0 rows unexpectedly** | **Investigate: check column names, filters, and schema docs** |
 
 ## Widget-Query Linking
 

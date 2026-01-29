@@ -2,11 +2,11 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 /**
- * Edge-compatible middleware for basic auth route protection.
+ * Edge-compatible proxy for basic auth route protection.
  * Checks for session cookie presence only - actual validation
  * happens server-side where Prisma is available.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow auth API routes
@@ -45,7 +45,7 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-export default middleware;
+export default proxy;
 
 export const config = {
   matcher: [
