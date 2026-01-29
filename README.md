@@ -146,7 +146,8 @@ rippling-os-2/
 │       ├── data/           # Cached JSON results
 │       └── README.md       # Project description
 ├── context/
-│   ├── global/            # Shared schema docs & SQL patterns
+│   ├── import/            # Staging folder for /ingest-context
+│   ├── global/            # Shared context (docs, schemas, sql-patterns, code, definitions)
 │   └── personal/          # Per-user context (gitignored)
 ├── services/              # MCP service configurations
 │   └── snowflake-config.yaml

@@ -24,22 +24,24 @@ This is an AI-assisted Snowflake querying and dashboard platform for Rippling's 
 GETTING STARTED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. /setup          Set up your personal branch (run this first!)
-2. /create-project Create a new analysis project  
-3. /query          Run SQL queries and cache results
-4. /save           Commit and push your changes
+1. /setup          Configure environment, create user, and example project
+2. /start          Start the web dashboard and explore your example project
+3. /query          Run SQL queries and save results to database
+4. /create-project Create a new analysis project
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ALL COMMANDS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  /setup           Create or switch to your user branch
-  /create-project  Create a new analysis project with proper structure
+  /setup           Configure environment, create user & example project
+  /create-project  Create a new analysis project in the database
   /query           Execute SQL queries against Snowflake
-  /save            Commit and push changes to your branch
+  /report          Create or edit markdown reports
+  /share           Share projects with other users
+  /delete          Delete projects, queries, or reports
   /start           Start the web dashboard dev server
-  /update-os       Sync your branch with latest from main
-  /ingest-context  Add schemas, SQL patterns, or code to shared context
+  /update-os       Pull latest code from main
+  /ingest-context  Import files from context/import/ to global or personal context
   /help            Show this help message
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -49,16 +51,6 @@ UTILITY SKILLS (auto-triggered)
   docx             Create, edit, and analyze Word documents
   xlsx             Create, edit, and analyze Excel spreadsheets  
   pdf-processing   Extract text, fill forms, merge/split PDFs
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SHELL SCRIPTS (alternative to commands)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  ./scripts/setup-branch.sh     Same as /setup
-  ./scripts/save.sh "message"   Same as /save
-  ./scripts/sync.sh             Same as /update-os
-  npm run query -- <file.sql>   Same as /query
-  npm run dev                   Same as /start
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -75,7 +67,9 @@ If the user asks `/help <command>`, read and summarize the corresponding skill:
 | `/help setup` | `.cursor/skills/setup/SKILL.md` |
 | `/help create-project` | `.cursor/skills/create-project/SKILL.md` |
 | `/help query` | `.cursor/skills/query/SKILL.md` |
-| `/help save` | `.cursor/skills/save/SKILL.md` |
+| `/help report` | `.cursor/skills/report/SKILL.md` |
+| `/help share` | `.cursor/skills/share/SKILL.md` |
+| `/help delete` | `.cursor/skills/delete/SKILL.md` |
 | `/help start` | `.cursor/skills/start/SKILL.md` |
 | `/help update-os` | `.cursor/skills/update-os/SKILL.md` |
 | `/help ingest-context` | `.cursor/skills/ingest-context/SKILL.md` |
@@ -87,51 +81,60 @@ Provide a concise summary of the workflow and key usage examples from that skill
 ### "How do I get started?"
 
 Direct them to:
-1. Copy `.env.template` to `.env` and set `RIPPLING_ACCOUNT_EMAIL`
-2. Run `/setup` to create their user branch
-3. Run `/create-project` to start their first analysis
+1. Get database URLs from admin (or Vercel dashboard)
+2. Set them in `.env` along with `RIPPLING_ACCOUNT_EMAIL`
+3. Run `/setup` to configure environment, create user, and get an example project
+4. Run `/start` to launch the dashboard and explore your example project
+5. Run queries on the example project to see data populate
+6. Run `/create-project` when ready to start your own analysis
 
 ### "How do I run a SQL query?"
 
 Explain `/query` usage:
-- Put SQL file in `projects/[project]/queries/`
-- Run `/query` or `npm run query -- <sql-file>`
-- Results save to `projects/[project]/data/`
+- Run `/query` with project name and query name
+- Results save to database automatically
+- Optionally add to dashboard as chart/metric/table
+
+**Important:** Snowflake returns UPPERCASE column names. When adding widgets:
+- Use `WEEK` not `week`
+- Use `TOTAL_OPPORTUNITIES` not `total_opportunities`
 
 ### "How do I see my dashboard?"
 
 Explain `/start`:
 - Run `/start` or `npm run dev`
+- Set `BYPASS_AUTH=true` in `.env` for local dev
 - Open http://localhost:3000
 - Navigate to your project
 
 ### "How do I share my work?"
 
-Explain the workflow:
-1. Run `/save` to commit and push
-2. Changes deploy to your preview URL automatically
-3. To get work into main, create a PR for approval
+Explain the sharing model:
+1. All @rippling.com users can view all projects by default
+2. Run `/share` to give specific users edit or admin access
+3. View dashboards at the deployed Vercel URL
+4. Sign in with magic link (one-time email verification)
 
-## Project Structure Reference
+## Architecture Overview
 
-```
-rippling-os-2/
-├── projects/           # Your analysis projects live here
-│   ├── _templates/     # Templates for new projects
-│   └── [your-project]/ # Individual projects
-│       ├── dashboards/ # Dashboard YAML configs
-│       │   └── main.yaml
-│       ├── queries/    # SQL files
-│       ├── reports/    # Written reports (markdown)
-│       ├── data/       # Cached JSON results
-│       └── README.md
-├── context/global/     # Shared schemas, SQL patterns, definitions
-├── web/                # Dashboard web app (Next.js)
-└── scripts/            # CLI tools
-```
+**Data Storage:**
+- All data is stored in Vercel Postgres (not local files)
+- Projects, queries, dashboards, reports in database
+- No need to commit data - it's saved automatically
+
+**Authentication:**
+- Web app requires @rippling.com email
+- Magic link verification for web access
+- CLI uses git email for identity (auto-creates user)
+
+**Sharing:**
+- Default: all users can view all projects
+- Explicit shares for edit/admin permissions
+- Owner can manage shares via `/share` or web UI
 
 ## URL Routes
 
+- Home: `/`
 - Project overview: `/projects/[slug]`
 - Dashboards: `/projects/[slug]/dashboards/[name]`
 - Queries: `/projects/[slug]/queries/[name]`
@@ -141,13 +144,15 @@ rippling-os-2/
 
 Required in `.env`:
 ```
+DATABASE_URL=postgres://...
+POSTGRES_URL=postgres://...
+PRISMA_DATABASE_URL=prisma+postgres://...
+AUTH_SECRET=your-generated-secret
 RIPPLING_ACCOUNT_EMAIL=your.email@rippling.com
+BYPASS_AUTH=true
 ```
 
-Optional (have defaults):
-```
-SNOWFLAKE_ACCOUNT=RIPPLINGORG-RIPPLING
-SNOWFLAKE_DATABASE=PROD_RIPPLING_DWH
-SNOWFLAKE_ROLE=PROD_RIPPLING_MARKETING
-SNOWFLAKE_WAREHOUSE=PROD_RIPPLING_INTEGRATION_DWH
+**Note:** Symlink `.env` to `web/.env`:
+```bash
+ln -sf ../.env web/.env
 ```

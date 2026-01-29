@@ -6,17 +6,19 @@ import { DataTable } from "./DataTable";
 
 interface Widget {
   type: "metric" | "chart" | "table";
-  title: string;
-  data: Record<string, unknown>[];
+  title?: string;
+  queryName?: string;
+  data: unknown[];
   valueKey?: string;
   chartType?: "line" | "bar" | "area" | "pie";
   xKey?: string;
   yKey?: string;
   columns?: string[];
+  hidden?: boolean;
 }
 
 interface DashboardConfig {
-  title: string;
+  title?: string;
   description?: string;
   layout?: "grid" | "stack";
   widgets: Widget[];
@@ -30,16 +32,18 @@ export function DashboardRenderer({ config }: DashboardRendererProps) {
   const { title, description, layout = "grid", widgets } = config;
 
   const renderWidget = (widget: Widget, index: number) => {
-    const { type, title, data } = widget;
+    const { type, title, queryName, data } = widget;
+    const displayTitle = title || queryName || `Widget ${index + 1}`;
+    const typedData = data as Record<string, unknown>[];
 
     switch (type) {
       case "metric": {
         const valueKey = widget.valueKey || "value";
-        const value = data?.[0]?.[valueKey] ?? 0;
+        const value = typedData?.[0]?.[valueKey] ?? 0;
         return (
           <MetricCard
             key={index}
-            title={title}
+            title={displayTitle}
             value={value as string | number}
           />
         );
@@ -50,8 +54,8 @@ export function DashboardRenderer({ config }: DashboardRendererProps) {
         return (
           <Chart
             key={index}
-            title={title}
-            data={data}
+            title={displayTitle}
+            data={typedData}
             chartType={chartType}
             xKey={xKey}
             yKey={yKey}
@@ -63,8 +67,8 @@ export function DashboardRenderer({ config }: DashboardRendererProps) {
         return (
           <DataTable
             key={index}
-            title={title}
-            data={data}
+            title={displayTitle}
+            data={typedData}
             columns={widget.columns}
           />
         );
@@ -110,7 +114,7 @@ export function DashboardRenderer({ config }: DashboardRendererProps) {
         <div className="text-center py-12 text-muted-foreground">
           <p>No widgets configured for this dashboard.</p>
           <p className="text-sm mt-2">
-            Add widgets to your dashboard.yaml file to see them here.
+            Run /query in Cursor to add data, then select &quot;Add to dashboard&quot;.
           </p>
         </div>
       )}

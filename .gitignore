@@ -11,6 +11,9 @@ rsa_key.*
 # Dependencies
 node_modules/
 
+# Prisma
+prisma/migrations/
+
 # Next.js
 web/.next/
 web/out/
@@ -26,6 +29,13 @@ temp/*
 # Personal context (per-user, not shared)
 context/personal/*
 !context/personal/.gitkeep
+
+# Import staging folder (for /ingest-context workflow)
+context/import/*
+!context/import/.gitkeep
+
+# Legacy: Local project data (now in database)
+projects/*/data/
 
 # OS files
 .DS_Store

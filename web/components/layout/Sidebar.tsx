@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 interface ProjectWithContents {
   slug: string;
   name: string;
+  description?: string | null;
+  owner?: string;
   dashboards: string[];
   queries: string[];
   reports: string[];
@@ -15,6 +17,7 @@ interface ProjectWithContents {
 
 interface SidebarProps {
   projects: ProjectWithContents[];
+  currentUserEmail?: string | null;
 }
 
 function ChevronIcon({ expanded }: { expanded: boolean }) {
@@ -38,7 +41,7 @@ function ChevronIcon({ expanded }: { expanded: boolean }) {
   );
 }
 
-export function Sidebar({ projects }: SidebarProps) {
+export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
   const pathname = usePathname();
   const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
     new Set()
@@ -137,7 +140,12 @@ export function Sidebar({ projects }: SidebarProps) {
                           !hasContents && "ml-5"
                         )}
                       >
-                        {project.name}
+                        <span className="flex items-center gap-1.5">
+                          {project.name}
+                          {project.owner && project.owner === currentUserEmail && (
+                            <span className="text-[10px] text-muted-foreground">(you)</span>
+                          )}
+                        </span>
                       </Link>
                     </div>
 
@@ -169,32 +177,6 @@ export function Sidebar({ projects }: SidebarProps) {
                           </div>
                         )}
 
-                        {project.queries.length > 0 && (
-                          <div>
-                            <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
-                              Queries
-                            </div>
-                            <ul className="space-y-0.5">
-                              {project.queries.map((name) => (
-                                <li key={name}>
-                                  <Link
-                                    href={`/projects/${project.slug}/queries/${name}`}
-                                    className={cn(
-                                      "block px-3 py-1.5 rounded-md text-xs transition-colors",
-                                      pathname ===
-                                        `/projects/${project.slug}/queries/${name}`
-                                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                                        : "text-sidebar-foreground hover:bg-sidebar-accent/50"
-                                    )}
-                                  >
-                                    {name}.sql
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        )}
-
                         {project.reports.length > 0 && (
                           <div>
                             <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
@@ -214,6 +196,32 @@ export function Sidebar({ projects }: SidebarProps) {
                                     )}
                                   >
                                     {name}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {project.queries.length > 0 && (
+                          <div>
+                            <div className="px-2 py-1 text-xs text-muted-foreground font-medium">
+                              Queries
+                            </div>
+                            <ul className="space-y-0.5">
+                              {project.queries.map((name) => (
+                                <li key={name}>
+                                  <Link
+                                    href={`/projects/${project.slug}/queries/${name}`}
+                                    className={cn(
+                                      "block px-3 py-1.5 rounded-md text-xs transition-colors",
+                                      pathname ===
+                                        `/projects/${project.slug}/queries/${name}`
+                                        ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                                        : "text-sidebar-foreground hover:bg-sidebar-accent/50"
+                                    )}
+                                  >
+                                    {name}.sql
                                   </Link>
                                 </li>
                               ))}

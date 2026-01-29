@@ -1,6 +1,11 @@
+---
+name: create-project
+description: Create a new analysis project in the database. Use when the user says "/create-project", wants to start a new project, or needs a new analysis workspace.
+---
+
 # /create-project - Create New Project
 
-Create a new analysis project with proper structure.
+Create a new analysis project in the database.
 
 ## Trigger
 
@@ -13,87 +18,148 @@ User says "create project", "/create-project [name]", or "new project".
    - Otherwise, ask for project name
    - Convert to slug format (lowercase, hyphens): "My Analysis" → "my-analysis"
 
-2. **Check for Existing Project**
-   - Check if `projects/[slug]` already exists
-   - If yes, warn and ask for different name
+2. **Get User Identity**
+   - Get git email: `git config user.email`
+   - Validate it's `@rippling.com`
+   - This will be the project owner
 
-3. **Create Project Structure**
-   ```bash
-   mkdir -p projects/[slug]/dashboards
-   mkdir -p projects/[slug]/queries
-   mkdir -p projects/[slug]/reports
-   mkdir -p projects/[slug]/data
+3. **Check for Existing Project**
+   - Query database for existing project with same slug
+   - If exists, warn and ask for different name
+
+4. **Create Project in Database**
+   
+   Use Prisma to create the project:
+   ```typescript
+   import 'dotenv/config';
+   import { PrismaClient } from '@prisma/client';
+   
+   const prisma = new PrismaClient({
+     accelerateUrl: process.env.PRISMA_DATABASE_URL,
+   });
+   
+   // Get or create user
+   const user = await prisma.user.upsert({
+     where: { email: gitEmail },
+     create: { email: gitEmail },
+     update: {},
+   });
+   
+   // Create project
+   const project = await prisma.project.create({
+     data: {
+       slug: projectSlug,
+       name: projectName,
+       description: '', // User can update later
+       ownerId: user.id,
+     },
+   });
+   
+   // Create default empty dashboard
+   await prisma.dashboard.create({
+     data: {
+       projectId: project.id,
+       name: 'main',
+       config: {
+         title: projectName,
+         widgets: [],
+       },
+     },
+   });
+   
+   await prisma.$disconnect();
    ```
 
-4. **Copy Template Files**
-   - Copy from `projects/_templates/basic-analysis/`:
-     - `README.md` → customize with project name
-     - `dashboards/main.yaml` → empty dashboard template
-   - Create `.gitkeep` files in empty directories:
-     - `projects/[slug]/reports/.gitkeep`
-
-5. **Update projects.json**
-   - Read current `projects.json`
-   - Add new project entry:
-     ```json
-     {
-       "slug": "[slug]",
-       "name": "[Project Name]",
-       "description": "",
-       "createdAt": "[ISO date]",
-       "author": "[email-prefix from RIPPLING_ACCOUNT_EMAIL]"
-     }
-     ```
-   - Write back to `projects.json`
-
-6. **Output Confirmation**
+5. **Output Confirmation**
    ```
    ✅ Project created!
    
    Project: [Project Name]
-   Location: projects/[slug]/
-   
-   Structure:
-   ├── README.md
-   ├── dashboards/
-   │   └── main.yaml
-   ├── queries/
-   ├── reports/
-   └── data/
+   Slug: [project-slug]
+   Owner: [your-email]
    
    Next steps:
-   1. Add SQL queries to queries/ folder
-   2. Run /query to execute SQL and cache results
-   3. Configure widgets in dashboards/main.yaml
-   4. Add written reports to reports/ folder
-   5. Run /save to commit your project
+   1. Run /query to execute SQL and save results
+   2. Queries will automatically be added to the dashboard
+   3. Run /report to add written documentation
+   
+   View at: /projects/[slug]
    ```
 
-## Project Structure
+## No Local Files
 
-```
-projects/[slug]/
-├── README.md           # Project description
-├── dashboards/         # Dashboard YAML configs
-│   └── main.yaml       # Main dashboard
-├── queries/            # SQL query files
-│   └── example.sql
-├── reports/            # Written reports (markdown)
-│   └── findings.md
-└── data/               # Cached JSON results
-    └── example.json
+**Important:** Projects are stored entirely in the database. No local files are created.
+
+- No `projects/[slug]/` folder
+- No `projects.json`
+- No data JSON files
+
+All data lives in Vercel Postgres.
+
+## Example Script
+
+Run this to create a project:
+
+```bash
+npx tsx -e "
+import 'dotenv/config';
+import { PrismaClient } from '@prisma/client';
+import { execSync } from 'child_process';
+
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.PRISMA_DATABASE_URL,
+});
+
+const email = execSync('git config user.email', { encoding: 'utf-8' }).trim();
+const slug = 'my-analysis';
+const name = 'My Analysis';
+
+async function main() {
+  const user = await prisma.user.upsert({
+    where: { email },
+    create: { email },
+    update: {},
+  });
+  
+  const project = await prisma.project.create({
+    data: {
+      slug,
+      name,
+      ownerId: user.id,
+    },
+  });
+  
+  await prisma.dashboard.create({
+    data: {
+      projectId: project.id,
+      name: 'main',
+      config: { title: name, widgets: [] },
+    },
+  });
+  
+  console.log('Created:', project.slug);
+  await prisma.\$disconnect();
+}
+
+main().catch(e => {
+  console.error(e);
+  process.exit(1);
+});
+"
 ```
 
 ## URL Routes
 
 After creating a project, it will be accessible at:
 - Project overview: `/projects/[slug]`
-- Dashboards: `/projects/[slug]/dashboards/[name]`
-- Queries: `/projects/[slug]/queries/[name]`
-- Reports: `/projects/[slug]/reports/[name]`
+- Dashboard: `/projects/[slug]/dashboards/main`
 
 ## Error Handling
 
-- If project name is empty, prompt for name
-- If project already exists, suggest different name
-- If not on user branch, **ask the user** if they'd like to set up their personal branch first (run `/setup`), then continue after setup
+| Error | Solution |
+|-------|----------|
+| Project name empty | Prompt user for name |
+| Project slug exists | Suggest different name |
+| Git email not @rippling.com | Run `git config user.email "you@rippling.com"` |
+| Database connection fails | Check DATABASE_URL in .env |
+| User not in database | Run /setup first |

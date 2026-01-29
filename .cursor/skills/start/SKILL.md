@@ -1,3 +1,8 @@
+---
+name: start
+description: Start the web dashboard development server. Use when the user says "/start", wants to preview dashboards, run the dev server, or view projects locally.
+---
+
 # /start - Start Development Server
 
 Start the Rippling OS web dashboard for viewing projects and dashboards.
@@ -39,6 +44,8 @@ This starts the Next.js development server at **http://localhost:3000**.
    - Dashboards: http://localhost:3000/projects/[slug]/dashboards/[name]
    - Queries:    http://localhost:3000/projects/[slug]/queries/[name]
    - Reports:    http://localhost:3000/projects/[slug]/reports/[name]
+   
+   Note: Set BYPASS_AUTH=true in .env for local development.
    ```
 
 4. **Open Browser in Side Panel**
@@ -56,9 +63,9 @@ This starts the Next.js development server at **http://localhost:3000**.
 
 ## What the Server Shows
 
-- **Home page**: List of all projects from `projects.json`
-- **Project pages**: Folder overview showing dashboards, queries, and reports
-- **Dashboard pages**: Interactive visualizations from `dashboards/*.yaml` files
+- **Home page**: List of all projects from the database
+- **Project pages**: Overview showing dashboards, queries, and reports
+- **Dashboard pages**: Interactive visualizations with data from query results
 - **Query pages**: SQL query content with syntax highlighting
 - **Report pages**: Rendered markdown reports
 
@@ -70,18 +77,28 @@ This starts the Next.js development server at **http://localhost:3000**.
 | `npm run build` | Build for production |
 | `npm run start` | Start production server |
 | `npm run query` | Run Snowflake queries |
-| `npm run save` | Save and commit changes |
-| `npm run sync` | Sync with remote |
+
+## Local Auth Setup
+
+For local development, your `.env` needs:
+```
+AUTH_SECRET=your-generated-secret    # Required: openssl rand -base64 32
+BYPASS_AUTH=true                      # Skips magic link email flow
+```
+
+**Note:** Even with `BYPASS_AUTH=true`, `AUTH_SECRET` is required for NextAuth to function.
 
 ## Troubleshooting
 
 - **Port 3000 in use**: Kill the existing process or check terminals
-- **Module not found**: Run `npm install` in the `web/` directory first
-- **Environment errors**: Check `.env` file exists with required variables
+- **Module not found**: Run `npm install` in both root and `web/` directories
+- **Database errors**: Check `DATABASE_URL` is set in `.env`
+- **Prisma errors**: Run `npx prisma generate` first
 
 ## Related Skills
 
-- `/setup` - Set up your user branch
+- `/setup` - Set up your environment and user
 - `/create-project` - Create a new analysis project
 - `/query` - Run SQL queries against Snowflake
-- `/save` - Commit and push your work
+- `/report` - Create written reports
+- `/share` - Share projects with others

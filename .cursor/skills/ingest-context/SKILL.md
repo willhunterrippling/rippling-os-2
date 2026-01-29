@@ -1,152 +1,211 @@
+---
+name: ingest-context
+description: Import files into the context knowledge base via a staging folder. Use when the user says "/ingest-context", wants to add files to context, or import documentation to the knowledge base.
+---
+
 # /ingest-context - Add Context to Knowledge Base
 
-Add new documentation, SQL patterns, or code files to the shared context in `context/global/`.
+Import files into the context knowledge base via a staging folder.
 
 ## Trigger
 
-User says "ingest context", "/ingest-context", "add context", "add this to context", or provides a file/URL to add to the knowledge base.
+User says "ingest context", "/ingest-context", "add context", "add this to context", or wants to add files to the knowledge base.
 
-## What Can Be Ingested
+## Context Types
 
-| Type | Destination | Examples |
-|------|-------------|----------|
-| Schema docs | `context/global/schemas/` | Table definitions, column descriptions, data dictionaries |
-| SQL patterns | `context/global/sql-patterns/` | Reusable queries, functions, common joins |
-| Code files | `context/global/code/` | Reference implementations, utilities, examples |
-| Definitions | `context/global/definitions/` | Metric definitions, business rules, glossaries |
+- **Global Context** (`context/global/`): Shared with ALL users. Committed to repo, requires approval to merge.
+- **Personal Context** (`context/personal/`): Private to you. Gitignored, not shared with others.
+
+## File Types & Destinations
+
+| Type | Subfolder | Examples |
+|------|-----------|----------|
+| Documentation | `docs/` | Guides, explanations, investigation reports, how-tos |
+| Schema docs | `schemas/` | Table definitions, column descriptions, data dictionaries |
+| SQL patterns | `sql-patterns/` | Reusable queries, functions, common joins |
+| Code files | `code/` | Reference implementations, utilities, examples |
+| Definitions | `definitions/` | Metric definitions, business rules, glossaries |
 
 ## Workflow
 
-1. **Identify the Content**
-   - User provides a file path, URL, or pastes content directly
-   - Determine the type of content (schema, SQL, code, definition)
+### Step 1: Prompt User to Add Files
 
-2. **Determine Destination**
-   - Schema documentation → `context/global/schemas/`
-   - SQL queries/patterns → `context/global/sql-patterns/`
-   - Code files → `context/global/code/`
-   - Metric definitions → `context/global/definitions/`
+Tell the user to drop their files into the import folder:
 
-3. **Process the Content**
-   - If URL: fetch and extract relevant content
-   - If file: read the file
-   - If pasted: use directly
-   - Clean up formatting if needed
+```
+To add files to the knowledge base, drop them into:
 
-4. **Create the Context File**
-   - Use a descriptive filename (e.g., `USER_TABLES.md`, `attribution_query.sql`)
-   - Add a header comment with source and date
-   - Save to appropriate directory
+📂 context/import/
 
-5. **Confirm and Provide Usage**
-   ```
-   ✅ Context added!
-   
-   File: context/global/[type]/[filename]
-   Type: [Schema | SQL Pattern | Code | Definition]
-   
-   This context is now available to all users.
-   Run /save to commit and share with others.
-   ```
+You can add any of these file types:
+- Documentation & guides (.md) - explanations, reports, how-tos
+- Schema documentation (.md) - table/column definitions
+- SQL patterns and queries (.sql)
+- Code files (.py, .ts, .js, etc.)
+- Metric definitions (.md)
 
-## Examples
+Let me know when the files are ready.
+```
 
-### Adding a Schema Doc
+### Step 2: Wait for User Confirmation
+
+User confirms files are in place (e.g., "ready", "done", "files added").
+
+### Step 3: Scan the Import Folder
+
+List files in `context/import/` (excluding .gitkeep):
+```bash
+ls context/import/
+```
+
+If no files found, tell the user and wait.
+
+### Step 4: Ask Global or Personal
+
+Use the AskQuestion tool:
+
+```
+Title: "Context Destination"
+Question: "Where should these files be saved?"
+Options:
+  - id: "global", label: "Global (shared with all users)"
+  - id: "personal", label: "Personal (private, only for your sessions)"
+```
+
+### Step 5: Analyze and Categorize Each File
+
+For each file in `context/import/`:
+
+1. **Briefly scan the file** (first ~50 lines) to understand its content - don't read the whole file
+2. **Determine the type** based on content:
+   - Explanations, guides, reports, investigations, how-tos → `docs/`
+   - Contains table/column definitions, data dictionaries → `schemas/`
+   - SQL SELECT/INSERT/UPDATE statements, query templates → `sql-patterns/`
+   - Code (Python, TypeScript, etc.) → `code/`
+   - Short business definitions, metrics, glossary terms → `definitions/`
+3. **Determine the filename** - use the original name or suggest a more descriptive one
+
+**Tip:** If a markdown file explains a process, documents an investigation, or is a guide/report, it goes in `docs/`. If it's a concise list of definitions or a data dictionary, it goes elsewhere.
+
+### Step 6: Move Files to Destination
+
+**Use shell `mv` command for speed** - move all files first, then add headers.
+
+Move each file to the appropriate location:
+- Global: `context/global/[type]/[filename]`
+- Personal: `context/personal/[type]/[filename]`
+
+For personal context, create subdirectories if they don't exist first:
+```bash
+mkdir -p context/personal/docs context/personal/schemas context/personal/sql-patterns context/personal/code context/personal/definitions
+```
+
+Then move files using `mv`:
+```bash
+mv "context/import/filename.md" "context/global/docs/filename.md"
+mv "context/import/query.sql" "context/global/sql-patterns/query.sql"
+```
+
+### Step 6b: Add Header Metadata
+
+After all files are moved, add header comments to each file in its new location:
+
+| File Type | Header Format |
+|-----------|---------------|
+| Markdown (.md) | `<!-- Source: [original filename] -->\n<!-- Added: [date] -->\n<!-- Type: [category] -->\n\n` |
+| SQL (.sql) | `-- Source: [original filename]\n-- Added: [date]\n-- Type: SQL Pattern\n\n` |
+| Python (.py) | `"""\nSource: [original filename]\nAdded: [date]\nType: Code Reference\n"""\n\n` |
+| JS/TS (.js/.ts) | `/**\n * Source: [original filename]\n * Added: [date]\n * Type: Code Reference\n */\n\n` |
+
+Use the StrReplace tool to prepend headers, or use sed:
+```bash
+sed -i '' '1s/^/-- Source: query.sql\n-- Added: 2026-01-29\n-- Type: SQL Pattern\n\n/' "context/global/sql-patterns/query.sql"
+```
+
+### Step 7: Confirm
+
+For **global** context:
+```
+✅ Context imported to global knowledge base!
+
+Files added:
+- context/global/schemas/TABLE_NAME.md
+- context/global/sql-patterns/query_name.sql
+
+These files are now available to all users.
+Run /save to commit and share with others.
+```
+
+For **personal** context:
+```
+✅ Context imported to your personal knowledge base!
+
+Files added:
+- context/personal/schemas/TABLE_NAME.md
+- context/personal/sql-patterns/query_name.sql
+
+These files are private to you and available in future sessions.
+```
+
+## Example Flow
+
 ```
 User: /ingest-context
-      Here's the schema for the USER table:
-      - id: varchar, primary key
-      - email: varchar, user email
-      - created_at: timestamp
-      
-AI: Creates context/global/schemas/USER_TABLE.md
-```
 
-### Adding a SQL Pattern
-```
-User: /ingest-context projects/my-analysis/queries/useful_join.sql
+AI: To add files to the knowledge base, drop them into:
+    📂 context/import/
+    Let me know when the files are ready.
 
-AI: Copies to context/global/sql-patterns/useful_join.sql
-    with header comment noting source
-```
+User: done
 
-### Adding Code Reference
-```
-User: Add this Python function to context for reference:
-      [pastes code]
-      
-AI: Creates context/global/code/[descriptive_name].py
-```
+AI: [Scans context/import/, finds: MO_SUPPRESSION_RULES_DOCUMENTATION.md, 
+     SUPPRESSION_INVESTIGATION_REPORT.md, helper_query.sql]
+    [Uses AskQuestion: "Where should these files be saved?"]
 
-## File Format Guidelines
+User: Selects "Global (shared with all users)"
 
-### Schema Documentation (Markdown)
-```markdown
-# TABLE_NAME
-
-Brief description of what this table contains.
-
-## Columns
-
-| Column | Type | Description |
-|--------|------|-------------|
-| id | VARCHAR | Primary key |
-| ... | ... | ... |
-
-## Common Filters
-- `is_deleted = FALSE`
-- `_fivetran_deleted = FALSE`
-
-## Relationships
-- Links to OTHER_TABLE via foreign_key_column
-```
-
-### SQL Patterns
-```sql
--- Pattern: [Name]
--- Description: [What this does]
--- Usage: [When to use this]
--- Source: [Where this came from]
--- Added: [Date]
-
-SELECT ...
-```
-
-### Code Files
-```python
-"""
-[Description of what this code does]
-
-Source: [Where this came from]
-Added: [Date]
-"""
-
-# code here...
+AI: [Scans first ~50 lines of each file to categorize]
+    [MO_SUPPRESSION_RULES_DOCUMENTATION.md → explanation/guide → docs/]
+    [SUPPRESSION_INVESTIGATION_REPORT.md → investigation report → docs/]
+    [helper_query.sql → SQL query → sql-patterns/]
+    [Uses mv to move all files first - fast!]
+    [Then adds header metadata to each file in place]
+    
+    ✅ Context imported to global knowledge base!
+    
+    Files added:
+    - context/global/docs/MO_SUPPRESSION_RULES_DOCUMENTATION.md
+    - context/global/docs/SUPPRESSION_INVESTIGATION_REPORT.md
+    - context/global/sql-patterns/helper_query.sql
+    
+    Run /save to commit and share with others.
 ```
 
 ## Directory Structure
 
 ```
-context/global/
-├── schemas/           # Table/database documentation
-│   ├── OUTREACH_TABLES.md
-│   ├── SFDC_TABLES.md
-│   └── ...
-├── sql-patterns/      # Reusable SQL queries
-│   ├── analyze_opp.sql
-│   ├── get_sequence_type.sql
-│   └── ...
-├── code/              # Reference code implementations
-│   └── ...
-└── definitions/       # Business definitions
-    ├── PIPELINE_METRICS.md
-    └── ...
+context/
+├── import/                # Staging folder (gitignored, cursor can read)
+│   └── .gitkeep
+│
+├── global/                # Shared with all users (committed to repo)
+│   ├── docs/              # Guides, reports, explanations
+│   ├── schemas/           # Table/column definitions
+│   ├── sql-patterns/      # Reusable queries
+│   ├── code/              # Reference implementations
+│   └── definitions/       # Metric definitions, glossaries
+│
+└── personal/              # Private to you (gitignored)
+    ├── docs/              
+    ├── schemas/           
+    ├── sql-patterns/      
+    ├── code/              
+    └── definitions/       
 ```
 
 ## Important Notes
 
-- Context in `context/global/` is shared with ALL users
-- Changes require approval before merging to main
-- Always add source attribution
-- Use descriptive filenames
-- Run `/save` to commit after adding context
+- `context/import/` is gitignored but NOT cursor-ignored (Cursor can read files there)
+- Files in import folder are temporary - they get moved, not copied
+- Personal context subdirectories are created automatically if needed
+- Always run `/save` after adding global context to commit changes
