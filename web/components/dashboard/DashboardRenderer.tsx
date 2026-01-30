@@ -89,12 +89,14 @@ export function DashboardRenderer({ config }: DashboardRendererProps) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold">{title}</h2>
-        {description && (
-          <p className="text-muted-foreground mt-1">{description}</p>
-        )}
-      </div>
+      {title && (
+        <div>
+          <h2 className="text-2xl font-bold">{title}</h2>
+          {description && (
+            <p className="text-muted-foreground mt-1">{description}</p>
+          )}
+        </div>
+      )}
 
       {metricWidgets.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

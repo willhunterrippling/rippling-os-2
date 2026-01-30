@@ -144,6 +144,61 @@ function formatQueryTitle(name: string): string {
   return formatSlugAsTitle(toFormat);
 }
 
+// Inferred widget configuration from query data
+interface InferredWidgetConfig {
+  type: "metric" | "chart" | "table";
+  valueKey?: string;
+  chartType?: "line" | "bar" | "area" | "pie";
+  xKey?: string;
+  yKey?: string;
+}
+
+// Auto-detect the best widget type based on query result data shape
+function inferWidgetType(data: Record<string, unknown>[]): InferredWidgetConfig {
+  if (!data || data.length === 0) {
+    return { type: "table" };
+  }
+
+  const columns = Object.keys(data[0]);
+  const firstRow = data[0];
+
+  // Single row with single numeric value → Metric card
+  if (data.length === 1 && columns.length === 1) {
+    const value = firstRow[columns[0]];
+    if (typeof value === "number" || (typeof value === "string" && !isNaN(Number(value)))) {
+      return { type: "metric", valueKey: columns[0] };
+    }
+  }
+
+  // Single row with two columns (label + value) → Metric card
+  if (data.length === 1 && columns.length === 2) {
+    const numericCol = columns.find(c => {
+      const val = firstRow[c];
+      return typeof val === "number" || (typeof val === "string" && !isNaN(Number(val)));
+    });
+    if (numericCol) {
+      return { type: "metric", valueKey: numericCol };
+    }
+  }
+
+  // Has date/time column + numeric column → Line Chart
+  const dateCol = columns.find(c =>
+    /date|time|day|week|month|year|period/i.test(c)
+  );
+  const numericCol = columns.find(c => {
+    if (c === dateCol) return false;
+    const val = firstRow[c];
+    return typeof val === "number";
+  });
+
+  if (dateCol && numericCol && data.length > 1) {
+    return { type: "chart", chartType: "line", xKey: dateCol, yKey: numericCol };
+  }
+
+  // Default: Table
+  return { type: "table" };
+}
+
 // Extract title from dashboard config
 function extractDashboardTitle(config: unknown, fallbackName: string): string {
   if (config && typeof config === 'object' && 'title' in config && typeof (config as { title?: string }).title === 'string') {
@@ -244,6 +299,91 @@ export async function getProjectOverview(
     project,
     dashboards: project.dashboards,
     queries: project.queries,
+    reports: project.reports,
+  };
+}
+
+// Widget with data attached for rendering
+export interface WidgetWithData {
+  type: "metric" | "chart" | "table";
+  title: string;
+  queryName: string;
+  data: Record<string, unknown>[];
+  valueKey?: string;
+  chartType?: "line" | "bar" | "area" | "pie";
+  xKey?: string;
+  yKey?: string;
+}
+
+// Get all queries for a project with auto-generated widget configurations
+export async function getProjectQueriesWithData(projectSlug: string): Promise<{
+  project: ProjectWithOwner;
+  widgets: WidgetWithData[];
+  dashboards: ProjectItem[];
+  reports: ProjectItem[];
+} | null> {
+  const project = await prisma.project.findUnique({
+    where: { slug: projectSlug },
+    include: {
+      owner: {
+        select: {
+          email: true,
+          name: true,
+        },
+      },
+      queries: {
+        include: { result: true },
+        orderBy: { createdAt: "desc" },
+      },
+      dashboards: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      reports: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  if (!project) {
+    return null;
+  }
+
+  // Auto-generate widgets with smart type detection
+  const widgets: WidgetWithData[] = project.queries.map((query) => {
+    // Extract data from result
+    let data: Record<string, unknown>[] = [];
+    if (query.result?.data) {
+      const rawData = query.result.data;
+      if (Array.isArray(rawData)) {
+        data = rawData as Record<string, unknown>[];
+      } else if (typeof rawData === "object" && rawData !== null && "data" in rawData) {
+        data = (rawData as { data: unknown[] }).data as Record<string, unknown>[];
+      } else {
+        data = [rawData as Record<string, unknown>];
+      }
+    }
+
+    // Infer widget type from data shape
+    const widgetConfig = inferWidgetType(data);
+
+    return {
+      ...widgetConfig,
+      title: formatQueryTitle(query.name),
+      queryName: query.name,
+      data,
+    };
+  });
+
+  return {
+    project,
+    widgets,
+    dashboards: project.dashboards,
     reports: project.reports,
   };
 }
