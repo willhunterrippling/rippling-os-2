@@ -9,6 +9,22 @@ Delete projects, dashboards, or reports from the database.
 
 **Note:** Queries cannot be deleted directly - they are linked to dashboards and reports. Delete the parent resource to remove associated queries.
 
+## STOP - Confirm Before Proceeding
+
+**You MUST know these before deleting:**
+
+| Requirement | How to Clarify |
+|-------------|----------------|
+| Resource type | "What do you want to delete? (project, dashboard, or report)" |
+| Resource name | "Which specific [type] should I delete?" |
+| Project (if applicable) | "Which project is this in?" |
+
+**ALWAYS confirm before deleting.** Deletion is permanent.
+
+Do NOT:
+- Delete without explicit user confirmation
+- Assume which resource to delete
+
 ## Trigger
 
 User says "delete", "/delete", "remove", "drop project/dashboard/report".

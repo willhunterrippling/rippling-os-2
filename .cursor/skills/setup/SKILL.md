@@ -7,6 +7,18 @@ description: Complete repository setup including environment, dependencies, and 
 
 Set up everything needed to work in Rippling OS: environment, dependencies, and database connection.
 
+## STOP - Verify Before Proceeding
+
+**Check these BEFORE running setup:**
+
+| Check | Why |
+|-------|-----|
+| Is `.env` already configured? | Don't overwrite existing config |
+| Does user have database URLs? | They need these from admin/Vercel |
+| Does user have Snowflake access? | They'll need to SSO authenticate |
+
+**If `.env` exists with valid URLs, setup may not be needed.** Ask the user what issue they're trying to solve.
+
 ## Trigger
 
 User says "setup", "/setup", or the onboarding rule detects a fresh repo.

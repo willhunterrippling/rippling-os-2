@@ -7,15 +7,27 @@ description: Share projects with other Rippling users. Use when the user says "/
 
 Share a project with other Rippling users via CLI.
 
+## STOP - Clarify Before Proceeding
+
+**You MUST know these before sharing:**
+
+| Requirement | How to Clarify |
+|-------------|----------------|
+| Project | "Which project do you want to share?" |
+| User email | "Who should I share it with? (email address)" |
+| Permission | "Should they be an editor or viewer?" |
+
+**If any of these are unclear, ASK THE USER.**
+
 ## Trigger
 
 User says "share", "/share", "share project", or "add collaborator".
 
 ## Workflow
 
-### 1. Identify Project
+### 1. Collect Share Details
 
-Ask user for:
+Confirm you have:
 - **Project**: Which project do you want to share?
 - **Email**: Who should get access? (must be @rippling.com)
 - **Permission**: What level of access?

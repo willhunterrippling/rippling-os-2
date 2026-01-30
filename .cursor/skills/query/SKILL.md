@@ -9,6 +9,31 @@ Execute SQL queries against Snowflake. Queries must either be:
 - **Temporary**: Run and show results, but don't save to DB
 - **Saved**: Attached to a dashboard or report
 
+## STOP - Clarify Before Proceeding
+
+**You MUST know these before writing SQL:**
+
+| Requirement | How to Clarify |
+|-------------|----------------|
+| Project | "Which project should this query belong to?" |
+| Data question | "What question are you trying to answer?" |
+| Tables/schema | Read schema docs first. If still unclear, ask. |
+| Temp vs saved | "Is this a quick lookup or for a dashboard/report?" |
+
+**If you don't understand the business question, ASK.**
+
+Do NOT:
+- Guess at SQL logic when requirements are ambiguous
+- Assume which project without confirmation
+- Write complex queries without understanding the goal
+
+### When You DON'T Need to Ask
+
+- User explicitly named the project
+- You just created/queried a project in this conversation
+- Only one project exists for the user
+- User provided clear SQL or a specific question
+
 ## Trigger
 
 User says "query", "/query", "run query", "execute SQL", or provides SQL to run.
@@ -26,21 +51,7 @@ User says "query", "/query", "run query", "execute SQL", or provides SQL to run.
 
 ## Workflow
 
-### 1. Identify Project
-
-Before proceeding, you MUST know which project to use. If unclear, ask the user.
-
-**When you need to ask:**
-- User didn't specify a project
-- Multiple projects exist
-- Context doesn't make it obvious
-
-**When you DON'T need to ask:**
-- User explicitly named the project
-- You just created/queried a project in this conversation
-- Only one project exists for the user
-
-### 2. Determine Query Type
+### 1. Determine Query Type
 
 For ad-hoc questions or exploration, default to **temp query**:
 ```
@@ -54,13 +65,13 @@ For building dashboards or reports, use **saved query**:
 "Run this query for the report" → saved query (report)
 ```
 
-### 3. Validate SQL
+### 2. Validate SQL
 
 - Check for prohibited statements: DELETE, UPDATE, DROP, TRUNCATE
 - Warn if no LIMIT clause (suggest adding one for safety)
 - Ensure proper filters (is_deleted, _fivetran_deleted)
 
-### 4. Execute Query
+### 3. Execute Query
 
 **IMPORTANT:** When running via Cursor agent, you MUST use `required_permissions: ["all"]` to allow network/tsx access.
 
@@ -90,7 +101,7 @@ echo "[SQL]" > /tmp/query.sql
 npm run query -- --project [project-slug] --name [query-name] --sql /tmp/query.sql --report [report-name]
 ```
 
-### 5. After Temp Query - Ask About Saving
+### 4. After Temp Query - Ask About Saving
 
 After showing results from a temp query, ask:
 
@@ -107,7 +118,7 @@ If user wants to save:
 2. Ask for a query name
 3. Re-run with appropriate `--dashboard` or `--report` flag
 
-### 6. Dashboard Widget Integration
+### 5. Dashboard Widget Integration
 
 When saving to a dashboard, ask about widget type:
 

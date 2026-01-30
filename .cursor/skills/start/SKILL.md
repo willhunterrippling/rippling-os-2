@@ -7,6 +7,12 @@ description: Start the web dashboard development server. Use when the user says 
 
 Start the Rippling OS web dashboard for viewing projects and dashboards.
 
+## Before Starting
+
+**Check these first:**
+- If setup hasn't been run, run `/setup` first
+- Check if server is already running (port 3000)
+
 ## Trigger
 
 User says "start", "/start", "start the server", "run dev", or wants to preview dashboards.

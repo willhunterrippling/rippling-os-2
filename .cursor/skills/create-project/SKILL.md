@@ -7,6 +7,21 @@ description: Create a new analysis project in the database. Use when the user sa
 
 Create a new analysis project in the database.
 
+## STOP - Clarify Before Proceeding
+
+**You MUST know these before creating a project:**
+
+| Requirement | How to Clarify |
+|-------------|----------------|
+| Project name | "What should I call this project?" |
+| Purpose | "What will you use this project for?" (helps with description) |
+
+**If the user just says "create a project" without a name, ASK.**
+
+Do NOT:
+- Make up a project name
+- Create a project without user confirmation
+
 ## Trigger
 
 User says "create project", "/create-project [name]", or "new project".

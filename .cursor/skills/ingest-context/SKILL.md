@@ -7,6 +7,18 @@ description: Import files into the context knowledge base via a staging folder. 
 
 Import files into the context knowledge base via a staging folder.
 
+## STOP - Clarify Before Proceeding
+
+**You MUST know these before importing:**
+
+| Requirement | How to Clarify |
+|-------------|----------------|
+| Source files | "Which file(s) should I import?" |
+| Context type | "Is this code, documentation, or schema?" |
+| Destination | "Should this go in global context (shared) or personal (private)?" |
+
+**If no files are in `context/import/`, prompt the user to add them first.**
+
 ## Trigger
 
 User says "ingest context", "/ingest-context", "add context", "add this to context", or wants to add files to the knowledge base.

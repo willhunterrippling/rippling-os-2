@@ -36,6 +36,7 @@ ALL COMMANDS
   /setup           Configure environment, create user & example project
   /create-project  Create a new analysis project in the database
   /query           Execute SQL queries (temp or saved to dashboard/report)
+  /dashboard       Create or edit dashboards with charts and visualizations
   /report          Create or edit markdown reports with queries
   /share           Share projects with other users
   /delete          Delete projects, dashboards, or reports
@@ -67,6 +68,7 @@ If the user asks `/help <command>`, read and summarize the corresponding skill:
 | `/help setup` | `.cursor/skills/setup/SKILL.md` |
 | `/help create-project` | `.cursor/skills/create-project/SKILL.md` |
 | `/help query` | `.cursor/skills/query/SKILL.md` |
+| `/help dashboard` | `.cursor/skills/dashboard/SKILL.md` |
 | `/help report` | `.cursor/skills/report/SKILL.md` |
 | `/help share` | `.cursor/skills/share/SKILL.md` |
 | `/help delete` | `.cursor/skills/delete/SKILL.md` |
