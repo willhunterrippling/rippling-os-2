@@ -1,147 +1,244 @@
 # Rippling OS 2.0
 
-AI-assisted Snowflake querying and interactive dashboard platform for Rippling's Growth team.
+AI-assisted Snowflake querying and dashboard platform for Rippling's Growth team.
 
 ## Overview
 
 Rippling OS enables Growth Managers to:
-- Query Snowflake data with AI assistance
-- View results as interactive web dashboards
-- Save and share work without understanding Git
-- Learn from others' approved queries and dashboards
+- Query Snowflake data with AI assistance via Cursor
+- Create interactive web dashboards with charts, metrics, and tables
+- Build markdown reports with linked query data
+- Share work with teammates—no Git knowledge required
+
+**Key Architecture:** All data (projects, queries, dashboards, reports) is stored in a PostgreSQL database, not local files. This enables real-time collaboration and access from the hosted web dashboard.
 
 ## Quick Start
 
-### 1. Setup
+### Prerequisites
 
-Run the setup script (installs dependencies, configures environment):
+1. **Cursor IDE** with this repository open
+2. **Database access** - Get URLs from your admin or the Vercel dashboard
+3. **Snowflake access** - You'll authenticate via SSO on first query
 
-```bash
-./scripts/setup.sh
-```
+### Step 1: Configure Environment
 
-This will:
-- Create `.env` from template and prompt for your email
-- Install npm dependencies
-- Generate MCP configuration
-
-Then restart Cursor to load the Snowflake MCP.
-
-### 2. Create a Project
-
-In Cursor, type `/create-project my-analysis` or manually:
+Copy the template and add your database URLs:
 
 ```bash
-mkdir -p projects/my-analysis/{dashboards,queries,reports,data}
-cp -r projects/_templates/basic-analysis/* projects/my-analysis/
+cp .env.template .env
+ln -sf ../.env web/.env
 ```
 
-### 3. Run Queries
+Edit `.env` with:
+- `DATABASE_URL`, `POSTGRES_URL`, `PRISMA_DATABASE_URL` from Vercel Postgres
+- `RIPPLING_ACCOUNT_EMAIL` - Your Rippling email for Snowflake SSO
+- `AUTH_SECRET` - Generate with `openssl rand -base64 32`
+- `BYPASS_AUTH=true` - For local development
 
-Create a SQL file in `projects/my-analysis/queries/count.sql`, then:
+### Step 2: Run Setup
 
-In Cursor, type `/query` or run:
+In Cursor, type `/setup` and follow the prompts. This will:
+- Install dependencies
+- Generate Prisma client
+- Create your user in the database
+- Test Snowflake connection (browser opens for SSO)
+- Create an example project with sample dashboard
 
-```bash
-npm run query -- projects/my-analysis/queries/count.sql
-```
-
-Results are saved to `projects/my-analysis/data/count.json`
-
-### 4. Configure Dashboard
-
-Edit `projects/my-analysis/dashboards/main.yaml`:
-
-```yaml
-title: "My Analysis"
-widgets:
-  - type: metric
-    title: "Total Count"
-    data: data/count.json
-    valueKey: count
-```
-
-### 5. Save Your Work
-
-In Cursor, type `/save` or run:
-
-```bash
-./scripts/save.sh "Add count analysis"
-```
-
-### 6. View Dashboard
-
-Start the development server:
+### Step 3: Start the Dashboard
 
 ```bash
 npm run dev
 ```
 
-Open http://localhost:3000/projects/my-analysis to see the project overview, or go directly to:
-- Dashboard: http://localhost:3000/projects/my-analysis/dashboards/main
-- Queries: http://localhost:3000/projects/my-analysis/queries/count
-- Reports: http://localhost:3000/projects/my-analysis/reports/findings
+Open http://localhost:3000 to see your projects.
+
+### Step 4: Run Your First Query
+
+In Cursor, type `/query` and describe what data you want. The AI will:
+1. Write the SQL
+2. Execute against Snowflake
+3. Ask if you want to save results to a dashboard or report
 
 ## Commands
 
-| Command | Description | Script Alternative |
-|---------|-------------|-------------------|
-| `/setup` | Install dependencies and configure environment | `./scripts/setup.sh` |
-| `/save` | Commit and push changes | `./scripts/save.sh` |
-| `/update-os` | Sync with main branch | `./scripts/sync.sh` |
-| `/create-project` | Create new analysis project | Manual |
-| `/query` | Execute SQL and cache results | `npm run query` |
+| Command | Description |
+|---------|-------------|
+| `/setup` | Configure environment, create user, generate example project |
+| `/create-project` | Create a new analysis project |
+| `/query` | Execute SQL queries (temp or saved to dashboard/report) |
+| `/dashboard` | Create or edit dashboards with visualizations |
+| `/report` | Create or edit markdown reports |
+| `/share` | Share projects with other users |
+| `/delete` | Delete projects, dashboards, or reports |
+| `/start` | Start the web dashboard dev server |
+| `/update-os` | Pull latest code from main |
+| `/passcode` | Generate passcode for web dashboard access |
+| `/help` | Show available commands |
 
-## Snowflake MCP Integration
+## How It Works
 
-This repo includes a Snowflake MCP (Model Context Protocol) server for direct database access from Cursor.
+### Projects
 
-### How It Works
+Projects are containers for related analysis work. Each project has:
+- A unique slug (e.g., `q4-lead-analysis`)
+- An owner (you) with full permissions
+- Optional shares with other users
 
-1. Run `/setup` (or `./scripts/setup.sh`) to generate your MCP config
-2. Restart Cursor to load the Snowflake MCP server
-3. On your first query, a browser window opens for Okta SSO authentication
-4. After authenticating, you can query Snowflake directly through the AI agent
+Create a project:
+```
+/create-project Q4 Lead Analysis
+```
 
-### MCP vs /query
+### Queries
+
+Queries can be **temp** (for exploration) or **saved** (for dashboards/reports).
+
+| Type | When to Use | What Happens |
+|------|-------------|--------------|
+| **Temp** | Quick lookups, exploration | Results shown inline, nothing saved |
+| **Saved** | Dashboard/report data | SQL + results stored in database |
+
+When you save a query, it's also written to `local-queries/<project>/<query>.sql` so you can run it in the VSCode Snowflake extension.
+
+### Dashboards
+
+Dashboards display query results as visualizations. Widget types:
+
+| Type | Purpose | Example |
+|------|---------|---------|
+| `chart` | Line, bar, or area charts | Weekly lead trends |
+| `metric` | Single number with optional comparison | Total leads this week |
+| `table` | Tabular data display | Lead breakdown by status |
+
+Dashboard config is stored as JSON in the database. The agent handles all configuration—just describe what you want.
+
+**Important:** Snowflake returns UPPERCASE column names. When describing widgets, use `WEEK` not `week`.
+
+### Reports
+
+Reports are markdown documents with linked queries. Use them for:
+- Investigation findings
+- Analysis documentation
+- Shareable insights
+
+Reports store their content in the database and display in the web app with formatting.
+
+## Authentication
+
+### Local Development
+
+Set `BYPASS_AUTH=true` in `.env` to skip authentication locally.
+
+### Web Dashboard Access
+
+The hosted dashboard uses passcode authentication:
+
+1. Generate a passcode: `/passcode` or `npm run passcode generate`
+2. A browser opens for Snowflake SSO verification
+3. Save the displayed passcode (shown only once)
+4. Use it to sign in at the web dashboard
+
+Passcodes are bcrypt-hashed—lost passcodes cannot be recovered. Generate a new one if needed.
+
+## Project Structure
+
+```
+rippling-os-2/
+├── web/                    # Next.js dashboard app
+├── prisma/
+│   └── schema.prisma       # Database models
+├── lib/
+│   └── db.ts               # Shared Prisma client
+├── scripts/
+│   └── run-query.ts        # Query execution CLI
+├── local-queries/          # SQL files synced from saved queries (gitignored)
+├── projects/               # Legacy project templates
+│   └── _templates/
+├── services/
+│   └── snowflake-config.yaml
+└── .cursor/
+    ├── mcp.json            # MCP server config (generated)
+    ├── rules/              # Agent safety guardrails
+    └── skills/             # Cursor skills (commands)
+```
+
+## Database Models
+
+| Model | Purpose |
+|-------|---------|
+| `User` | Rippling employees (by email) |
+| `Project` | Analysis containers |
+| `ProjectShare` | Sharing permissions |
+| `Dashboard` | Dashboard configs (JSON) |
+| `Query` | Saved SQL with results |
+| `QueryResult` | Latest execution results |
+| `Report` | Markdown reports |
+| `Passcode` | Authentication codes |
+
+## URL Routes
+
+| Route | Description |
+|-------|-------------|
+| `/` | Home - list all projects |
+| `/projects/[slug]` | Project overview |
+| `/projects/[slug]/dashboards/[name]` | Dashboard view |
+| `/projects/[slug]/reports/[name]` | Report view |
+| `/projects/[slug]/queries/[name]` | Query details |
+
+## Environment Variables
+
+### Required
+
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | Postgres connection string |
+| `POSTGRES_URL` | Postgres connection string (for Vercel) |
+| `PRISMA_DATABASE_URL` | Prisma Accelerate URL |
+| `AUTH_SECRET` | Session encryption key |
+| `RIPPLING_ACCOUNT_EMAIL` | Your Rippling email for Snowflake |
+
+### Optional
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `BYPASS_AUTH` | `false` | Skip auth in local dev |
+| `SNOWFLAKE_ACCOUNT` | `RIPPLINGORG-RIPPLING` | Snowflake account |
+| `SNOWFLAKE_DATABASE` | `PROD_RIPPLING_DWH` | Database |
+| `SNOWFLAKE_ROLE` | `PROD_RIPPLING_MARKETING` | Role |
+| `SNOWFLAKE_WAREHOUSE` | `PROD_RIPPLING_INTEGRATION_DWH` | Warehouse |
+| `NEXT_PUBLIC_APP_URL` | - | Production URL for share links |
+
+## Snowflake Integration
+
+### MCP Server
+
+The Snowflake MCP (Model Context Protocol) server enables direct database access from Cursor.
+
+**Setup:**
+1. Run `/setup` to generate MCP config
+2. Restart Cursor to load the server
+3. First query opens browser for SSO
+4. Tokens are cached afterward
+
+**MCP vs `/query`:**
 
 | Use Case | Tool | Output |
 |----------|------|--------|
-| Quick exploration ("What's the S1 count?") | MCP direct | Results shown inline |
-| Dashboard data ("Add to my dashboard") | `/query` skill | Saves JSON to `data/` folder |
+| Quick exploration | MCP direct | Results inline |
+| Dashboard data | `/query` | Saves to database |
 
-### Prerequisites
+### VSCode Snowflake Extension
 
-The MCP server requires `uv` (Python package manager):
+Install the [Snowflake VSCode Extension](https://marketplace.visualstudio.com/items?itemName=snowflake.snowflake-vsc) for:
+- SQL IntelliSense and autocomplete
+- Schema browsing
+- Direct query execution
 
-```bash
-# Install uv if not already installed
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+Saved queries sync to `local-queries/` so you can run them in the extension.
 
-### Configuration
+### Shared Configuration
 
-- MCP template: `.cursor/mcp.json.template` (committed to repo)
-- MCP config: `.cursor/mcp.json` (generated per-user, gitignored)
-- SQL permissions: `services/snowflake-config.yaml`
-
-The MCP reads your `RIPPLING_ACCOUNT_EMAIL` from `.env` and is configured for **read-only access** - SELECT, DESCRIBE, and SHOW queries only.
-
-## Snowflake VSCode Extension
-
-The [Snowflake VSCode Extension](https://marketplace.visualstudio.com/items?itemName=snowflake.snowflake-vsc) provides SQL IntelliSense, syntax highlighting, and direct query execution. When you open this workspace, VSCode will recommend installing it.
-
-### Setup
-
-1. **Install the extension**: Search "Snowflake" in VSCode Extensions (look for the official Snowflake badge)
-2. **Sign in**: Click the Snowflake icon in the sidebar and authenticate with SSO
-3. **Start writing SQL**: Open any `.sql` file and enjoy autocomplete for tables, columns, and functions
-
-### Shared Configuration (Optional)
-
-The query runner (`npm run query`) can read connection settings from `~/.snowflake/connections.toml`, the same file used by the VSCode extension. This means you only configure your credentials once.
-
-Create `~/.snowflake/connections.toml`:
+Both tools can share credentials via `~/.snowflake/connections.toml`:
 
 ```toml
 [rippling]
@@ -154,116 +251,65 @@ warehouse = "PROD_RIPPLING_INTEGRATION_DWH"
 role = "PROD_RIPPLING_MARKETING"
 ```
 
-**Priority order for connection config:**
-1. Environment variables (`.env` file with `RIPPLING_ACCOUNT_EMAIL`)
-2. TOML config (`~/.snowflake/connections.toml`)
-
-### Extension vs CLI vs MCP
-
-| Use Case | Tool | Best For |
-|----------|------|----------|
-| Quick exploration | **VSCode Extension** | IntelliSense, schema browsing, ad-hoc queries |
-| AI-assisted queries | **MCP** | Natural language to SQL, inline results |
-| Dashboard data | **CLI** (`npm run query`) | Saves results to database for dashboards |
-
-All three tools share the same SSO authentication - once you sign in to one, the others will use the cached credentials.
-
-## Project Structure
-
-```
-rippling-os-2/
-├── web/                    # Next.js dashboard app
-├── projects/               # User analysis projects
-│   ├── _templates/         # Project templates
-│   └── [project-name]/     # Individual projects
-│       ├── dashboards/     # Dashboard YAML configs
-│       │   └── main.yaml   # Main dashboard
-│       ├── queries/        # SQL files
-│       ├── reports/        # Written reports (markdown)
-│       ├── data/           # Cached JSON results
-│       └── README.md       # Project description
-├── context/
-│   ├── import/            # Staging folder for /ingest-context
-│   ├── global/            # Shared context (docs, schemas, sql-patterns, code, definitions)
-│   └── personal/          # Per-user context (gitignored)
-├── services/              # MCP service configurations
-│   └── snowflake-config.yaml
-├── scripts/               # CLI tools
-└── .cursor/
-    ├── mcp.json           # MCP server registration
-    ├── rules/             # Safety guardrails
-    └── skills/            # Cursor skills
-```
-
-## URL Routes
-
-| Route | Description |
-|-------|-------------|
-| `/projects/[slug]` | Project overview (folder view) |
-| `/projects/[slug]/dashboards/[name]` | View a specific dashboard |
-| `/projects/[slug]/queries/[name]` | View SQL query source |
-| `/projects/[slug]/reports/[name]` | View a written report |
-
-## Dashboard Widgets
-
-Configure widgets in `dashboards/*.yaml` files:
-
-### Metric
-```yaml
-- type: metric
-  title: "Total S1"
-  data: data/s1_count.json
-  valueKey: count
-```
-
-### Chart (line, bar, area, pie)
-```yaml
-- type: chart
-  title: "S1 by Week"
-  data: data/weekly.json
-  chartType: line
-  xKey: week
-  yKey: count
-```
-
-### Table
-```yaml
-- type: table
-  title: "Top Sequences"
-  data: data/sequences.json
-  columns:
-    - name
-    - sends
-    - replies
-```
-
-## Environment Variables
-
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `RIPPLING_ACCOUNT_EMAIL` | Your Rippling email (required) | - |
-| `SNOWFLAKE_ACCOUNT` | Snowflake account | `RIPPLINGORG-RIPPLING` |
-| `SNOWFLAKE_DATABASE` | Database | `PROD_RIPPLING_DWH` |
-| `SNOWFLAKE_ROLE` | Role | `PROD_RIPPLING_MARKETING` |
-| `SNOWFLAKE_WAREHOUSE` | Warehouse | `PROD_RIPPLING_INTEGRATION_DWH` |
-
 ## Safety Rules
 
-- Never commit directly to main
-- Never run DELETE/UPDATE/DROP queries
+- Never run DELETE, UPDATE, DROP, or TRUNCATE queries
 - Always use LIMIT when exploring data
-- Always filter by `is_deleted = FALSE`
+- Filter by `is_deleted = FALSE` where applicable
+- Never commit secrets or credentials to Git
 
 ## Development
+
+### Running Locally
 
 ```bash
 # Install dependencies
 npm install
-cd web && npm install
+npm install --prefix web
 
-# Start development server
+# Generate Prisma client
+npx prisma generate
+
+# Start dev server
 npm run dev
-
-# Run a query
-npm run query -- projects/example/queries/test.sql
 ```
+
+### Running Queries via CLI
+
+```bash
+# Temp query (not saved)
+npm run query -- --project my-analysis --sql query.sql --temp
+
+# Save to dashboard
+npm run query -- --project my-analysis --name weekly_leads --sql query.sql --dashboard main
+
+# Save to report
+npm run query -- --project my-analysis --name findings_01 --sql query.sql --report findings
+```
+
+### Updating the Database Schema
+
+After modifying `prisma/schema.prisma`:
+
+```bash
+npx prisma db push
+npx prisma generate
+```
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| "tsx/sandbox error" | Request `all` permissions in Cursor |
+| "Cannot connect to Snowflake" | SSO expired—browser will open for re-auth |
+| "User not found" | Run `/setup` to create your user |
+| "Project not found" | Run `/create-project` first |
+| Widget not showing data | Check column names are UPPERCASE |
+| Lost passcode | Generate new one with `/passcode` |
+
+## Contributing
+
+1. Work on `main` branch (user data is isolated via database, not branches)
+2. Pull latest: `/update-os`
+3. Make changes
+4. Test locally with `/start`
