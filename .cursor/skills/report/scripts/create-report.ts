@@ -16,11 +16,21 @@
 
 import 'dotenv/config';
 import { PrismaClient } from '@prisma/client';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
+import path from 'path';
 
 const prisma = new PrismaClient({
   accelerateUrl: process.env.PRISMA_DATABASE_URL,
 });
+
+function saveReportLocally(projectSlug: string, reportName: string, content: string): void {
+  const localDir = path.join(process.cwd(), 'local-reports', projectSlug);
+  mkdirSync(localDir, { recursive: true });
+  
+  const filePath = path.join(localDir, `${reportName}.md`);
+  writeFileSync(filePath, content);
+  console.log(`📄 Saved locally: local-reports/${projectSlug}/${reportName}.md`);
+}
 
 async function main() {
   const [projectSlug, reportName, contentFile] = process.argv.slice(2);
@@ -73,6 +83,9 @@ async function main() {
       content,
     },
   });
+  
+  // Save locally for @ mentioning in Cursor
+  saveReportLocally(projectSlug, reportName, content);
   
   console.log('✅ Report saved!');
   console.log('');

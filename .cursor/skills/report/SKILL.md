@@ -113,6 +113,20 @@ View at: /projects/[slug]/reports/[name]
 | `report_01_...` | Description |
 ```
 
+## Local Report Files
+
+Reports are automatically written to `local-reports/<project>/<report>.md`.
+This allows you to:
+- `@` mention reports in Cursor chat
+- See reports in the file tree
+- Edit locally if needed (re-run create-report to sync back to DB)
+
+To backfill existing reports from the database to local files:
+
+```bash
+npx tsx scripts/backfill-local.ts <project-slug>
+```
+
 ## Next Steps
 
 - For CLI commands and database operations, see [reference.md](reference.md)
