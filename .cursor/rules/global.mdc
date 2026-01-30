@@ -19,7 +19,6 @@ globs: ["**/*"]
 ## Data Model
 - **Projects, queries, reports, and dashboards are stored in the database**
 - Each user's data is linked to their account (by git email)
-- File-based projects in `projects/` folder are for templates only
 
 ## Git Workflow
 1. Run `/setup` to configure environment and create your database user

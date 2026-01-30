@@ -152,8 +152,6 @@ rippling-os-2/
 ├── scripts/
 │   └── run-query.ts        # Query execution CLI
 ├── local-queries/          # SQL files synced from saved queries (gitignored)
-├── projects/               # Legacy project templates
-│   └── _templates/
 ├── services/
 │   └── snowflake-config.yaml
 └── .cursor/

@@ -86,7 +86,35 @@ npm run query -- --project [slug] --name [name] --sql /tmp/query.sql --dashboard
 npm run query -- --project [slug] --name [name] --sql /tmp/query.sql --report [report-name]
 ```
 
-### 4. After Temp Query - Ask About Saving
+### 4. Validate Results Before Saving (CRITICAL)
+
+**DO NOT save queries that return 0 rows without investigating.**
+
+If a query returns 0 rows:
+
+1. **STOP** - Do not save the query yet
+2. **Investigate** - Debug why it returned nothing:
+   - Check column names (case-sensitive)
+   - Verify table exists
+   - Test broader date ranges
+   - Remove filters one at a time
+3. **Fix** - Rewrite and re-run the query until it returns data
+4. **If legitimately empty** - Ask user: "This query returned 0 rows. Should I still save it, or investigate further?"
+
+**Common causes of 0 rows:**
+
+| Symptom | Likely Cause | Fix |
+|---------|--------------|-----|
+| History table empty | Wrong column names | Use `OLD_VALUE` not `OLD_VALUE__C` |
+| Date filter empty | Wrong date format | Try ISO format: `'2026-01-01'` |
+| JOIN returns nothing | Table/column mismatch | Verify names with `DESCRIBE TABLE` |
+| SFDC table empty | Includes deleted records | Add `WHERE IS_DELETED = FALSE` |
+
+See [reference.md](reference.md) for detailed debugging steps.
+
+### 5. After Temp Query - Ask About Saving
+
+**Only if query returned data (see step 4):**
 
 ```
 Would you like to save this query?
