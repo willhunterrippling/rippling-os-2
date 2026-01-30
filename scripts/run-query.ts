@@ -309,15 +309,9 @@ async function connect(config: snowflake.ConnectionOptions): Promise<snowflake.C
   console.log('');
   
   const connection = snowflake.createConnection(config);
-  await new Promise<void>((resolve, reject) => {
-    connection.connect((err) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve();
-      }
-    });
-  });
+  // connectAsync() is required for EXTERNALBROWSER auth (SSO/Okta)
+  // The callback is called on completion but we await the promise
+  await connection.connectAsync(() => {});
   console.log('✅ Connected to Snowflake');
   return connection;
 }
