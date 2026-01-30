@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 
 interface SidebarItem {
@@ -53,15 +53,72 @@ function naturalSort(a: SidebarItem, b: SidebarItem): number {
 
 export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
   const pathname = usePathname();
-  const [expandedProjects, setExpandedProjects] = useState<Set<string>>(
-    new Set()
-  );
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(
-    new Set()
-  );
+  
+  // Track user-toggled state (manual overrides)
+  const [userToggledProjects, setUserToggledProjects] = useState<Set<string>>(new Set());
+  const [userToggledSections, setUserToggledSections] = useState<Set<string>>(new Set());
+
+  // Extract current project/section from path
+  const currentProject = useMemo(() => {
+    const match = pathname.match(/^\/projects\/([^/]+)/);
+    return match ? match[1] : null;
+  }, [pathname]);
+
+  const currentSection = useMemo(() => {
+    const match = pathname.match(/^\/projects\/([^/]+)\/(dashboards|reports)/);
+    return match ? { project: match[1], section: match[2] } : null;
+  }, [pathname]);
+
+  // Compute auto-expanded projects (current project is auto-expanded)
+  const autoExpandedProjects = useMemo(() => {
+    const auto = new Set<string>();
+    if (currentProject) {
+      auto.add(currentProject);
+    }
+    return auto;
+  }, [currentProject]);
+
+  // Compute auto-expanded sections (current section + small sections)
+  const autoExpandedSections = useMemo(() => {
+    const auto = new Set<string>();
+    
+    // Auto-expand current section
+    if (currentSection) {
+      auto.add(`${currentSection.project}-${currentSection.section}`);
+    }
+    
+    // Auto-expand small sections (≤10 items) for the current project
+    if (currentProject) {
+      const project = projects.find(p => p.slug === currentProject);
+      if (project) {
+        if (project.dashboards.length <= 10 && project.dashboards.length > 0) {
+          auto.add(`${project.slug}-dashboards`);
+        }
+        if (project.reports.length <= 10 && project.reports.length > 0) {
+          auto.add(`${project.slug}-reports`);
+        }
+      }
+    }
+    
+    return auto;
+  }, [currentProject, currentSection, projects]);
+
+  // Effective expanded state: auto-expanded XOR user-toggled
+  const isProjectExpanded = (slug: string) => {
+    const autoExpanded = autoExpandedProjects.has(slug);
+    const userToggled = userToggledProjects.has(slug);
+    // If auto-expanded, user toggle collapses it; if not auto-expanded, user toggle expands it
+    return autoExpanded ? !userToggled : userToggled;
+  };
+
+  const isSectionExpanded = (key: string) => {
+    const autoExpanded = autoExpandedSections.has(key);
+    const userToggled = userToggledSections.has(key);
+    return autoExpanded ? !userToggled : userToggled;
+  };
 
   const toggleProject = (slug: string) => {
-    setExpandedProjects((prev) => {
+    setUserToggledProjects((prev) => {
       const next = new Set(prev);
       if (next.has(slug)) {
         next.delete(slug);
@@ -73,7 +130,7 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
   };
 
   const toggleSection = (key: string) => {
-    setExpandedSections((prev) => {
+    setUserToggledSections((prev) => {
       const next = new Set(prev);
       if (next.has(key)) {
         next.delete(key);
@@ -83,62 +140,6 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
       return next;
     });
   };
-
-  // Auto-expand project if we're on one of its pages
-  const getProjectFromPath = () => {
-    const match = pathname.match(/^\/projects\/([^/]+)/);
-    return match ? match[1] : null;
-  };
-
-  // Get the current section type from path
-  const getSectionFromPath = () => {
-    const match = pathname.match(/^\/projects\/([^/]+)\/(dashboards|queries|reports)/);
-    return match ? { project: match[1], section: match[2] } : null;
-  };
-
-  const currentProject = getProjectFromPath();
-  const currentSection = getSectionFromPath();
-
-  // Auto-expand current project when navigating to it
-  useEffect(() => {
-    if (currentProject && !expandedProjects.has(currentProject)) {
-      setExpandedProjects((prev) => new Set(prev).add(currentProject));
-    }
-  }, [currentProject]);
-
-  // Auto-expand sections with ≤10 items and current section
-  useEffect(() => {
-    const autoExpandKeys = new Set<string>();
-    
-    // Auto-expand current section
-    if (currentSection) {
-      autoExpandKeys.add(`${currentSection.project}-${currentSection.section}`);
-    }
-    
-    // Auto-expand small sections (≤10 items) for the current project
-    if (currentProject) {
-      const project = projects.find(p => p.slug === currentProject);
-      if (project) {
-        if (project.dashboards.length <= 10 && project.dashboards.length > 0) {
-          autoExpandKeys.add(`${project.slug}-dashboards`);
-        }
-        if (project.reports.length <= 10 && project.reports.length > 0) {
-          autoExpandKeys.add(`${project.slug}-reports`);
-        }
-        if (project.queries.length <= 10 && project.queries.length > 0) {
-          autoExpandKeys.add(`${project.slug}-queries`);
-        }
-      }
-    }
-    
-    if (autoExpandKeys.size > 0) {
-      setExpandedSections((prev) => {
-        const next = new Set(prev);
-        autoExpandKeys.forEach(key => next.add(key));
-        return next;
-      });
-    }
-  }, [currentProject, currentSection?.project, currentSection?.section, projects]);
 
   return (
     <aside className="w-64 border-r border-border bg-sidebar min-h-screen p-4 overflow-x-hidden">
@@ -184,10 +185,9 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
               </li>
             ) : (
               projects.map((project) => {
-                const isExpanded = expandedProjects.has(project.slug);
+                const isExpanded = isProjectExpanded(project.slug);
                 const hasContents =
                   project.dashboards.length > 0 ||
-                  project.queries.length > 0 ||
                   project.reports.length > 0;
 
                 return (
@@ -228,11 +228,11 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
                               onClick={() => toggleSection(`${project.slug}-dashboards`)}
                               className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground font-medium hover:text-foreground w-full text-left"
                             >
-                              <ChevronIcon expanded={expandedSections.has(`${project.slug}-dashboards`)} />
+                              <ChevronIcon expanded={isSectionExpanded(`${project.slug}-dashboards`)} />
                               <span>Dashboards</span>
                               <span className="text-[10px] opacity-60">({project.dashboards.length})</span>
                             </button>
-                            {expandedSections.has(`${project.slug}-dashboards`) && (
+                            {isSectionExpanded(`${project.slug}-dashboards`) && (
                               <ul className="space-y-0.5 ml-4">
                                 {[...project.dashboards].sort(naturalSort).map((item) => (
                                   <li key={item.name} className="overflow-hidden">
@@ -262,11 +262,11 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
                               onClick={() => toggleSection(`${project.slug}-reports`)}
                               className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground font-medium hover:text-foreground w-full text-left"
                             >
-                              <ChevronIcon expanded={expandedSections.has(`${project.slug}-reports`)} />
+                              <ChevronIcon expanded={isSectionExpanded(`${project.slug}-reports`)} />
                               <span>Reports</span>
                               <span className="text-[10px] opacity-60">({project.reports.length})</span>
                             </button>
-                            {expandedSections.has(`${project.slug}-reports`) && (
+                            {isSectionExpanded(`${project.slug}-reports`) && (
                               <ul className="space-y-0.5 ml-4">
                                 {[...project.reports].sort(naturalSort).map((item) => (
                                   <li key={item.name} className="overflow-hidden">
@@ -276,40 +276,6 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
                                         "block px-2 py-1 rounded-md text-xs transition-colors truncate",
                                         pathname ===
                                           `/projects/${project.slug}/reports/${item.name}`
-                                          ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                                          : "text-sidebar-foreground hover:bg-sidebar-accent/50"
-                                      )}
-                                      title={item.title}
-                                    >
-                                      {item.title}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            )}
-                          </div>
-                        )}
-
-                        {project.queries.length > 0 && (
-                          <div>
-                            <button
-                              onClick={() => toggleSection(`${project.slug}-queries`)}
-                              className="flex items-center gap-1 px-2 py-1 text-xs text-muted-foreground font-medium hover:text-foreground w-full text-left"
-                            >
-                              <ChevronIcon expanded={expandedSections.has(`${project.slug}-queries`)} />
-                              <span>Queries</span>
-                              <span className="text-[10px] opacity-60">({project.queries.length})</span>
-                            </button>
-                            {expandedSections.has(`${project.slug}-queries`) && (
-                              <ul className="space-y-0.5 ml-4">
-                                {[...project.queries].sort(naturalSort).map((item) => (
-                                  <li key={item.name} className="overflow-hidden">
-                                    <Link
-                                      href={`/projects/${project.slug}/queries/${item.name}`}
-                                      className={cn(
-                                        "block px-2 py-1 rounded-md text-xs transition-colors truncate",
-                                        pathname ===
-                                          `/projects/${project.slug}/queries/${item.name}`
                                           ? "bg-sidebar-accent text-sidebar-accent-foreground"
                                           : "text-sidebar-foreground hover:bg-sidebar-accent/50"
                                       )}

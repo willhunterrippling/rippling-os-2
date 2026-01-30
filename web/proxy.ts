@@ -22,10 +22,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Check for NextAuth session cookie
-  const sessionCookie =
-    request.cookies.get("authjs.session-token") ||
-    request.cookies.get("__Secure-authjs.session-token");
+  // Check for session cookie
+  const sessionCookie = request.cookies.get("ros_session");
 
   const isLoggedIn = !!sessionCookie;
   const isLoginPage = pathname === "/login";

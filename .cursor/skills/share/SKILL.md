@@ -7,15 +7,27 @@ description: Share projects with other Rippling users. Use when the user says "/
 
 Share a project with other Rippling users via CLI.
 
+## STOP - Clarify Before Proceeding
+
+**You MUST know these before sharing:**
+
+| Requirement | How to Clarify |
+|-------------|----------------|
+| Project | "Which project do you want to share?" |
+| User email | "Who should I share it with? (email address)" |
+| Permission | "Should they be an editor or viewer?" |
+
+**If any of these are unclear, ASK THE USER.**
+
 ## Trigger
 
-User says "share", "/share", "share project", or "add collaborator".
+User says "share", "/share", "share project", "add collaborator", "list shares", or "remove share".
 
 ## Workflow
 
-### 1. Identify Project
+### 1. Collect Share Details
 
-Ask user for:
+Confirm you have:
 - **Project**: Which project do you want to share?
 - **Email**: Who should get access? (must be @rippling.com)
 - **Permission**: What level of access?
@@ -29,67 +41,31 @@ Check that the current user has permission to share:
 - Must be project owner OR
 - Must have ADMIN permission on the project
 
-Get git email:
+### 3. Run Share Script
+
+Use the share script to add, list, or remove shares:
+
 ```bash
-git config user.email
+# Add a share
+npx tsx .cursor/skills/share/scripts/share-project.ts \
+  --action add \
+  --project my-analysis \
+  --email jane.doe@rippling.com \
+  --permission EDIT
+
+# List current shares
+npx tsx .cursor/skills/share/scripts/share-project.ts \
+  --action list \
+  --project my-analysis
+
+# Remove a share
+npx tsx .cursor/skills/share/scripts/share-project.ts \
+  --action remove \
+  --project my-analysis \
+  --email jane.doe@rippling.com
 ```
 
-### 3. Add Share to Database
-
-```typescript
-import 'dotenv/config';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient({
-  accelerateUrl: process.env.PRISMA_DATABASE_URL,
-});
-
-// Find or create target user
-const targetUser = await prisma.user.upsert({
-  where: { email: shareEmail },
-  create: { email: shareEmail },
-  update: {},
-});
-
-// Get project
-const project = await prisma.project.findUnique({
-  where: { slug: projectSlug },
-  include: { owner: true },
-});
-
-// Check permission
-const currentUserEmail = execSync('git config user.email', { encoding: 'utf-8' }).trim();
-if (project.owner.email !== currentUserEmail) {
-  const share = await prisma.projectShare.findFirst({
-    where: {
-      projectId: project.id,
-      user: { email: currentUserEmail },
-      permission: 'ADMIN',
-    },
-  });
-  if (!share) throw new Error('No permission to share');
-}
-
-// Create share
-await prisma.projectShare.upsert({
-  where: {
-    projectId_userId: {
-      projectId: project.id,
-      userId: targetUser.id,
-    },
-  },
-  create: {
-    projectId: project.id,
-    userId: targetUser.id,
-    permission: permission, // VIEW, EDIT, or ADMIN
-  },
-  update: {
-    permission: permission,
-  },
-});
-
-await prisma.$disconnect();
-```
+**Important:** Run with `required_permissions: ["all"]` for database access.
 
 ### 4. Output Confirmation
 
@@ -113,44 +89,8 @@ to view the dashboard.
 /share my-analysis with jane.doe@rippling.com as editor
 /share pipeline-report john.smith@rippling.com view
 /share Q4-analysis team@rippling.com admin
-```
-
-## List Current Shares
-
-To see who has access to a project:
-
-```typescript
-const project = await prisma.project.findUnique({
-  where: { slug: projectSlug },
-  include: {
-    owner: { select: { email: true, name: true } },
-    shares: {
-      include: {
-        user: { select: { email: true, name: true } },
-      },
-    },
-  },
-});
-
-console.log('Owner:', project.owner.email);
-project.shares.forEach(s => {
-  console.log(`${s.user.email}: ${s.permission}`);
-});
-```
-
-## Remove Share
-
-To remove someone's access:
-
-```typescript
-await prisma.projectShare.delete({
-  where: {
-    projectId_userId: {
-      projectId: project.id,
-      userId: targetUser.id,
-    },
-  },
-});
+/share my-analysis list               # List who has access
+/share my-analysis remove jane.doe@rippling.com
 ```
 
 ## Permission Levels
@@ -162,11 +102,7 @@ await prisma.projectShare.delete({
 | ADMIN | ✓    | ✓           | ✓              | ✓             | ✓      |
 | Owner | ✓    | ✓           | ✓              | ✓             | ✓      |
 
-## Error Handling
+## Next Steps
 
-| Error | Solution |
-|-------|----------|
-| Project not found | Check project slug |
-| Email not @rippling.com | Only Rippling emails allowed |
-| No permission to share | Must be owner or admin |
-| Database connection fails | Check DATABASE_URL |
+- For detailed Prisma code examples, see [reference.md](reference.md)
+- For error handling and debugging, see [reference.md](reference.md)

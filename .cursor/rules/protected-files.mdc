@@ -1,0 +1,88 @@
+---
+description: Protect core repository files from accidental modification
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Protected Files (READ-ONLY by Default)
+
+## Critical Rule
+
+**NEVER modify these files unless the user explicitly requests changes to them.**
+
+When encountering errors related to protected files:
+1. **Report the error** to the user
+2. **Suggest** what change might be needed
+3. **Wait** for explicit approval before editing
+
+Do NOT go on debugging tangents that involve modifying infrastructure files.
+
+## When Modification IS Allowed
+
+Only modify protected files when the user explicitly requests it, such as:
+- "Fix the setup script"
+- "Update package.json to add X"
+- "Change the prisma schema"
+- "Edit the Y rule/skill"
+- "Add a new dependency"
+
+## Protected File Patterns
+
+### Root Infrastructure
+
+| File | Purpose |
+|------|---------|
+| `package.json` | Root dependencies and scripts |
+| `package-lock.json` | Locked dependency versions |
+| `tsconfig.json` | TypeScript configuration |
+| `eslint.config.mjs` | ESLint configuration |
+| `prisma/schema.prisma` | Database schema |
+| `prisma.config.ts` | Prisma configuration |
+| `.gitignore` | Git ignore patterns |
+| `.cursorignore` | Cursor AI access control |
+| `.husky/*` | Git hooks |
+| `.env.template` | Environment template |
+| `services/snowflake-config.yaml` | Snowflake MCP security config |
+| `.vscode/*` | Editor settings |
+
+### Web App Infrastructure
+
+| File | Purpose |
+|------|---------|
+| `web/package.json` | Next.js dependencies |
+| `web/package-lock.json` | Locked dependency versions |
+| `web/tsconfig.json` | TypeScript configuration |
+| `web/next.config.ts` | Next.js configuration |
+| `web/postcss.config.mjs` | PostCSS/Tailwind config |
+| `web/eslint.config.mjs` | ESLint configuration |
+| `web/components.json` | shadcn/ui configuration |
+| `web/prisma/schema.prisma` | Database schema (synced) |
+| `web/.gitignore` | Git ignore patterns |
+
+### Cursor Configuration
+
+| Pattern | Purpose |
+|---------|---------|
+| `.cursor/rules/*` | Agent behavior rules |
+| `.cursor/skills/**/*` | Agent skill definitions |
+
+## What to Do When You Hit an Error
+
+**Wrong approach:**
+```
+Error: Cannot find module 'foo'
+→ Agent edits package.json to add 'foo'
+→ Agent runs npm install
+→ Creates more errors...
+```
+
+**Correct approach:**
+```
+Error: Cannot find module 'foo'
+→ Agent tells user: "This error suggests the 'foo' package may be missing. 
+   Would you like me to add it to package.json?"
+→ User confirms
+→ Agent makes the change
+```
+
+This prevents cascading changes from minor issues and keeps the user in control of infrastructure decisions.

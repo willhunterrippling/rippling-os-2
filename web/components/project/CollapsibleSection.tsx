@@ -11,6 +11,7 @@ interface CollapsibleSectionProps {
   children: React.ReactNode;
   emptyMessage?: string;
   autoExpandThreshold?: number;
+  defaultExpanded?: boolean;
 }
 
 export function CollapsibleSection({
@@ -21,9 +22,14 @@ export function CollapsibleSection({
   children,
   emptyMessage = "No items yet",
   autoExpandThreshold = 10,
+  defaultExpanded,
 }: CollapsibleSectionProps) {
-  // Auto-expand if count is within threshold, collapse if over
-  const [isOpen, setIsOpen] = useState(count > 0 && count <= autoExpandThreshold);
+  // Use defaultExpanded if provided, otherwise auto-expand if count is within threshold
+  const [isOpen, setIsOpen] = useState(
+    defaultExpanded !== undefined
+      ? defaultExpanded
+      : count > 0 && count <= autoExpandThreshold
+  );
 
   const isEmpty = count === 0;
 

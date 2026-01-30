@@ -43,7 +43,7 @@ export function DashboardShell({
   currentUser,
 }: DashboardShellProps) {
   const [selectedUserEmail, setSelectedUserEmail] = useState<string | null>(
-    null
+    currentUser?.email || null
   );
 
   // Filter projects based on selected user

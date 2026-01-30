@@ -26,6 +26,14 @@ build/
 temp/*
 !temp/.gitkeep
 
+# Local queries (for VSCode Snowflake extension)
+local-queries/*
+!local-queries/.gitkeep
+
+# Local reports (for @ mentioning in Cursor)
+local-reports/*
+!local-reports/.gitkeep
+
 # Personal context (per-user, not shared)
 context/personal/*
 !context/personal/.gitkeep

@@ -8,3 +8,11 @@
 # Allow Cursor to read the QA folder (even though it's gitignored)
 !QA/
 !QA/**
+
+# Allow Cursor to read local queries (even though gitignored)
+!local-queries/
+!local-queries/**
+
+# Allow Cursor to read local reports (even though gitignored)
+!local-reports/
+!local-reports/**

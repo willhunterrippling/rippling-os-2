@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getProject, getDashboardWithData } from "@/lib/projects";
 import { DashboardRenderer } from "@/components/dashboard/DashboardRenderer";
 import { Card, CardContent } from "@/components/ui/card";
+import { CollapsibleSection } from "@/components/project/CollapsibleSection";
 
 interface DashboardPageProps {
   params: Promise<{
@@ -43,7 +44,65 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
       </div>
 
       {dashboard ? (
-        <DashboardRenderer config={dashboard} />
+        <>
+          <DashboardRenderer config={dashboard} />
+
+          {/* Data Sources Section */}
+          {dashboard.linkedQueries && dashboard.linkedQueries.length > 0 && (
+            <CollapsibleSection
+              title="Data Sources"
+              description="SQL queries powering this dashboard"
+              count={dashboard.linkedQueries.length}
+              defaultExpanded={false}
+              icon={
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+                  />
+                </svg>
+              }
+            >
+              <ul className="space-y-1">
+                {dashboard.linkedQueries.map((query) => (
+                  <li key={query.name} className="flex items-center gap-2">
+                    <Link
+                      href={`/projects/${slug}/queries/${query.name}`}
+                      className="text-sm text-primary hover:underline flex items-center gap-1"
+                    >
+                      <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                      {query.name}
+                    </Link>
+                    {query.widgetType && (
+                      <span className="text-xs text-muted-foreground">
+                        → {query.widgetTitle || query.widgetType}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </CollapsibleSection>
+          )}
+        </>
       ) : (
         <Card className="bg-muted/50">
           <CardContent className="py-12 text-center">

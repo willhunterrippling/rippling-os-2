@@ -9,19 +9,30 @@ datasource db {
   provider = "postgresql"
 }
 
-// ==================== AUTH (NextAuth managed) ====================
+// ==================== AUTH (Passcode-based) ====================
 
 model User {
   id            String         @id @default(cuid())
   email         String         @unique
   name          String?
-  emailVerified DateTime?
-  image         String?
   createdAt     DateTime       @default(now())
   
+  passcodes      Passcode[]
   sessions       Session[]
   projects       Project[]      @relation("ProjectOwner")
   sharedProjects ProjectShare[]
+}
+
+model Passcode {
+  id         String    @id @default(cuid())
+  codeHash   String    // bcrypt hashed passcode
+  codeHint   String    // Last 4 chars for identification
+  userId     String
+  name       String?   // Optional label (e.g., "Work laptop")
+  createdAt  DateTime  @default(now())
+  lastUsedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Session {
@@ -30,14 +41,6 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
 }
 
 // ==================== APPLICATION DATA ====================
@@ -85,7 +88,8 @@ model Dashboard {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  queries DashboardQuery[]
 
   @@unique([projectId, name])
 }
@@ -98,8 +102,10 @@ model Query {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  project Project      @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  result  QueryResult?
+  project    Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  result     QueryResult?
+  dashboards DashboardQuery[]
+  reports    ReportQuery[]
 
   @@unique([projectId, name])
 }
@@ -123,7 +129,34 @@ model Report {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  queries ReportQuery[]
 
   @@unique([projectId, name])
+}
+
+// ==================== QUERY RELATIONSHIPS ====================
+
+model DashboardQuery {
+  id          String   @id @default(cuid())
+  dashboardId String
+  queryId     String
+  createdAt   DateTime @default(now())
+
+  dashboard Dashboard @relation(fields: [dashboardId], references: [id], onDelete: Cascade)
+  query     Query     @relation(fields: [queryId], references: [id], onDelete: Cascade)
+
+  @@unique([dashboardId, queryId])
+}
+
+model ReportQuery {
+  id        String   @id @default(cuid())
+  reportId  String
+  queryId   String
+  createdAt DateTime @default(now())
+
+  report Report @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  query  Query  @relation(fields: [queryId], references: [id], onDelete: Cascade)
+
+  @@unique([reportId, queryId])
 }

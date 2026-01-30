@@ -1,5 +1,5 @@
 import { DashboardShell } from "@/components/layout/DashboardShell";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 
 // Extract H1 title from markdown content, or format the slug as fallback
@@ -106,7 +106,7 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
+  const session = await getSession();
   const { projects, users } = await getProjectsAndUsers();
 
   // When BYPASS_AUTH is enabled in dev, create a mock user

@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    // TypeScript and ESLint for type checking and linting
+    "dbaeumer.vscode-eslint",
+    // Snowflake SQL extension for query editing and execution
+    "snowflake.snowflake-vsc",
+    // Prisma for database schema editing
+    "Prisma.prisma"
+  ]
+}
