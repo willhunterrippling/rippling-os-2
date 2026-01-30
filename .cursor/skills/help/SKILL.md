@@ -156,11 +156,21 @@ DATABASE_URL=postgres://...
 POSTGRES_URL=postgres://...
 PRISMA_DATABASE_URL=prisma+postgres://...
 AUTH_SECRET=your-generated-secret
-RIPPLING_ACCOUNT_EMAIL=your.email@rippling.com
 BYPASS_AUTH=true
+```
+
+For Snowflake (choose one):
+```
+# Option 1: In .env
+RIPPLING_ACCOUNT_EMAIL=your.email@rippling.com
+
+# Option 2: Shared with VSCode extension
+# Create ~/.snowflake/connections.toml (see README for format)
 ```
 
 **Note:** Symlink `.env` to `web/.env`:
 ```bash
 ln -sf ../.env web/.env
 ```
+
+**Tip:** Install the Snowflake VSCode extension for SQL IntelliSense and shared credentials.

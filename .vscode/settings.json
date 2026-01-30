@@ -1,0 +1,18 @@
+{
+  // Snowflake VSCode Extension settings
+  // Install the extension: search "Snowflake" in VSCode Extensions marketplace
+  
+  // Associate .sql files with Snowflake SQL for syntax highlighting
+  "files.associations": {
+    "*.sql": "snowflake-sql"
+  },
+  
+  // Enable SQL syntax highlighting in Python strings (for Snowpark)
+  "snowflake.syntaxHighlighting.autoDetectSqlInPython": true,
+  
+  // Show execute button above each SQL statement
+  "snowflake.showExecuteAboveStatement": true,
+  
+  // Keep session alive to avoid re-authentication
+  "snowflake.setClientSessionKeepAlive": true
+}

@@ -28,9 +28,12 @@
 
 import * as snowflake from 'snowflake-sdk';
 import * as fs from 'fs';
+import * as path from 'path';
+import * as os from 'os';
 import * as dotenv from 'dotenv';
 import { execSync } from 'child_process';
 import { PrismaClient } from '@prisma/client';
+import * as TOML from '@iarna/toml';
 
 // Load environment variables
 dotenv.config();
@@ -174,27 +177,128 @@ function getGitEmail(): string {
   }
 }
 
+// Interface for TOML connection configuration
+interface TomlConnection {
+  account?: string;
+  user?: string;
+  username?: string;
+  authenticator?: string;
+  database?: string;
+  schema?: string;
+  warehouse?: string;
+  role?: string;
+}
+
+// Read connection from ~/.snowflake/connections.toml (shared with VSCode extension)
+function getConnectionFromToml(): snowflake.ConnectionOptions | null {
+  // Check standard Snowflake config locations
+  const possiblePaths = [
+    path.join(os.homedir(), '.snowflake', 'connections.toml'),
+    path.join(os.homedir(), '.snowflake', 'config.toml'),
+  ];
+  
+  for (const tomlPath of possiblePaths) {
+    if (!fs.existsSync(tomlPath)) continue;
+    
+    try {
+      const content = fs.readFileSync(tomlPath, 'utf-8');
+      const config = TOML.parse(content) as Record<string, unknown>;
+      
+      // Look for connection profiles in order of preference
+      const profileNames = ['rippling', 'default'];
+      
+      for (const profileName of profileNames) {
+        // Check for [connections.profileName] format (config.toml style)
+        const connections = config.connections as Record<string, TomlConnection> | undefined;
+        if (connections && connections[profileName]) {
+          const conn = connections[profileName];
+          console.log(`📄 Using connection "${profileName}" from ${tomlPath}`);
+          return tomlConnectionToSnowflake(conn);
+        }
+        
+        // Check for [profileName] format (connections.toml style)
+        const directConn = config[profileName] as TomlConnection | undefined;
+        if (directConn && (directConn.account || directConn.user)) {
+          console.log(`📄 Using connection "${profileName}" from ${tomlPath}`);
+          return tomlConnectionToSnowflake(directConn);
+        }
+      }
+      
+      // If no named profile found, try to use the first connection available
+      if (connections) {
+        const firstProfile = Object.keys(connections)[0];
+        if (firstProfile) {
+          console.log(`📄 Using connection "${firstProfile}" from ${tomlPath}`);
+          return tomlConnectionToSnowflake(connections[firstProfile]);
+        }
+      }
+    } catch (err) {
+      console.warn(`⚠️  Could not parse ${tomlPath}: ${err}`);
+    }
+  }
+  
+  return null;
+}
+
+// Convert TOML connection format to Snowflake SDK options
+function tomlConnectionToSnowflake(conn: TomlConnection): snowflake.ConnectionOptions {
+  return {
+    account: conn.account || 'RIPPLINGORG-RIPPLING',
+    username: conn.user || conn.username || '',
+    authenticator: conn.authenticator?.toUpperCase() === 'EXTERNALBROWSER' ? 'EXTERNALBROWSER' : conn.authenticator,
+    clientStoreTemporaryCredential: true,
+    database: conn.database || 'PROD_RIPPLING_DWH',
+    schema: conn.schema || 'MARKETING_OPS',
+    warehouse: conn.warehouse || 'PROD_RIPPLING_INTEGRATION_DWH',
+    role: conn.role || 'PROD_RIPPLING_MARKETING',
+  };
+}
+
 // Get connection configuration
+// Priority: 1. Environment variables  2. ~/.snowflake/connections.toml
 function getConnectionConfig(): snowflake.ConnectionOptions {
   const email = process.env.RIPPLING_ACCOUNT_EMAIL;
   
-  if (!email) {
-    console.error('Error: RIPPLING_ACCOUNT_EMAIL environment variable is not set');
-    console.error('Please set it in your .env file:');
-    console.error('  RIPPLING_ACCOUNT_EMAIL=your.email@rippling.com');
-    process.exit(1);
+  // If email is set in env, use environment-based config
+  if (email) {
+    return {
+      account: process.env.SNOWFLAKE_ACCOUNT || 'RIPPLINGORG-RIPPLING',
+      username: email,
+      authenticator: 'EXTERNALBROWSER',
+      clientStoreTemporaryCredential: true,
+      database: process.env.SNOWFLAKE_DATABASE || 'PROD_RIPPLING_DWH',
+      schema: process.env.SNOWFLAKE_SCHEMA || 'MARKETING_OPS',
+      warehouse: process.env.SNOWFLAKE_WAREHOUSE || 'PROD_RIPPLING_INTEGRATION_DWH',
+      role: process.env.SNOWFLAKE_ROLE || 'PROD_RIPPLING_MARKETING',
+    };
   }
   
-  return {
-    account: process.env.SNOWFLAKE_ACCOUNT || 'RIPPLINGORG-RIPPLING',
-    username: email,
-    authenticator: 'EXTERNALBROWSER',
-    clientStoreTemporaryCredential: true,
-    database: process.env.SNOWFLAKE_DATABASE || 'PROD_RIPPLING_DWH',
-    schema: process.env.SNOWFLAKE_SCHEMA || 'MARKETING_OPS',
-    warehouse: process.env.SNOWFLAKE_WAREHOUSE || 'PROD_RIPPLING_INTEGRATION_DWH',
-    role: process.env.SNOWFLAKE_ROLE || 'PROD_RIPPLING_MARKETING',
-  };
+  // Try to read from TOML config (shared with VSCode Snowflake extension)
+  const tomlConfig = getConnectionFromToml();
+  if (tomlConfig) {
+    if (!tomlConfig.username) {
+      console.error('Error: Connection found in TOML but no user/username specified');
+      process.exit(1);
+    }
+    return tomlConfig;
+  }
+  
+  // No config found
+  console.error('Error: No Snowflake connection configuration found.');
+  console.error('');
+  console.error('Option 1: Set RIPPLING_ACCOUNT_EMAIL in your .env file:');
+  console.error('  RIPPLING_ACCOUNT_EMAIL=your.email@rippling.com');
+  console.error('');
+  console.error('Option 2: Configure ~/.snowflake/connections.toml (shared with VSCode extension):');
+  console.error('  [rippling]');
+  console.error('  account = "RIPPLINGORG-RIPPLING"');
+  console.error('  user = "your.email@rippling.com"');
+  console.error('  authenticator = "externalbrowser"');
+  console.error('  database = "PROD_RIPPLING_DWH"');
+  console.error('  schema = "MARKETING_OPS"');
+  console.error('  warehouse = "PROD_RIPPLING_INTEGRATION_DWH"');
+  console.error('  role = "PROD_RIPPLING_MARKETING"');
+  process.exit(1);
 }
 
 // Connect to Snowflake

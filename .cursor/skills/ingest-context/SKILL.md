@@ -5,7 +5,7 @@ description: Import files into the context knowledge base via a staging folder. 
 
 # /ingest-context - Add Context to Knowledge Base
 
-Import files into the context knowledge base via a staging folder.
+Import files into the context knowledge base via a staging folder. For detailed workflow steps and code examples, see [reference.md](reference.md).
 
 ## STOP - Clarify Before Proceeding
 
@@ -38,181 +38,38 @@ User says "ingest context", "/ingest-context", "add context", "add this to conte
 | Code files | `code/` | Reference implementations, utilities, examples |
 | Definitions | `definitions/` | Metric definitions, business rules, glossaries |
 
-## Workflow
+## Workflow Overview
 
-### Step 1: Prompt User to Add Files
+1. **Prompt user** to add files to `context/import/`
+2. **Wait** for user confirmation
+3. **Scan** the import folder for files
+4. **Ask** global or personal destination (use AskQuestion tool)
+5. **Categorize** each file by scanning first ~50 lines
+6. **Move files** using `mv` command, then add header metadata
+7. **Confirm** with list of imported files
 
-Tell the user to drop their files into the import folder:
+For detailed step-by-step instructions with code examples, see [reference.md](reference.md).
 
-```
-To add files to the knowledge base, drop them into:
+## Quick Reference
 
-📂 context/import/
+### Categorization Rules
 
-You can add any of these file types:
-- Documentation & guides (.md) - explanations, reports, how-tos
-- Schema documentation (.md) - table/column definitions
-- SQL patterns and queries (.sql)
-- Code files (.py, .ts, .js, etc.)
-- Metric definitions (.md)
+| Content Type | Destination |
+|--------------|-------------|
+| Explanations, guides, reports, how-tos | `docs/` |
+| Table/column definitions, data dictionaries | `schemas/` |
+| SQL queries, templates | `sql-patterns/` |
+| Python, TypeScript, JavaScript code | `code/` |
+| Metric definitions, glossary terms | `definitions/` |
 
-Let me know when the files are ready.
-```
+### Key Commands
 
-### Step 2: Wait for User Confirmation
-
-User confirms files are in place (e.g., "ready", "done", "files added").
-
-### Step 3: Scan the Import Folder
-
-List files in `context/import/` (excluding .gitkeep):
 ```bash
-ls context/import/
-```
-
-If no files found, tell the user and wait.
-
-### Step 4: Ask Global or Personal
-
-Use the AskQuestion tool:
-
-```
-Title: "Context Destination"
-Question: "Where should these files be saved?"
-Options:
-  - id: "global", label: "Global (shared with all users)"
-  - id: "personal", label: "Personal (private, only for your sessions)"
-```
-
-### Step 5: Analyze and Categorize Each File
-
-For each file in `context/import/`:
-
-1. **Briefly scan the file** (first ~50 lines) to understand its content - don't read the whole file
-2. **Determine the type** based on content:
-   - Explanations, guides, reports, investigations, how-tos → `docs/`
-   - Contains table/column definitions, data dictionaries → `schemas/`
-   - SQL SELECT/INSERT/UPDATE statements, query templates → `sql-patterns/`
-   - Code (Python, TypeScript, etc.) → `code/`
-   - Short business definitions, metrics, glossary terms → `definitions/`
-3. **Determine the filename** - use the original name or suggest a more descriptive one
-
-**Tip:** If a markdown file explains a process, documents an investigation, or is a guide/report, it goes in `docs/`. If it's a concise list of definitions or a data dictionary, it goes elsewhere.
-
-### Step 6: Move Files to Destination
-
-**Use shell `mv` command for speed** - move all files first, then add headers.
-
-Move each file to the appropriate location:
-- Global: `context/global/[type]/[filename]`
-- Personal: `context/personal/[type]/[filename]`
-
-For personal context, create subdirectories if they don't exist first:
-```bash
+# Create personal subdirectories
 mkdir -p context/personal/docs context/personal/schemas context/personal/sql-patterns context/personal/code context/personal/definitions
-```
 
-Then move files using `mv`:
-```bash
-mv "context/import/filename.md" "context/global/docs/filename.md"
-mv "context/import/query.sql" "context/global/sql-patterns/query.sql"
-```
-
-### Step 6b: Add Header Metadata
-
-After all files are moved, add header comments to each file in its new location:
-
-| File Type | Header Format |
-|-----------|---------------|
-| Markdown (.md) | `<!-- Source: [original filename] -->\n<!-- Added: [date] -->\n<!-- Type: [category] -->\n\n` |
-| SQL (.sql) | `-- Source: [original filename]\n-- Added: [date]\n-- Type: SQL Pattern\n\n` |
-| Python (.py) | `"""\nSource: [original filename]\nAdded: [date]\nType: Code Reference\n"""\n\n` |
-| JS/TS (.js/.ts) | `/**\n * Source: [original filename]\n * Added: [date]\n * Type: Code Reference\n */\n\n` |
-
-Use the StrReplace tool to prepend headers, or use sed:
-```bash
-sed -i '' '1s/^/-- Source: query.sql\n-- Added: 2026-01-29\n-- Type: SQL Pattern\n\n/' "context/global/sql-patterns/query.sql"
-```
-
-### Step 7: Confirm
-
-For **global** context:
-```
-✅ Context imported to global knowledge base!
-
-Files added:
-- context/global/schemas/TABLE_NAME.md
-- context/global/sql-patterns/query_name.sql
-
-These files are now available to all users.
-Run /save to commit and share with others.
-```
-
-For **personal** context:
-```
-✅ Context imported to your personal knowledge base!
-
-Files added:
-- context/personal/schemas/TABLE_NAME.md
-- context/personal/sql-patterns/query_name.sql
-
-These files are private to you and available in future sessions.
-```
-
-## Example Flow
-
-```
-User: /ingest-context
-
-AI: To add files to the knowledge base, drop them into:
-    📂 context/import/
-    Let me know when the files are ready.
-
-User: done
-
-AI: [Scans context/import/, finds: MO_SUPPRESSION_RULES_DOCUMENTATION.md, 
-     SUPPRESSION_INVESTIGATION_REPORT.md, helper_query.sql]
-    [Uses AskQuestion: "Where should these files be saved?"]
-
-User: Selects "Global (shared with all users)"
-
-AI: [Scans first ~50 lines of each file to categorize]
-    [MO_SUPPRESSION_RULES_DOCUMENTATION.md → explanation/guide → docs/]
-    [SUPPRESSION_INVESTIGATION_REPORT.md → investigation report → docs/]
-    [helper_query.sql → SQL query → sql-patterns/]
-    [Uses mv to move all files first - fast!]
-    [Then adds header metadata to each file in place]
-    
-    ✅ Context imported to global knowledge base!
-    
-    Files added:
-    - context/global/docs/MO_SUPPRESSION_RULES_DOCUMENTATION.md
-    - context/global/docs/SUPPRESSION_INVESTIGATION_REPORT.md
-    - context/global/sql-patterns/helper_query.sql
-    
-    Run /save to commit and share with others.
-```
-
-## Directory Structure
-
-```
-context/
-├── import/                # Staging folder (gitignored, cursor can read)
-│   └── .gitkeep
-│
-├── global/                # Shared with all users (committed to repo)
-│   ├── docs/              # Guides, reports, explanations
-│   ├── schemas/           # Table/column definitions
-│   ├── sql-patterns/      # Reusable queries
-│   ├── code/              # Reference implementations
-│   └── definitions/       # Metric definitions, glossaries
-│
-└── personal/              # Private to you (gitignored)
-    ├── docs/              
-    ├── schemas/           
-    ├── sql-patterns/      
-    ├── code/              
-    └── definitions/       
+# Move files
+mv "context/import/file.md" "context/global/docs/file.md"
 ```
 
 ## Important Notes

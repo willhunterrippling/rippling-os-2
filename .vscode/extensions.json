@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    // Snowflake SQL extension for query editing and execution
+    "snowflake.snowflake-vsc",
+    // Prisma for database schema editing
+    "Prisma.prisma"
+  ]
+}

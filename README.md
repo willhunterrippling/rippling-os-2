@@ -127,6 +127,47 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 The MCP reads your `RIPPLING_ACCOUNT_EMAIL` from `.env` and is configured for **read-only access** - SELECT, DESCRIBE, and SHOW queries only.
 
+## Snowflake VSCode Extension
+
+The [Snowflake VSCode Extension](https://marketplace.visualstudio.com/items?itemName=snowflake.snowflake-vsc) provides SQL IntelliSense, syntax highlighting, and direct query execution. When you open this workspace, VSCode will recommend installing it.
+
+### Setup
+
+1. **Install the extension**: Search "Snowflake" in VSCode Extensions (look for the official Snowflake badge)
+2. **Sign in**: Click the Snowflake icon in the sidebar and authenticate with SSO
+3. **Start writing SQL**: Open any `.sql` file and enjoy autocomplete for tables, columns, and functions
+
+### Shared Configuration (Optional)
+
+The query runner (`npm run query`) can read connection settings from `~/.snowflake/connections.toml`, the same file used by the VSCode extension. This means you only configure your credentials once.
+
+Create `~/.snowflake/connections.toml`:
+
+```toml
+[rippling]
+account = "RIPPLINGORG-RIPPLING"
+user = "your.email@rippling.com"
+authenticator = "externalbrowser"
+database = "PROD_RIPPLING_DWH"
+schema = "MARKETING_OPS"
+warehouse = "PROD_RIPPLING_INTEGRATION_DWH"
+role = "PROD_RIPPLING_MARKETING"
+```
+
+**Priority order for connection config:**
+1. Environment variables (`.env` file with `RIPPLING_ACCOUNT_EMAIL`)
+2. TOML config (`~/.snowflake/connections.toml`)
+
+### Extension vs CLI vs MCP
+
+| Use Case | Tool | Best For |
+|----------|------|----------|
+| Quick exploration | **VSCode Extension** | IntelliSense, schema browsing, ad-hoc queries |
+| AI-assisted queries | **MCP** | Natural language to SQL, inline results |
+| Dashboard data | **CLI** (`npm run query`) | Saves results to database for dashboards |
+
+All three tools share the same SSO authentication - once you sign in to one, the others will use the cached credentials.
+
 ## Project Structure
 
 ```
