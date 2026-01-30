@@ -31,6 +31,41 @@ npm run query -- --project <slug> --batch <file.json> --report <name>
 | `--temp` | `-t` | Run without saving | One of: --dashboard, --report, --temp |
 | `--batch` | `-b` | Batch JSON file | Alternative to --sql |
 
+### Batch Mode
+
+Use batch mode when running multiple queries. Batch mode uses a **single Snowflake connection** for all queries, avoiding multiple authentication browser windows.
+
+**JSON file format:**
+
+```json
+[
+  { "name": "report_01_total", "sqlFile": "temp/report_01.sql" },
+  { "name": "report_02_breakdown", "sqlFile": "temp/report_02.sql" },
+  { "name": "report_03_details", "sql": "SELECT * FROM table LIMIT 10" }
+]
+```
+
+Each query item requires:
+- `name` (required): Query name for saving
+- `sqlFile` (optional): Path to SQL file
+- `sql` (optional): Inline SQL string
+
+If neither `sqlFile` nor `sql` is provided, the query runner looks up existing SQL from the database by name.
+
+**Example usage:**
+
+```bash
+# Write SQL files
+echo "SELECT COUNT(*) as total FROM leads" > temp/q1.sql
+echo "SELECT status, COUNT(*) as count FROM leads GROUP BY status" > temp/q2.sql
+
+# Create batch file
+echo '[{"name":"report_01_total","sqlFile":"temp/q1.sql"},{"name":"report_02_status","sqlFile":"temp/q2.sql"}]' > temp/batch.json
+
+# Run batch
+npm run query -- --project my-analysis --batch temp/batch.json --report findings
+```
+
 ## Cursor Agent Permissions (CRITICAL)
 
 **When running queries via Cursor agent, you MUST request `all` permissions.**

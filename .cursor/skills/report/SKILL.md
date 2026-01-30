@@ -47,15 +47,50 @@ npx tsx .cursor/skills/report/scripts/list-reports.ts <project-slug>
 
 ### 2. Gather Data (Save All Queries!)
 
-Run queries and link them to the report:
+**Single query:**
 
 ```bash
 npm run query -- --project [slug] --name report_01_analysis --sql query.sql --report [report-name]
 ```
 
+**Multiple queries - use batch mode:**
+
+When running multiple queries for a report, use batch mode to avoid multiple Snowflake authentication windows. Batch mode uses a single connection for all queries.
+
+1. Write SQL files to temp folder
+2. Create a batch JSON file:
+
+```json
+[
+  { "name": "report_01_total", "sqlFile": "temp/report_01.sql" },
+  { "name": "report_02_breakdown", "sqlFile": "temp/report_02.sql" }
+]
+```
+
+3. Run batch:
+
+```bash
+npm run query -- --project [slug] --batch temp/queries.json --report [report-name]
+```
+
 **Query iteratively** - let each result inform the next. Don't plan all queries upfront.
 
 **IMPORTANT:** Use `required_permissions: ["all"]` when running queries via agent.
+
+**Fetch saved query results** when writing the report content:
+
+```bash
+# Get results for a specific query
+npx tsx .cursor/skills/report/scripts/get-query-results.ts <project-slug> <query-name>
+
+# Get all results matching a pattern (e.g., all queries for this report)
+npx tsx .cursor/skills/report/scripts/get-query-results.ts <project-slug> --pattern "report_*"
+
+# Get all query results for the project
+npx tsx .cursor/skills/report/scripts/get-query-results.ts <project-slug> --all
+```
+
+Output is JSON with query name, row count, execution time, and data array.
 
 ### 3. Create or Update Report
 

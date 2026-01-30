@@ -37,6 +37,43 @@ List all reports in a project:
 npx tsx .cursor/skills/report/scripts/list-reports.ts <project-slug>
 ```
 
+### get-query-results.ts
+
+Fetch query results from the database (not just SQL, but the actual data):
+
+```bash
+# Get results for a specific query
+npx tsx .cursor/skills/report/scripts/get-query-results.ts <project-slug> <query-name>
+
+# Get results for queries matching a pattern
+npx tsx .cursor/skills/report/scripts/get-query-results.ts <project-slug> --pattern "report_*"
+
+# Get all query results for the project
+npx tsx .cursor/skills/report/scripts/get-query-results.ts <project-slug> --all
+```
+
+**Arguments:**
+- `project-slug` - The project slug (e.g., "my-analysis")
+- `query-name` - The specific query name to fetch
+- `--pattern` - Glob pattern to match query names (e.g., "report_*", "mops_*")
+- `--all` - Fetch all query results for the project
+
+**Output format** (JSON):
+
+```json
+{
+  "queryName": "report_01_total",
+  "rowCount": 15,
+  "executedAt": "2025-01-30T10:00:00.000Z",
+  "executedBy": "user@example.com",
+  "data": [{"COLUMN": "value"}, ...]
+}
+```
+
+For `--pattern` and `--all`, output is an array of these objects.
+
+Use this when writing report content to reference data from previously run queries.
+
 ## CLI Reference
 
 ### Query Commands
