@@ -435,6 +435,16 @@ async function runAndSaveQuery(
   return { rowCount: results.length, queryId: query.id };
 }
 
+// Save SQL to local-queries folder (for VSCode Snowflake extension)
+function saveQueryLocally(projectSlug: string, queryName: string, sql: string): void {
+  const localDir = path.join(process.cwd(), 'local-queries', projectSlug);
+  fs.mkdirSync(localDir, { recursive: true });
+  
+  const filePath = path.join(localDir, `${queryName}.sql`);
+  fs.writeFileSync(filePath, sql);
+  console.log(`📄 Saved locally: local-queries/${projectSlug}/${queryName}.sql`);
+}
+
 // Run temp query mode (no save)
 async function runTempQueryMode(args: TempQueryArgs) {
   const { projectSlug, sqlFile } = args;
@@ -631,6 +641,9 @@ async function runSavedQueryMode(args: SavedQueryArgs) {
       reportId
     );
     rowCount = result.rowCount;
+    
+    // Save SQL locally for VSCode Snowflake extension
+    saveQueryLocally(projectSlug, queryName, sql);
   } catch (err) {
     console.error('❌ Query failed:', err);
     await new Promise<void>((resolve) => connection.destroy(() => resolve()));
@@ -817,6 +830,10 @@ async function runBatchQueryMode(args: BatchQueryArgs) {
         reportId
       );
       results.push({ name, rowCount: result.rowCount, success: true });
+      
+      // Save SQL locally for VSCode Snowflake extension
+      saveQueryLocally(projectSlug, name, sql);
+      
       console.log(`✅ ${name}: ${result.rowCount} rows`);
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : String(err);

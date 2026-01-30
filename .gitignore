@@ -26,6 +26,10 @@ build/
 temp/*
 !temp/.gitkeep
 
+# Local queries (for VSCode Snowflake extension)
+local-queries/*
+!local-queries/.gitkeep
+
 # Personal context (per-user, not shared)
 context/personal/*
 !context/personal/.gitkeep

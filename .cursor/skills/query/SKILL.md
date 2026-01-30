@@ -45,6 +45,16 @@ User says "query", "/query", "run query", "execute SQL", or provides SQL to run.
 
 Default to **temp** for ad-hoc questions. Use **saved** when building dashboards or reports.
 
+## Local Query Files
+
+Saved queries are automatically written to `local-queries/<project>/<query>.sql`. This allows users to:
+
+- Run queries via the **VSCode Snowflake extension**
+- See full results (not limited by dashboard display)
+- Edit and re-run queries manually
+
+The `local-queries/` folder is gitignored but accessible to Cursor.
+
 ## Workflow
 
 ### 1. Determine Query Type
