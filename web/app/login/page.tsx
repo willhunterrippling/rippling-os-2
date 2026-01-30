@@ -1,5 +1,7 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { LoginForm, ErrorMessage } from "@/components/auth/LoginForm";
+import { getSession } from "@/lib/auth";
 
 interface LoginPageProps {
   searchParams: Promise<{
@@ -12,6 +14,21 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
   const showError = params.error === "1";
   const callbackUrl = params.callbackUrl || "/";
+
+  // In development with BYPASS_AUTH, skip login entirely
+  const bypassAuth =
+    process.env.NODE_ENV === "development" &&
+    process.env.BYPASS_AUTH === "true";
+  
+  if (bypassAuth) {
+    redirect(callbackUrl);
+  }
+
+  // If already logged in, redirect to callback
+  const session = await getSession();
+  if (session) {
+    redirect(callbackUrl);
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-zinc-50 dark:bg-zinc-950 px-4">

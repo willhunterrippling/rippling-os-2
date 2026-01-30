@@ -9,15 +9,27 @@ if ! diff -q prisma/schema.prisma web/prisma/schema.prisma > /dev/null 2>&1; the
   echo ""
   exit 1
 fi
-echo "Prisma schemas in sync ✓"
+echo "✓ Prisma schemas in sync"
 
+# Run TypeScript type check on root scripts
 echo ""
-echo "Running TypeScript type check..."
-cd web && npx tsc --noEmit
-
+echo "Running TypeScript type check (root)..."
+npx tsc --noEmit
 if [ $? -ne 0 ]; then
-  echo "TypeScript check failed. Please fix the errors above before committing."
+  echo "❌ TypeScript check failed (root). Please fix the errors above."
   exit 1
 fi
+echo "✓ TypeScript check passed (root)"
 
-echo "TypeScript check passed!"
+# Run TypeScript type check on web
+echo ""
+echo "Running TypeScript type check (web)..."
+cd web && npx tsc --noEmit
+if [ $? -ne 0 ]; then
+  echo "❌ TypeScript check failed (web). Please fix the errors above."
+  exit 1
+fi
+echo "✓ TypeScript check passed (web)"
+
+echo ""
+echo "All checks passed!"

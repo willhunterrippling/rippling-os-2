@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProject, getProjectOverview, canUserAdminProject } from "@/lib/projects";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import {
   Card,
   CardContent,
@@ -27,7 +27,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   const { project, dashboards, reports } = overview;
   
   // Check if current user can manage shares
-  const session = await auth();
+  const session = await getSession();
   const canManageShares = session?.user?.email
     ? await canUserAdminProject(session.user.email, project.id)
     : false;

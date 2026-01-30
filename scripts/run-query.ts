@@ -207,9 +207,10 @@ function getConnectionFromToml(): snowflake.ConnectionOptions | null {
       // Look for connection profiles in order of preference
       const profileNames = ['rippling', 'default'];
       
+      // Check for [connections.profileName] format (config.toml style)
+      const connections = config.connections as Record<string, TomlConnection> | undefined;
+      
       for (const profileName of profileNames) {
-        // Check for [connections.profileName] format (config.toml style)
-        const connections = config.connections as Record<string, TomlConnection> | undefined;
         if (connections && connections[profileName]) {
           const conn = connections[profileName];
           console.log(`📄 Using connection "${profileName}" from ${tomlPath}`);
@@ -308,7 +309,15 @@ async function connect(config: snowflake.ConnectionOptions): Promise<snowflake.C
   console.log('');
   
   const connection = snowflake.createConnection(config);
-  await connection.connectAsync();
+  await new Promise<void>((resolve, reject) => {
+    connection.connect((err) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
   console.log('✅ Connected to Snowflake');
   return connection;
 }
@@ -411,12 +420,12 @@ async function runAndSaveQuery(
     where: { queryId: query.id },
     create: {
       queryId: query.id,
-      data: results,
+      data: JSON.parse(JSON.stringify(results)),
       rowCount: results.length,
       executedBy: userEmail,
     },
     update: {
-      data: results,
+      data: JSON.parse(JSON.stringify(results)),
       rowCount: results.length,
       executedAt: new Date(),
       executedBy: userEmail,

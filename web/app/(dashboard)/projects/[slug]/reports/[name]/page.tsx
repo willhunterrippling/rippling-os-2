@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProject, getReportContent, canUserAdminProject } from "@/lib/projects";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShareButton } from "@/components/project/ShareDialog";
 import { CollapsibleSection } from "@/components/project/CollapsibleSection";
@@ -26,7 +26,7 @@ export default async function ReportPage({ params }: ReportPageProps) {
   const content = await getReportContent(slug, name);
 
   // Check if current user can manage shares
-  const session = await auth();
+  const session = await getSession();
   const canManageShares = session?.user?.email
     ? await canUserAdminProject(session.user.email, project.id)
     : false;

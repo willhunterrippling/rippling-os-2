@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { SharePermission } from "@prisma/client";
 
@@ -12,7 +12,7 @@ async function getUserEmail(): Promise<string | null> {
   ) {
     return process.env.RIPPLING_ACCOUNT_EMAIL || "dev@rippling.com";
   }
-  const session = await auth();
+  const session = await getSession();
   return session?.user?.email || null;
 }
 

@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { X, Plus, Trash2, Loader2, Share2, Copy, Check, Link } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 type Permission = "VIEW" | "EDIT" | "ADMIN";
 
@@ -55,17 +54,7 @@ export function ShareDialog({
     }
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      fetchShares();
-      // Always use production URL for share links
-      const prodUrl = process.env.NEXT_PUBLIC_APP_URL || "https://rippling-os-2.vercel.app";
-      const pathname = window.location.pathname;
-      setShareUrl(`${prodUrl}${pathname}`);
-    }
-  }, [isOpen, projectId]);
-
-  const fetchShares = async () => {
+  const fetchShares = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -81,7 +70,17 @@ export function ShareDialog({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [projectId]);
+
+  useEffect(() => {
+    if (isOpen) {
+      fetchShares();
+      // Always use production URL for share links
+      const prodUrl = process.env.NEXT_PUBLIC_APP_URL || "https://rippling-os-2.vercel.app";
+      const pathname = window.location.pathname;
+      setShareUrl(`${prodUrl}${pathname}`);
+    }
+  }, [isOpen, fetchShares]);
 
   const handleAddShare = async (e: React.FormEvent) => {
     e.preventDefault();

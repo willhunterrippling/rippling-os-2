@@ -1,5 +1,18 @@
 {
-  // Snowflake VSCode Extension settings
+  // === TypeScript & ESLint Validation ===
+  // Enable TypeScript validation (shows type errors as diagnostics)
+  "typescript.validate.enable": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  
+  // Enable ESLint for TypeScript files
+  "eslint.enable": true,
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+  "eslint.workingDirectories": [
+    { "directory": "web", "changeProcessCWD": true },
+    { "directory": ".", "changeProcessCWD": true }
+  ],
+  
+  // === Snowflake VSCode Extension ===
   // Install the extension: search "Snowflake" in VSCode Extensions marketplace
   
   // Associate .sql files with Snowflake SQL for syntax highlighting
