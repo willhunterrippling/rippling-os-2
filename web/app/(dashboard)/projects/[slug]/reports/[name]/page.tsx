@@ -117,8 +117,8 @@ export default async function ReportPage({ params }: ReportPageProps) {
                   const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
                   return (
                     <h1 id={id} className="scroll-mt-20 group">
+                      <a href={`#${id}`} className="mr-2 opacity-0 group-hover:opacity-50 text-muted-foreground no-underline">#</a>
                       {children}
-                      <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 text-muted-foreground no-underline">#</a>
                     </h1>
                   );
                 },
@@ -126,8 +126,8 @@ export default async function ReportPage({ params }: ReportPageProps) {
                   const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
                   return (
                     <h2 id={id} className="scroll-mt-20 border-b border-border pb-2 group">
+                      <a href={`#${id}`} className="mr-2 opacity-0 group-hover:opacity-50 text-muted-foreground no-underline">#</a>
                       {children}
-                      <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 text-muted-foreground no-underline">#</a>
                     </h2>
                   );
                 },
@@ -135,8 +135,8 @@ export default async function ReportPage({ params }: ReportPageProps) {
                   const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
                   return (
                     <h3 id={id} className="scroll-mt-20 group">
+                      <a href={`#${id}`} className="mr-2 opacity-0 group-hover:opacity-50 text-muted-foreground no-underline">#</a>
                       {children}
-                      <a href={`#${id}`} className="ml-2 opacity-0 group-hover:opacity-50 text-muted-foreground no-underline">#</a>
                     </h3>
                   );
                 },

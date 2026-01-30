@@ -30,10 +30,9 @@ export function HeadingAnchor({ id, children, variant }: HeadingAnchorProps) {
 
   return (
     <Tag id={id} className={`${baseClasses} ${h2Classes}`}>
-      {children}
       <button
         onClick={handleCopy}
-        className="ml-2 opacity-0 group-hover:opacity-50 hover:opacity-100 text-muted-foreground inline-flex items-center"
+        className="mr-2 opacity-0 group-hover:opacity-50 hover:opacity-100 text-muted-foreground inline-flex items-center"
         title="Copy link to section"
       >
         {copied ? (
@@ -42,6 +41,7 @@ export function HeadingAnchor({ id, children, variant }: HeadingAnchorProps) {
           <Link className="h-4 w-4" />
         )}
       </button>
+      {children}
     </Tag>
   );
 }
