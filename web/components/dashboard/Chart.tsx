@@ -17,6 +17,7 @@ import {
   Area,
 } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DataTable } from "./DataTable";
 
 // Custom tooltip component with proper styling
 interface CustomTooltipProps {
@@ -104,7 +105,92 @@ function formatAxisValue(value: unknown): string {
   return value;
 }
 
+// Validation result for chart data
+interface ValidationResult {
+  valid: boolean;
+  message?: string;
+}
+
+// Validate that chart data is suitable for visualization
+function validateChartData(
+  data: Record<string, unknown>[],
+  xKey: string,
+  yKey: string,
+  chartType: string
+): ValidationResult {
+  // Check if data exists
+  if (!data || data.length === 0) {
+    return { valid: false, message: "No data available for chart." };
+  }
+
+  // Check if we have enough data points (charts with 1 point are meaningless)
+  if (data.length < 2) {
+    return { 
+      valid: false, 
+      message: "Not enough data points for a chart. Showing as table instead." 
+    };
+  }
+
+  // Check if xKey column exists
+  if (!(xKey in data[0])) {
+    return { 
+      valid: false, 
+      message: `X-axis column "${xKey}" not found in data. Showing as table instead.` 
+    };
+  }
+
+  // Check if yKey column exists
+  if (!(yKey in data[0])) {
+    return { 
+      valid: false, 
+      message: `Y-axis column "${yKey}" not found in data. Showing as table instead.` 
+    };
+  }
+
+  // Check if yKey values are numeric
+  const firstYValue = data[0][yKey];
+  if (typeof firstYValue !== "number" && (typeof firstYValue !== "string" || isNaN(Number(firstYValue)))) {
+    return { 
+      valid: false, 
+      message: `Y-axis values are not numeric. Showing as table instead.` 
+    };
+  }
+
+  // Bar charts with too many categories are hard to read
+  if (chartType === "bar" && data.length > 15) {
+    return { 
+      valid: false, 
+      message: `Too many categories (${data.length}) for a bar chart. Showing as table instead.` 
+    };
+  }
+
+  // Pie charts with too many slices are unreadable
+  if (chartType === "pie" && data.length > 8) {
+    return { 
+      valid: false, 
+      message: `Too many slices (${data.length}) for a pie chart. Showing as table instead.` 
+    };
+  }
+
+  return { valid: true };
+}
+
 export function Chart({ title, data, chartType, xKey, yKey, color = "hsl(var(--chart-1))" }: ChartProps) {
+  // Validate chart data before rendering
+  const validation = validateChartData(data, xKey, yKey, chartType);
+
+  // If validation fails, render a table with explanation
+  if (!validation.valid) {
+    return (
+      <div className="space-y-2">
+        <div className="text-xs text-muted-foreground bg-muted/50 px-3 py-2 rounded-md">
+          {validation.message}
+        </div>
+        <DataTable title={title} data={data} />
+      </div>
+    );
+  }
+
   const renderChart = () => {
     switch (chartType) {
       case "line":

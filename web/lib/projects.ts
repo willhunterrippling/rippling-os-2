@@ -154,6 +154,7 @@ interface InferredWidgetConfig {
 }
 
 // Auto-detect the best widget type based on query result data shape
+// Conservative approach: default to tables unless data is clearly a single metric
 function inferWidgetType(data: Record<string, unknown>[]): InferredWidgetConfig {
   if (!data || data.length === 0) {
     return { type: "table" };
@@ -181,21 +182,8 @@ function inferWidgetType(data: Record<string, unknown>[]): InferredWidgetConfig 
     }
   }
 
-  // Has date/time column + numeric column → Line Chart
-  const dateCol = columns.find(c =>
-    /date|time|day|week|month|year|period/i.test(c)
-  );
-  const numericCol = columns.find(c => {
-    if (c === dateCol) return false;
-    const val = firstRow[c];
-    return typeof val === "number";
-  });
-
-  if (dateCol && numericCol && data.length > 1) {
-    return { type: "chart", chartType: "line", xKey: dateCol, yKey: numericCol };
-  }
-
-  // Default: Table
+  // Default: Table (charts should be explicitly requested by the user)
+  // Tables work for any data shape and show exact values
   return { type: "table" };
 }
 

@@ -17,7 +17,7 @@ You must know these before configuring a dashboard:
 |-------------|----------------|
 | Project | "Which project should this dashboard belong to?" |
 | Dashboard name | "What should I call this dashboard?" (default: "main") |
-| Widget type | "How should the data be displayed? Chart, metric card, or table?" |
+| Widget type | "Would you like this as a table (recommended), chart, or metric card?" |
 | Data source | "Which query should power this widget?" |
 
 **Skip clarification when:**
@@ -26,13 +26,27 @@ You must know these before configuring a dashboard:
 - Only one project exists for the user
 - User specified the visualization type
 
+## Default to Tables
+
+**Always use a table unless:**
+- User explicitly asks for a chart or visualization
+- Data is clearly time-series with 5+ data points AND user wants to see trends
+- Data is a single summary number (use metric card)
+
+Tables are the safe default because they:
+- Work for any data shape
+- Show exact values (no visual approximation)
+- Never mislead the user about patterns
+
+See [widgets.md](widgets.md) for detailed guidance on when NOT to use charts.
+
 ## Widget Types Quick Reference
 
 | Type | Purpose | Key Properties |
 |------|---------|----------------|
-| `chart` | Line, bar, or area charts | `chartType`, `xKey`, `yKey` |
+| `table` | Tabular data display (default) | `columns` array |
 | `metric` | Single number display | `valueKey`, `previousKey` (optional) |
-| `table` | Tabular data display | `columns` array |
+| `chart` | Line, bar, or area charts (only when requested) | `chartType`, `xKey`, `yKey` |
 
 For detailed configuration options, see [widgets.md](widgets.md).
 
@@ -46,7 +60,7 @@ For detailed configuration options, see [widgets.md](widgets.md).
 ## Core Workflow
 
 1. **Identify project and dashboard** - Query user's projects if unclear
-2. **Determine widget type** - Ask if not specified (chart, metric, table)
+2. **Determine widget type** - Default to table; only use chart if user explicitly requests it
 3. **Identify data source** - Use existing query or run `/query` to create one
 4. **Configure and add widget** - Use Prisma to update dashboard config
 5. **Output confirmation** - Show dashboard URL and widget details

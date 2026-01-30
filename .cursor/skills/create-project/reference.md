@@ -48,23 +48,6 @@ const project = await prisma.project.create({
 });
 ```
 
-### Create Default Dashboard
-
-Every project gets a default `main` dashboard:
-
-```typescript
-await prisma.dashboard.create({
-  data: {
-    projectId: project.id,
-    name: 'main',
-    config: {
-      title: projectName,
-      widgets: [],
-    },
-  },
-});
-```
-
 ### Check for Existing Project
 
 ```typescript
@@ -91,9 +74,9 @@ After creating a project, it will be accessible at:
 | Resource | URL |
 |----------|-----|
 | Project overview | `/projects/[slug]` |
-| Main dashboard | `/projects/[slug]/dashboards/main` |
 | Queries | `/projects/[slug]/queries/[name]` |
 | Reports | `/projects/[slug]/reports/[name]` |
+| Dashboards | `/projects/[slug]/dashboards/[name]` |
 
 ## Error Handling
 
@@ -169,18 +152,6 @@ async function createProject(name: string, slug: string) {
       name,
       description: '',
       ownerId: user.id,
-    },
-  });
-
-  // Create default dashboard
-  await prisma.dashboard.create({
-    data: {
-      projectId: project.id,
-      name: 'main',
-      config: {
-        title: name,
-        widgets: [],
-      },
     },
   });
 

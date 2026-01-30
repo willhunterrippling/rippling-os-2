@@ -88,18 +88,6 @@ async function main() {
     },
   });
 
-  // Create default dashboard
-  await prisma.dashboard.create({
-    data: {
-      projectId: project.id,
-      name: 'main',
-      config: {
-        title: name,
-        widgets: [],
-      },
-    },
-  });
-
   await prisma.$disconnect();
 
   console.log(`

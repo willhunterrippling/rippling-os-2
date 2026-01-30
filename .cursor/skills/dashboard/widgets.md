@@ -2,6 +2,8 @@
 
 Detailed configuration options for dashboard widgets. All widgets require a `queryName` that references a saved query in the project.
 
+**Default to tables.** If unsure which widget type to use, choose a table. Tables work for any data shape, show exact values, and are never misleading. Only use charts when the user explicitly requests visualization OR the data has clear time-series characteristics with 5+ data points.
+
 ## Chart Widget
 
 Line, bar, or area charts for time-series or categorical data.
@@ -26,6 +28,26 @@ Line, bar, or area charts for time-series or categorical data.
 | `line` | Time series, trends over time | Weekly lead volume, monthly revenue |
 | `bar` | Categorical comparisons, rankings | Status breakdown, team performance |
 | `area` | Cumulative values, volume over time | Running totals, stacked metrics |
+
+### When NOT to Use Charts
+
+**Use a table instead when:**
+
+| Situation | Why Table is Better |
+|-----------|---------------------|
+| Fewer than 5 data points | Charts look empty/misleading with sparse data |
+| More than 15 categories | Bar charts become unreadable; tables handle any row count |
+| User didn't ask for visualization | Default to showing exact values |
+| Data has no natural ordering | Charts imply sequence/trend that may not exist |
+| Multiple important columns | Charts only show 2 dimensions (x/y); tables show all |
+| Exact values matter | Charts are for trends; tables show precise numbers |
+
+**Chart validation:** The Chart component will automatically fall back to a table if:
+- Data has fewer than 2 rows
+- X or Y column doesn't exist in the data
+- Y values aren't numeric
+- Bar chart has more than 15 categories
+- Pie chart has more than 8 slices
 
 ### Example: Line Chart
 

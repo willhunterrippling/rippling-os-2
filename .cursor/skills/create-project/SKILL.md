@@ -49,7 +49,7 @@ User says "create project", "/create-project [name]", or "new project".
    npx tsx .cursor/skills/create-project/scripts/create-project.ts --name "Project Name" --slug project-slug
    ```
    
-   This creates the project, user (if needed), and default dashboard.
+   This creates the project and user (if needed).
 
 5. **Output Confirmation**
    ```
@@ -72,7 +72,6 @@ User says "create project", "/create-project [name]", or "new project".
 | Resource | URL |
 |----------|-----|
 | Project overview | `/projects/[slug]` |
-| Main dashboard | `/projects/[slug]/dashboards/main` |
 
 ## Next Steps
 
