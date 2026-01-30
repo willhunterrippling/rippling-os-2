@@ -18,9 +18,9 @@ Provide a quick overview with a key findings table:
 
 | Finding | Impact |
 |---------|--------|
-| **Key finding 1** | X records affected |
-| **Key finding 2** | Y% of total |
-| **Data is NOT stale** | Last updated today |
+| **Key finding 1** | X records affected [1] |
+| **Key finding 2** | Y% of total [2] |
+| **Data is NOT stale** | Last updated today [3] |
 
 ---
 
@@ -30,8 +30,8 @@ Use **numbered sections** for easy navigation. Include tables with clear headers
 
 | Category | Count | % | Notes |
 |----------|------:|--:|-------|
-| Category A | 1,234 | 45% | Explanation |
-| Category B | 567 | 21% | Explanation |
+| Category A | 1,234 [4] | 45% | Explanation |
+| Category B | 567 [4] | 21% | Explanation |
 
 ### Subsection
 Break down complex topics into subsections.
@@ -59,15 +59,11 @@ Continue with numbered sections...
 
 ---
 
-## Appendix: Queries
-
-List all queries used in this report for reproducibility:
-
-| Query Name | Purpose |
-|------------|---------|
-| `report_status_breakdown` | Status distribution by type |
-| `report_lifecycle_analysis` | Record aging patterns |
-| `report_transition_data` | Status change tracking |
+## References
+[1]: report_01_key_finding
+[2]: report_02_percentage_analysis
+[3]: report_03_data_freshness
+[4]: report_04_category_breakdown
 
 ---
 
@@ -107,11 +103,44 @@ Based on `report_status_breakdown`, we found **2.7M leads in "Qualified" status*
 
 Use horizontal rules (`---`) between major sections for visual separation.
 
-### 5. Query References
+### 5. Query Citations
 
-Reference queries inline when citing data:
+**Use numbered citations** to link findings to their source queries. Citations render as superscript links.
+
 ```markdown
-Based on `report_status_breakdown`, we found...
+The total population is 5.4M leads [1], with 60% in "New" status [2].
+
+---
+
+## References
+[1]: report_01_total_population
+[2]: report_02_status_breakdown
+```
+
+This renders `[1]` and `[2]` as clickable superscript links to `/projects/slug/queries/report_01_total_population` etc.
+
+**Best practices:**
+- Add citations after every number or percentage that comes from a query
+- Use sequential numbering: [1], [2], [3]
+- Always include a References section at the bottom
+- Query names must match exactly (no `.sql` extension)
+
+**Example in context:**
+```markdown
+## Executive Summary
+
+| Finding | Impact |
+|---------|--------|
+| Total leads in scope | 5.4M [1] |
+| Suppressed leads | 3.2M (60%) [2] |
+| Top suppression reason | "Ineligible Status" (45%) [3] |
+
+---
+
+## References
+[1]: report_01_total_leads
+[2]: report_02_suppression_count
+[3]: report_03_suppression_reasons
 ```
 
 ### 6. Source References
@@ -137,21 +166,29 @@ Reports should have a **narrative arc**, not just dump data. Guide the reader th
 
 ```markdown
 ## Executive Summary
-Initially, we thought 2.7M "Qualified" leads were stuck. After deeper investigation,
-we found that 99.99% are actually converted - the system is working correctly.
+Initially, we thought 2.7M "Qualified" leads were stuck [1]. After deeper investigation,
+we found that 99.99% are actually converted [2] - the system is working correctly.
 
 ## 1. Initial Analysis
-We found 2.7M leads with "Qualified" status that appear trapped...
+We found 2.7M leads with "Qualified" status that appear trapped [1]...
 
 ## 2. The "Trap" Hypothesis
-These leads average 677 days old with no path back to the pool...
+These leads average 677 days old [3] with no path back to the pool...
 
 ## 3. Critical Discovery: IS_CONVERTED Check
 Wait - let's check if these are actually converted...
-**Result:** 99.99% are converted! They became Contacts.
+**Result:** 99.99% are converted [2]! They became Contacts.
 
 ## 4. Conclusion
-The "Qualified trap" is actually a success story. Only 272 leads are truly stuck.
+The "Qualified trap" is actually a success story. Only 272 leads are truly stuck [4].
+
+---
+
+## References
+[1]: report_01_qualified_count
+[2]: report_02_conversion_check
+[3]: report_03_age_analysis
+[4]: report_04_truly_stuck
 ```
 
 ### Avoid "Data Dump" Reports

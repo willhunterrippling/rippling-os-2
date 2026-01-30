@@ -96,8 +96,8 @@ View at: /projects/[slug]/reports/[name]
 
 | Finding | Impact |
 |---------|--------|
-| Key finding 1 | X records affected |
-| Key finding 2 | Y% of total |
+| Key finding 1 | X records affected [1] |
+| Key finding 2 | Y% of total [2] |
 
 ---
 
@@ -106,12 +106,35 @@ View at: /projects/[slug]/reports/[name]
 
 ---
 
-## Appendix: Queries
-
-| Query Name | Purpose |
-|------------|---------|
-| `report_01_...` | Description |
+## References
+[1]: report_01_total_count
+[2]: report_02_percentage_breakdown
 ```
+
+## Citations
+
+**ALWAYS use citations** when referencing query results in reports. Citations create clickable links to the source queries.
+
+### Citation Format
+
+1. Add inline citations like `[1]`, `[2]` after numbers or findings
+2. Add a References section at the bottom mapping citations to query names
+
+```markdown
+The total lead count is 5.4M [1], with 60% being suppressed [2].
+
+---
+
+## References
+[1]: report_01_total_leads
+[2]: report_02_suppression_rate
+```
+
+### How It Works
+
+- `[1]` in the text becomes a superscript link to the query page
+- The References section shows the mapping and links to each query
+- Query names must match exactly (no `.sql` extension)
 
 ## Local Report Files
 

@@ -67,7 +67,7 @@ Structure reports to accommodate growth:
 ---
 
 ## 1. Initial Analysis
-[First findings go here]
+Total records in scope: X [1]
 
 ---
 
@@ -77,10 +77,8 @@ Structure reports to accommodate growth:
 
 ---
 
-## Appendix: Queries
-| Query Name | Purpose |
-|------------|---------|
-| `report_01_initial` | First analysis |
+## References
+[1]: report_01_initial
 ```
 
 ### 2. On Each Follow-up

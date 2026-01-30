@@ -15,6 +15,29 @@ interface ReportPageProps {
   }>;
 }
 
+// Parse citation references like [1]: query_name and return processed content + reference list
+function processCitations(
+  content: string,
+  slug: string
+): { content: string; references: Array<{ num: string; queryName: string }> } {
+  const references: Array<{ num: string; queryName: string }> = [];
+  
+  // Match [N]: query_name patterns (where query_name doesn't start with http/https//)
+  const refRegex = /^\[(\d+)\]:\s*([a-zA-Z_][a-zA-Z0-9_-]*)\s*$/gm;
+  
+  // Extract references and transform them to full URLs
+  const processedContent = content.replace(refRegex, (match, num, queryName) => {
+    references.push({ num, queryName });
+    // Transform to markdown reference-style link URL
+    return `[${num}]: /projects/${slug}/queries/${queryName}`;
+  });
+  
+  // Sort references by number
+  references.sort((a, b) => parseInt(a.num) - parseInt(b.num));
+  
+  return { content: processedContent, references };
+}
+
 export default async function ReportPage({ params }: ReportPageProps) {
   const { slug, name } = await params;
   const project = await getProject(slug);
@@ -51,11 +74,44 @@ export default async function ReportPage({ params }: ReportPageProps) {
       </div>
 
       {content ? (
-        <>
-          <article className="prose prose-slate dark:prose-invert max-w-none">
-            <Markdown
-              remarkPlugins={[remarkGfm]}
-              components={{
+        (() => {
+          // Process citations to transform [N]: query_name into full URLs
+          const { content: processedContent, references } = processCitations(
+            content.content,
+            slug
+          );
+          
+          return (
+            <>
+              <article className="prose prose-slate dark:prose-invert max-w-none">
+                <Markdown
+                  remarkPlugins={[remarkGfm]}
+                  components={{
+                    // Citation links (superscript style for query references)
+                    a: ({ href, children }) => {
+                      // Check if this is a citation link (links to a query page and content is just a number)
+                      const isCitation = href?.includes('/queries/') && 
+                        /^\d+$/.test(String(children));
+                      
+                      if (isCitation) {
+                        return (
+                          <Link
+                            href={href || '#'}
+                            className="text-primary hover:underline no-underline text-xs align-super font-medium"
+                            title={`View source query`}
+                          >
+                            [{children}]
+                          </Link>
+                        );
+                      }
+                      
+                      // Regular links
+                      return (
+                        <a href={href} className="text-primary hover:underline">
+                          {children}
+                        </a>
+                      );
+                    },
                 // Headings with anchor links
                 h1: ({ children }) => {
                   const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
@@ -136,63 +192,87 @@ export default async function ReportPage({ params }: ReportPageProps) {
                 strong: ({ children }) => (
                   <strong className="font-semibold text-foreground">{children}</strong>
                 ),
-              }}
-            >
-              {content.content}
-            </Markdown>
-          </article>
-
-          {/* Queries Used Section */}
-          {content.linkedQueries && content.linkedQueries.length > 0 && (
-            <CollapsibleSection
-              title="Queries Used"
-              description="SQL queries referenced in this report"
-              count={content.linkedQueries.length}
-              defaultExpanded={false}
-              icon={
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
-                  />
-                </svg>
-              }
-            >
-              <ul className="space-y-1">
-                {content.linkedQueries.map((query) => (
-                  <li key={query.name}>
-                    <Link
-                      href={`/projects/${slug}/queries/${query.name}`}
-                      className="text-sm text-primary hover:underline flex items-center gap-1"
+                  {processedContent}
+                </Markdown>
+              </article>
+
+              {/* References Section - shows citation mappings */}
+              {references.length > 0 && (
+                <div className="border-t border-border pt-6 mt-8">
+                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3">
+                    References
+                  </h3>
+                  <ol className="list-none space-y-1 text-sm">
+                    {references.map(({ num, queryName }) => (
+                      <li key={num} className="flex items-baseline gap-2">
+                        <span className="text-muted-foreground font-medium">[{num}]</span>
+                        <Link
+                          href={`/projects/${slug}/queries/${queryName}`}
+                          className="text-primary hover:underline font-mono text-xs"
+                        >
+                          {queryName}
+                        </Link>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* Queries Used Section */}
+              {content.linkedQueries && content.linkedQueries.length > 0 && (
+                <CollapsibleSection
+                  title="Queries Used"
+                  description="SQL queries referenced in this report"
+                  count={content.linkedQueries.length}
+                  defaultExpanded={false}
+                  icon={
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
                     >
-                      <svg
-                        className="w-4 h-4"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                      {query.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </CollapsibleSection>
-          )}
-        </>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"
+                      />
+                    </svg>
+                  }
+                >
+                  <ul className="space-y-1">
+                    {content.linkedQueries.map((query) => (
+                      <li key={query.name}>
+                        <Link
+                          href={`/projects/${slug}/queries/${query.name}`}
+                          className="text-sm text-primary hover:underline flex items-center gap-1"
+                        >
+                          <svg
+                            className="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 5l7 7-7 7"
+                            />
+                          </svg>
+                          {query.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </CollapsibleSection>
+              )}
+            </>
+          );
+        })()
       ) : (
         <Card className="bg-muted/50">
           <CardContent className="py-12 text-center">
