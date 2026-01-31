@@ -87,7 +87,7 @@ Total records in scope: X [1]
 2. **Run new queries** to answer the question (save with `report_` prefix)
    - For multiple queries, use **batch mode** to avoid multiple auth windows:
      ```bash
-     npm run query -- --project [slug] --batch temp/queries.json --report [report-name]
+     npm run query -- --project [slug] --batch /tmp/queries.json --report [report-name]
      ```
 3. **Add a new section** to the report with findings
 4. **Update the summary** if there are significant new insights

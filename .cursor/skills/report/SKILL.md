@@ -57,20 +57,20 @@ npm run query -- --project [slug] --name report_01_analysis --sql query.sql --re
 
 When running multiple queries for a report, use batch mode to avoid multiple Snowflake authentication windows. Batch mode uses a single connection for all queries.
 
-1. Write SQL files to temp folder
+1. Write SQL files to `/tmp`
 2. Create a batch JSON file:
 
 ```json
 [
-  { "name": "report_01_total", "sqlFile": "temp/report_01.sql" },
-  { "name": "report_02_breakdown", "sqlFile": "temp/report_02.sql" }
+  { "name": "report_01_total", "sqlFile": "/tmp/report_01.sql" },
+  { "name": "report_02_breakdown", "sqlFile": "/tmp/report_02.sql" }
 ]
 ```
 
 3. Run batch:
 
 ```bash
-npm run query -- --project [slug] --batch temp/queries.json --report [report-name]
+npm run query -- --project [slug] --batch /tmp/queries.json --report [report-name]
 ```
 
 **Query iteratively** - let each result inform the next. Don't plan all queries upfront.

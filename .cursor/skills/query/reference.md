@@ -39,8 +39,8 @@ Use batch mode when running multiple queries. Batch mode uses a **single Snowfla
 
 ```json
 [
-  { "name": "report_01_total", "sqlFile": "temp/report_01.sql" },
-  { "name": "report_02_breakdown", "sqlFile": "temp/report_02.sql" },
+  { "name": "report_01_total", "sqlFile": "/tmp/report_01.sql" },
+  { "name": "report_02_breakdown", "sqlFile": "/tmp/report_02.sql" },
   { "name": "report_03_details", "sql": "SELECT * FROM table LIMIT 10" }
 ]
 ```
@@ -56,14 +56,14 @@ If neither `sqlFile` nor `sql` is provided, the query runner looks up existing S
 
 ```bash
 # Write SQL files
-echo "SELECT COUNT(*) as total FROM leads" > temp/q1.sql
-echo "SELECT status, COUNT(*) as count FROM leads GROUP BY status" > temp/q2.sql
+echo "SELECT COUNT(*) as total FROM leads" > /tmp/q1.sql
+echo "SELECT status, COUNT(*) as count FROM leads GROUP BY status" > /tmp/q2.sql
 
 # Create batch file
-echo '[{"name":"report_01_total","sqlFile":"temp/q1.sql"},{"name":"report_02_status","sqlFile":"temp/q2.sql"}]' > temp/batch.json
+echo '[{"name":"report_01_total","sqlFile":"/tmp/q1.sql"},{"name":"report_02_status","sqlFile":"/tmp/q2.sql"}]' > /tmp/batch.json
 
 # Run batch
-npm run query -- --project my-analysis --batch temp/batch.json --report findings
+npm run query -- --project my-analysis --batch /tmp/batch.json --report findings
 ```
 
 ## Cursor Agent Permissions (CRITICAL)

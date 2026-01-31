@@ -22,10 +22,6 @@ web/out/
 dist/
 build/
 
-# Temp folder
-temp/*
-!temp/.gitkeep
-
 # Local queries (for VSCode Snowflake extension)
 local-queries/*
 !local-queries/.gitkeep
