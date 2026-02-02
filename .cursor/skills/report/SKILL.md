@@ -35,6 +35,41 @@ Do NOT:
 
 User says "report", "/report", "create report", "add report", or "edit report".
 
+## Local and Database Sync (CRITICAL)
+
+**Reports exist in TWO places that must stay in sync:**
+
+| Location | Purpose |
+|----------|---------|
+| **Database** | Powers the web dashboard at `/projects/[slug]/reports/[name]` |
+| **Local file** | `local-reports/<project>/<report>.md` for `@` mentioning in Cursor |
+
+### The Rule
+
+**When editing a report, you MUST update BOTH locations.**
+
+- If user says "append to the report" or "edit the report" → update local file AND database
+- If user says "add section 5.1" → add it to local file AND sync to database
+
+### How to Stay in Sync
+
+**Option 1 (Recommended):** Use `create-report.ts` which handles both automatically:
+```bash
+# Edit the local file first, then sync to database
+npx tsx .cursor/skills/report/scripts/create-report.ts <project-slug> <report-name> local-reports/<project>/<report>.md
+```
+
+**Option 2:** If you edit the local file directly, immediately run:
+```bash
+npx tsx .cursor/skills/report/scripts/create-report.ts <project-slug> <report-name> local-reports/<project>/<report>.md
+```
+
+### Common Mistake
+
+**WRONG:** Edit `local-reports/my-project/analysis.md` and stop there.
+
+**RIGHT:** Edit the local file, then run `create-report.ts` to sync to database.
+
 ## Core Workflow
 
 ### 1. Identify Project and Report
@@ -177,7 +212,8 @@ Reports are automatically written to `local-reports/<project>/<report>.md`.
 This allows you to:
 - `@` mention reports in Cursor chat
 - See reports in the file tree
-- Edit locally if needed (re-run create-report to sync back to DB)
+
+**If you edit a local file directly, you MUST sync to database.** See "Local and Database Sync (CRITICAL)" section above.
 
 To backfill existing reports from the database to local files:
 

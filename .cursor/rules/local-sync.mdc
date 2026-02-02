@@ -1,0 +1,51 @@
+---
+description: Sync local files to database after editing
+globs: ["local-reports/**", "local-queries/**"]
+---
+
+# Local Files Must Stay in Sync with Database
+
+**CRITICAL:** Files in `local-reports/` and `local-queries/` are mirrors of database records. When you edit these files, you MUST sync the changes to the database.
+
+## The Rule
+
+| Action | What You Must Do |
+|--------|------------------|
+| Edit a local report | Re-run `create-report.ts` to sync to database |
+| Edit a local query | Re-run `npm run query` to sync to database |
+| Append to a report | Update BOTH local file AND database |
+| Create new content | Use the skill scripts (they handle both automatically) |
+
+## Why This Matters
+
+- **Local files** allow `@` mentioning in Cursor and viewing in the file tree
+- **Database records** power the web dashboard at `/projects/[slug]/reports/[name]`
+- If you only edit one, they become out of sync and the user sees different content in different places
+
+## Sync Commands
+
+### After Editing a Report
+
+```bash
+npx tsx .cursor/skills/report/scripts/create-report.ts <project-slug> <report-name> local-reports/<project>/<report>.md
+```
+
+Example:
+```bash
+npx tsx .cursor/skills/report/scripts/create-report.ts my-analysis suppression-report local-reports/my-analysis/suppression-report.md
+```
+
+### After Editing a Query
+
+Re-run the query with the updated SQL file:
+```bash
+npm run query -- --project <slug> --name <query-name> --sql local-queries/<project>/<query>.sql --dashboard <dashboard-name>
+# or
+npm run query -- --project <slug> --name <query-name> --sql local-queries/<project>/<query>.sql --report <report-name>
+```
+
+## Best Practice
+
+**Prefer using the skill scripts** (`create-report.ts`, `npm run query`) instead of directly editing local files. The scripts automatically keep both locations in sync.
+
+If you must edit a local file directly (e.g., user asks to "append to the report"), always follow up with the sync command.
