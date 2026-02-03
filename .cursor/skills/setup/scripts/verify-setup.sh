@@ -5,6 +5,68 @@
 echo "=== Rippling OS Setup Status ==="
 echo ""
 
+# =============================================================================
+# Prerequisites Check
+# =============================================================================
+echo "--- Prerequisites ---"
+echo ""
+
+PREREQ_MISSING=0
+
+# Check Node.js
+if command -v node &> /dev/null; then
+    NODE_VERSION=$(node --version | sed 's/v//')
+    MAJOR_VERSION=$(echo "$NODE_VERSION" | cut -d. -f1)
+    if [ "$MAJOR_VERSION" -ge 18 ]; then
+        echo "[✓] Node.js: v$NODE_VERSION"
+    else
+        echo "[✗] Node.js: v$NODE_VERSION (need v18+)"
+        PREREQ_MISSING=1
+    fi
+else
+    echo "[✗] Node.js not found"
+    PREREQ_MISSING=1
+fi
+
+# Check Python (version 3.8+)
+if command -v python3 &> /dev/null; then
+    PYTHON_VERSION=$(python3 --version | sed 's/Python //')
+    PYTHON_MAJOR=$(echo "$PYTHON_VERSION" | cut -d. -f1)
+    PYTHON_MINOR=$(echo "$PYTHON_VERSION" | cut -d. -f2)
+    if [ "$PYTHON_MAJOR" -ge 3 ] && [ "$PYTHON_MINOR" -ge 8 ]; then
+        echo "[✓] Python: $PYTHON_VERSION"
+    else
+        echo "[✗] Python: $PYTHON_VERSION (need 3.8+)"
+        PREREQ_MISSING=1
+    fi
+else
+    echo "[✗] Python not found"
+    PREREQ_MISSING=1
+fi
+
+# Check uvx
+if command -v uvx &> /dev/null; then
+    echo "[✓] uv/uvx installed"
+else
+    echo "[✗] uv/uvx not found (needed for Snowflake MCP)"
+    PREREQ_MISSING=1
+fi
+
+if [ "$PREREQ_MISSING" -eq 1 ]; then
+    echo ""
+    echo "Some prerequisites are missing. Run:"
+    echo "  bash .cursor/skills/setup/scripts/check-prerequisites.sh"
+    echo ""
+fi
+
+echo ""
+
+# =============================================================================
+# Environment Check
+# =============================================================================
+echo "--- Environment ---"
+echo ""
+
 # Check for .env file
 if [ -f .env ]; then
     echo "[✓] .env file exists"

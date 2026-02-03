@@ -12,13 +12,26 @@ Rippling OS enables Growth Managers to:
 
 **Key Architecture:** All data (projects, queries, dashboards, reports) is stored in a PostgreSQL database, not local files. This enables real-time collaboration and access from the hosted web dashboard.
 
+## Platform Requirements
+
+**macOS required.** All scripts assume a Unix environment with bash.
+
 ## Quick Start
 
 ### Prerequisites
 
-1. **Cursor IDE** with this repository open
-2. **Database access** - Get URLs from your admin or the Vercel dashboard
-3. **Snowflake access** - You'll authenticate via SSO on first query
+1. **macOS** - Required operating system
+2. **Cursor IDE** with this repository open
+3. **Node.js 18+** - Install with `brew install node`
+4. **Python 3.8+** - Install with pyenv (see `.cursor/skills/setup/prerequisites.md`)
+5. **uv** - Install with `curl -LsSf https://astral.sh/uv/install.sh | sh`
+6. **Database access** - Get a `.env` file from your admin
+7. **Snowflake access** - You'll authenticate via SSO on first query
+
+Run the prerequisites check:
+```bash
+bash .cursor/skills/setup/scripts/check-prerequisites.sh
+```
 
 ### Step 1: Configure Environment
 
