@@ -5,6 +5,7 @@ import { getSession } from "@/lib/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { ShareButton } from "@/components/project/ShareDialog";
 import { CollapsibleSection } from "@/components/project/CollapsibleSection";
+import { HeadingAnchor } from "@/components/HeadingAnchor";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -112,32 +113,29 @@ export default async function ReportPage({ params }: ReportPageProps) {
                         </a>
                       );
                     },
-                // Headings with anchor links
+                // Headings with anchor links (uses HeadingAnchor for hosted URL copy)
                 h1: ({ children }) => {
                   const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
                   return (
-                    <h1 id={id} className="scroll-mt-20 group">
-                      <a href={`#${id}`} className="mr-2 opacity-25 hover:opacity-70 text-muted-foreground no-underline">#</a>
+                    <HeadingAnchor id={id} variant="h1">
                       {children}
-                    </h1>
+                    </HeadingAnchor>
                   );
                 },
                 h2: ({ children }) => {
                   const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
                   return (
-                    <h2 id={id} className="scroll-mt-20 border-b border-border pb-2 group">
-                      <a href={`#${id}`} className="mr-2 opacity-25 hover:opacity-70 text-muted-foreground no-underline">#</a>
+                    <HeadingAnchor id={id} variant="h2">
                       {children}
-                    </h2>
+                    </HeadingAnchor>
                   );
                 },
                 h3: ({ children }) => {
                   const id = String(children).toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
                   return (
-                    <h3 id={id} className="scroll-mt-20 group">
-                      <a href={`#${id}`} className="mr-2 opacity-25 hover:opacity-70 text-muted-foreground no-underline">#</a>
+                    <HeadingAnchor id={id} variant="h3">
                       {children}
-                    </h3>
+                    </HeadingAnchor>
                   );
                 },
                 // Tables
