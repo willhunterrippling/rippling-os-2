@@ -142,7 +142,7 @@ export function Sidebar({ projects, currentUserEmail }: SidebarProps) {
   };
 
   return (
-    <aside className="w-64 border-r border-border bg-sidebar min-h-screen p-4 overflow-x-hidden">
+    <aside className="w-64 flex-shrink-0 border-r border-border bg-sidebar min-h-screen p-4 overflow-x-hidden">
       <div className="mb-8">
         <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">

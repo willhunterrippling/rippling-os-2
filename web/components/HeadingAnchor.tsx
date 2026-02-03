@@ -32,7 +32,7 @@ export function HeadingAnchor({ id, children, variant }: HeadingAnchorProps) {
     <Tag id={id} className={`${baseClasses} ${h2Classes}`}>
       <button
         onClick={handleCopy}
-        className="mr-2 opacity-0 group-hover:opacity-50 hover:opacity-100 text-muted-foreground inline-flex items-center"
+        className="mr-2 opacity-25 hover:opacity-70 text-muted-foreground inline-flex items-center"
         title="Copy link to section"
       >
         {copied ? (
