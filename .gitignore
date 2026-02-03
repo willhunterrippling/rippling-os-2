@@ -41,6 +41,10 @@ context/import/*
 # Legacy: Local project data (now in database)
 projects/*/data/
 
+# Fix docs (local investigation files, not shared)
+fix_docs/*
+!fix_docs/.gitkeep
+
 # QA folder (internal testing)
 QA/
 

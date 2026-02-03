@@ -16,3 +16,7 @@
 # Allow Cursor to read local reports (even though gitignored)
 !local-reports/
 !local-reports/**
+
+# Allow Cursor to read fix docs (even though gitignored)
+!fix_docs/
+!fix_docs/**
