@@ -82,6 +82,8 @@ npx tsx .cursor/skills/report/scripts/list-reports.ts <project-slug>
 
 ### 2. Gather Data (Save All Queries!)
 
+When you run queries with `--report [report-name]`, the report is **auto-created** if it doesn't exist. You do not need to create the report first.
+
 **Single query:**
 
 ```bash

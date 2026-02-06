@@ -316,21 +316,46 @@ async function connect(config: snowflake.ConnectionOptions): Promise<snowflake.C
   return connection;
 }
 
+const HEARTBEAT_INTERVAL_MS = 15 * 1000; // 15 seconds
+const SLOW_QUERY_WARNING_MS = 5 * 60 * 1000; // 5 minutes
+
 // Execute query (just run, don't save)
 async function executeQuery(
   connection: snowflake.Connection,
   sql: string
 ): Promise<Record<string, unknown>[]> {
   return new Promise((resolve, reject) => {
+    const startTime = Date.now();
     console.log('📊 Executing query...');
-    
+    let warned = false;
+
+    const heartbeat = setInterval(() => {
+      const elapsedMs = Date.now() - startTime;
+      const elapsed = Math.round(elapsedMs / 1000);
+      const mins = Math.floor(elapsed / 60);
+      const secs = elapsed % 60;
+      const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${elapsed}s`;
+
+      if (!warned && elapsedMs >= SLOW_QUERY_WARNING_MS) {
+        console.log(`⚠️  WARNING: Query has been running for ${timeStr}, which is unusually long. Consider cancelling if this seems stuck.`);
+        warned = true;
+      } else {
+        console.log(`   Still running... (${timeStr} elapsed)`);
+      }
+    }, HEARTBEAT_INTERVAL_MS);
+
     connection.execute({
       sqlText: sql,
       complete: (err, _stmt, rows) => {
+        clearInterval(heartbeat);
+        const elapsed = Math.round((Date.now() - startTime) / 1000);
+        const mins = Math.floor(elapsed / 60);
+        const secs = elapsed % 60;
+        const timeStr = mins > 0 ? `${mins}m ${secs}s` : `${elapsed}s`;
         if (err) {
           reject(err);
         } else {
-          console.log(`✅ Query returned ${rows?.length || 0} rows`);
+          console.log(`✅ Query returned ${rows?.length || 0} rows (${timeStr})`);
           resolve(rows as Record<string, unknown>[]);
         }
       },
@@ -559,10 +584,10 @@ async function runSavedQueryMode(args: SavedQueryArgs) {
     dashboardId = dashboard.id;
   }
   
-  // Find report if specified
+  // Find report if specified (auto-create if missing)
   let reportId: string | undefined;
   if (reportName) {
-    const report = await prisma.report.findUnique({
+    let report = await prisma.report.findUnique({
       where: {
         projectId_name: {
           projectId: project.id,
@@ -571,9 +596,17 @@ async function runSavedQueryMode(args: SavedQueryArgs) {
       },
     });
     if (!report) {
-      console.error(`Error: Report not found: ${reportName}`);
-      await prisma.$disconnect();
-      process.exit(1);
+      console.log(`Report "${reportName}" not found. Creating it...`);
+      report = await prisma.report.create({
+        data: {
+          projectId: project.id,
+          name: reportName,
+          content: `# ${reportName}\n\n**Status:** In Progress\n**Date:** ${new Date().toISOString().split('T')[0]}\n`,
+        },
+      });
+      const localDir = path.join(process.cwd(), 'local-reports', projectSlug);
+      fs.mkdirSync(localDir, { recursive: true });
+      fs.writeFileSync(path.join(localDir, `${reportName}.md`), report.content);
     }
     reportId = report.id;
   }
@@ -728,10 +761,10 @@ async function runBatchQueryMode(args: BatchQueryArgs) {
     dashboardId = dashboard.id;
   }
   
-  // Find report if specified
+  // Find report if specified (auto-create if missing)
   let reportId: string | undefined;
   if (reportName) {
-    const report = await prisma.report.findUnique({
+    let report = await prisma.report.findUnique({
       where: {
         projectId_name: {
           projectId: project.id,
@@ -740,9 +773,17 @@ async function runBatchQueryMode(args: BatchQueryArgs) {
       },
     });
     if (!report) {
-      console.error(`Error: Report not found: ${reportName}`);
-      await prisma.$disconnect();
-      process.exit(1);
+      console.log(`Report "${reportName}" not found. Creating it...`);
+      report = await prisma.report.create({
+        data: {
+          projectId: project.id,
+          name: reportName,
+          content: `# ${reportName}\n\n**Status:** In Progress\n**Date:** ${new Date().toISOString().split('T')[0]}\n`,
+        },
+      });
+      const localDir = path.join(process.cwd(), 'local-reports', projectSlug);
+      fs.mkdirSync(localDir, { recursive: true });
+      fs.writeFileSync(path.join(localDir, `${reportName}.md`), report.content);
     }
     reportId = report.id;
   }

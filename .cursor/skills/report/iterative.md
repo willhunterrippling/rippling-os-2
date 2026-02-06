@@ -89,6 +89,7 @@ Total records in scope: X [1]
      ```bash
      npm run query -- --project [slug] --batch /tmp/queries.json --report [report-name]
      ```
+   - The report is auto-created if it doesn't exist yet.
 3. **Add a new section** to the report with findings
 4. **Update the summary** if there are significant new insights
 5. **Move answered items** from "Open Questions" to completed sections
