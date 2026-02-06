@@ -248,9 +248,21 @@ echo ""
 # =============================================================================
 echo -e "${BLUE}[5/6] Checking uv (uvx)...${NC}"
 
+# Source common shell profile files to pick up PATH changes
+for f in "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.profile" "$HOME/.local/bin/env"; do
+    [ -f "$f" ] && source "$f" 2>/dev/null
+done
+
 if command -v uvx &> /dev/null; then
     UV_VERSION=$(uvx --version 2>/dev/null || echo "installed")
     echo -e "${GREEN}[✓] uv/uvx: $UV_VERSION${NC}"
+elif [ -x "$HOME/.local/bin/uvx" ]; then
+    # uv is installed but not on PATH -- add it and report success with a note
+    export PATH="$HOME/.local/bin:$PATH"
+    UV_VERSION=$(uvx --version 2>/dev/null || echo "installed")
+    echo -e "${GREEN}[✓] uv/uvx: $UV_VERSION (found at ~/.local/bin)${NC}"
+    echo -e "${YELLOW}    Note: ~/.local/bin is not on your shell PATH.${NC}"
+    echo -e "${YELLOW}    Add this to your ~/.zshrc: export PATH=\"\$HOME/.local/bin:\$PATH\"${NC}"
 else
     echo -e "${RED}[✗] uv/uvx not found${NC}"
     MISSING_COUNT=$((MISSING_COUNT + 1))

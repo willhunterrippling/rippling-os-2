@@ -58,6 +58,28 @@ If a tool is missing, tell the user:
 
 See [prerequisites.md](prerequisites.md) for detailed installation instructions to share with the user.
 
+### Re-Verifying After User Installs Tools
+
+When re-running the prerequisite check after the user has installed tools, the Cursor shell may have a stale PATH. Before re-running `check-prerequisites.sh`, first refresh the PATH:
+
+```bash
+source ~/.zshrc 2>/dev/null; source ~/.local/bin/env 2>/dev/null; bash .cursor/skills/setup/scripts/check-prerequisites.sh
+```
+
+If `uvx` is still not found but you suspect it was installed, check directly:
+
+```bash
+ls -la ~/.local/bin/uv ~/.local/bin/uvx 2>/dev/null
+```
+
+If found, add it to the session PATH and proceed:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Do NOT tell the user to add `~/.local/bin` to their PATH if it's already in their `~/.zshrc`. Check first with: `grep -q '.local/bin' ~/.zshrc && echo "already configured"`.
+
 ### Git Email Configuration
 
 The user's git email **must** be their @rippling.com address. If the check shows a different email:
@@ -207,6 +229,8 @@ Next steps:
 
 View your example at: /projects/example-{username}
 ```
+
+**Important:** Before telling the user about any remaining PATH configuration (e.g. adding `~/.local/bin` for uv), verify it isn't already handled. Check `~/.zshrc` for existing PATH entries before suggesting the user add them.
 
 ## Partial Setup
 
