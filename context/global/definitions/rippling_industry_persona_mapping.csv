@@ -1,0 +1,439 @@
+Industry Normalized,Industry Segment,Industry Vertical,STRAT_RYOG,ENT_RYOG,MM_RYOG,SMB_RYOG,INTL_GLOBAL_ONLY_RYOG,UKI_RYOG,AU_RYOG,FR_RYOG,DE_RYOG,IT_ONLY_RYOG,SPEND_ONLY_RYOG,Linkedin_ITO,CA_RYOG,CA_QC_RYOG
+Accommodation and Food Services,Accommodation and Food Services,Accommodation and Food Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Yellow,Yellow,Green,Green,Yellow,Yellow
+"Bed-and-Breakfasts, Hostels, Homestays",Accommodation and Food Services,Accommodation and Food Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Orange,Red,Green,Green,Yellow,Yellow
+Hospitality,Accommodation and Food Services,Accommodation and Food Services,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Yellow,Yellow,Yellow,Green,Yellow,Yellow
+Hotels and Motels,Accommodation and Food Services,Accommodation and Food Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Orange,Yellow,Green,Green,Yellow,Yellow
+"Bars, Taverns, and Nightclubs",Accommodation and Food Services,Accommodation and Food Services,Orange,Yellow,Yellow,Orange,Yellow,Yellow,Red,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Caterers,Accommodation and Food Services,Accommodation and Food Services,Orange,Yellow,Yellow,Orange,Yellow,Yellow,Red,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Food and Beverage Services,Accommodation and Food Services,Accommodation and Food Services,Yellow,Yellow,Yellow,Orange,Yellow,Yellow,Red,Red,Yellow,Yellow,Yellow,Yellow,Red,Yellow
+Mobile Food Services,Accommodation and Food Services,Accommodation and Food Services,Orange,Yellow,Yellow,Orange,Yellow,Yellow,Red,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Restaurants,Accommodation and Food Services,Accommodation and Food Services,Yellow,Yellow,Yellow,Orange,Yellow,Yellow,Red,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Travel Arrangements,Administrative and Support Services,Administrative and Support Services,Green,Green,Green,Green,Yellow,Green,Yellow,Red,Green,Yellow,Green,Green,Yellow,Yellow
+Collection Agencies,Administrative and Support Services,Administrative and Support Services,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Red,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded
+Fundraising,Administrative and Support Services,Administrative and Support Services,Green,Green,Green,Yellow,Yellow,Green,Yellow,Green,Green,Green,Green,Green,Yellow,Yellow
+Administrative and Support Services,Administrative and Support Services,Administrative and Support Services,Yellow,Yellow,Yellow,Green,Yellow,Red,Green,Green,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Events Services,Administrative and Support Services,Administrative and Support Services,Green,Green,Green,Yellow,Yellow,Green,Green,Red,Green,Green,Yellow,Green,Green,Green
+Facilities Services,Administrative and Support Services,Administrative and Support Services,Green,Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Janitorial Services,Administrative and Support Services,Administrative and Support Services,Orange,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Landscaping Services,Administrative and Support Services,Administrative and Support Services,Orange,Yellow,Yellow,Yellow,Yellow,Green,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Office Administration,Administrative and Support Services,Administrative and Support Services,Green,Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Security and Investigations,Administrative and Support Services,Administrative and Support Services,Green,Green,Green,Green,Yellow,Green,Green,Red,Red,Yellow,Green,Green,Yellow,Yellow
+Security Guards and Patrol Services,Administrative and Support Services,Administrative and Support Services,Orange,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow
+Security Systems Services,Administrative and Support Services,Administrative and Support Services,Green,Green,Green,Yellow,Yellow,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Staffing and Recruiting,Administrative and Support Services,Administrative and Support Services,Red,Orange,Yellow,Yellow,Yellow,Green,Yellow,Green,Yellow,Yellow,Green,Yellow,Red,Red
+Telephone Call Centers,Administrative and Support Services,Administrative and Support Services,Orange,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Temporary Help Services,Administrative and Support Services,Administrative and Support Services,Orange,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Amusement Parks and Arcades,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Red,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Red,Red,Yellow,Orange,Orange,Orange
+Artists and Writers,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Red,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Green,Green,Yellow,Yellow
+Circuses and Magic Shows,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Red,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Entertainment Providers,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Yellow,Yellow,Green,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Green,Yellow,Yellow,Yellow
+Fine Art,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Green,Green,Orange,Orange
+Gambling Facilities and Casinos,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Red,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded
+Golf Courses and Country Clubs,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Wellness and Fitness Services,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Green,Green,Green,Yellow,Green,Yellow,Red,Green,Yellow,Yellow,Green,Green,Green
+Historical Sites,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+"Leisure, Travel & Tourism","Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Green,Green,Green,Yellow,Green,Yellow,Red,Green,Yellow,Green,Green,Green,Green
+Libraries,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Orange,Orange,Orange,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Museums,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+"Museums, Historical Sites, and Zoos","Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Green,Green,Yellow,Yellow
+Music,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Green,Green,Orange,Orange
+Musicians,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Performing Arts,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Yellow,Orange,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Performing Arts and Spectator Sports,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Yellow,Orange,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Racetracks,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Red,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded
+Recreational Facilities,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Sheet Music Publishing,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Skiing Facilities,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Sound Recording,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Yellow,Yellow,Green,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Spectator Sports,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Sports and Recreation Instruction,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Sports Teams and Clubs,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Theater Companies,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Writing and Editing,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Zoos and Botanical Gardens,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Orange,Orange,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Movies and Sound Recording,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Green,Green,Green,Yellow,Yellow,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Dance Companies,"Arts, Entertainment, and Recreation","Arts, Entertainment, and Recreation",Orange,Yellow,Orange,Yellow,Yellow,Yellow,Yellow,Red,Orange,Red,Yellow,Orange,Green,Green
+Building Construction,Construction,Construction,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow
+Building Equipment Contractors,Construction,Construction,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Building Finishing Contractors,Construction,Construction,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Building Structure and Exterior Contractors,Construction,Construction,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Civil Engineering,Construction,Construction,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow
+Construction,Construction,Construction,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Green,Yellow,Green,Yellow
+"Highway, Street, and Bridge Construction",Construction,Construction,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Nonresidential Building Construction,Construction,Construction,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Residential Building Construction,Construction,Construction,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Specialty Trade Contractors,Construction,Construction,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Utility System Construction,Construction,Construction,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Child Day Care Services,Consumer Services,Consumer Services,Yellow,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Community Services,Consumer Services,Consumer Services,Yellow,Orange,Orange,Orange,Yellow,Orange,Red,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Consumer Services,Consumer Services,Consumer Services,Yellow,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Orange
+Footwear and Leather Goods Repair,Consumer Services,Consumer Services,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Green,Green
+Household Services,Consumer Services,Consumer Services,Orange,Orange,Orange,Orange,Yellow,Orange,Red,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Individual and Family Services,Consumer Services,Consumer Services,Yellow,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Green,Orange,Green,Orange
+Laundry and Drycleaning Services,Consumer Services,Consumer Services,Orange,Orange,Orange,Orange,Yellow,Orange,Red,Red,Orange,Red,Yellow,Orange,Green,Green
+Pet Services,Consumer Services,Consumer Services,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Reupholstery and Furniture Repair,Consumer Services,Consumer Services,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Personal Care Services,Consumer Services,Consumer Services,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Electronic and Precision Equipment Maintenance,Consumer Services,Consumer Services,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Civic and Social Organizations,Non-Profit,Consumer Services,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Green,Yellow,Red,Red
+Conservation Programs,Non-Profit,Consumer Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Emergency and Relief Services,Non-Profit,Consumer Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Environmental Quality Programs,Non-Profit,Consumer Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Non-profit Organizations,Non-Profit,Consumer Services,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Green,Orange,Yellow,Yellow
+Philanthropic Fundraising Services,Non-Profit,Consumer Services,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Vocational Rehabilitation Services,Non-Profit,Consumer Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Personal and Laundry Services,Consumer Services,Consumer Services,Orange,Yellow,Yellow,Yellow,Yellow,Green,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Repair and Maintenance,Consumer Services,Consumer Services,Orange,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Vehicle Repair and Maintenance,Consumer Services,Consumer Services,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Religious Institutions,Religious Institution,Consumer Services,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Cosmetology and Barber Schools,Education,Education,Red,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Education,Education,Education,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Red,Yellow,Red,Yellow,Green
+Education Administration Programs,Education,Education,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Green,Yellow,Yellow,Yellow
+Fine Arts Schools,Education,Education,Red,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Red,Yellow,Red,Yellow,Yellow
+Flight Training,Education,Education,Red,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Higher Education,Education,Education,Orange,Orange,Orange,Orange,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Red,Orange,Orange
+Language Schools,Education,Education,Red,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Red,Yellow,Red,Yellow,Yellow
+Primary and Secondary Education,Education,Education,Orange,Orange,Orange,Orange,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Red,Red,Red
+Secretarial Schools,Education,Education,Red,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Red,Yellow,Red,Yellow,Yellow
+Technical and Vocational Training,Education,Education,Red,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+E-Learning Providers,Education,Education,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Farming,"Farming, Ranching, Forestry","Farming, Ranching, Forestry",Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Yellow,Red,Red,Red
+"Farming, Ranching, Forestry","Farming, Ranching, Forestry","Farming, Ranching, Forestry",Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Yellow,Red,Red,Red
+Fisheries,"Farming, Ranching, Forestry","Farming, Ranching, Forestry",Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Yellow,Red,Red,Red
+Forestry and Logging,"Farming, Ranching, Forestry","Farming, Ranching, Forestry",Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Yellow,Red,Red,Red
+Horticulture,"Farming, Ranching, Forestry","Farming, Ranching, Forestry",Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Yellow,Red,Red,Red
+Ranching,"Farming, Ranching, Forestry","Farming, Ranching, Forestry",Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Yellow,Red,Red,Red
+Ranching and Fisheries,"Farming, Ranching, Forestry","Farming, Ranching, Forestry",Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Yellow,Red,Red,Red
+Banking,Financial Services,Financial Services,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Funds and Trusts,Financial Services,Financial Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Investment Banking,Financial Services,Financial Services,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Savings Institutions,Financial Services,Financial Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Trusts and Estates,Financial Services,Financial Services,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+"Claims Adjusting, Actuarial Services",Insurance,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Green,Green
+Credit Intermediation,Financial Services,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Green,Green
+Pension Funds,Financial Services,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Green,Green
+Securities and Commodity Exchanges,Financial Services,Financial Services,Yellow,Yellow,Yellow,Yellow,Excluded,Green,Yellow,Red,Yellow,Yellow,Excluded,Yellow,Yellow,Yellow
+Venture Capital and Private Equity Principals,Financial Services,Financial Services,Yellow,Green,Green,Green,Green,Green,Yellow,Yellow,Green,Green,Green,Green,Green,Green
+Financial Services,Financial Services,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Green,Green
+Investment Advice,Financial Services,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Yellow,Green,Green,Green,Green,Green,Green
+Investment Management,Financial Services,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Yellow,Green,Green,Green,Green,Red,Green
+Loan Brokers,Financial Services,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Green,Green
+Insurance,Insurance,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Yellow,Yellow
+Insurance Agencies and Brokerages,Insurance,Financial Services,Green,Green,Green,Yellow,Green,Green,Yellow,Red,Green,Green,Green,Green,Green,Green
+Insurance and Employee Benefit Funds,Insurance,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Green,Green
+Insurance Carriers,Insurance,Financial Services,Green,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Green,Green
+Administration of Justice,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Armed Forces,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Correctional Institutions,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Courts of Law,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Economic Programs,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Government Administration,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Government Relations Services,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Housing Programs,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+International Affairs,Government Administration,Government Administration,Excluded,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red
+International Trade and Development,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Law Enforcement,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Military and International Affairs,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Political Organizations,Government Administration,Government Administration,Excluded,Yellow,Yellow,Yellow,Red,Red,Yellow,Yellow,Yellow,Yellow,Red,Red,Yellow,Yellow
+Public Assistance Programs,Government Administration,Government Administration,Excluded,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red
+Public Health,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Public Policy Offices,Government Administration,Government Administration,Excluded,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red
+Public Safety,Government Administration,Government Administration,Red,Red,Red,Red,Red,Red,Red,Red,Red,Red,Excluded,Red,Red,Red
+Legislative Offices,Government Administration,Government Administration,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Executive Offices,Government Administration,Government Administration,Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green,Green,Green,Red,Red
+Housing and Community Development,Government Administration,Government Administration,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Transportation Programs,Government Administration,Government Administration,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+"Air, Water, and Waste Program Management",Government Administration,Government Administration,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Fire Protection,Government Administration,Government Administration,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Red,Red
+Utilities Administration,Government Administration,Government Administration,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Holding Companies,Holding Companies,Holding Companies,Green,Green,Green,Yellow,Green,Green,Yellow,Green,Green,Green,Green,Green,Green,Green
+Alternative Medicine,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Ambulance Services,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Chiropractors,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Dentists,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Family Planning Centers,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Health and Human Services,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Green,Green,Yellow,Red,Green,Red,Green,Yellow,Yellow,Yellow,Green,Green
+Home Health Care Services,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Green,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Hospitals,Hospitals and Health Care,Hospitals and Health Care,Red,Red,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Red,Yellow,Orange,Red,Red
+Hospitals and Health Care,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Green,Yellow,Red,Red,Red,Yellow,Red,Yellow,Orange,Red,Red
+Medical and Diagnostic Laboratories,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Green,Green,Yellow,Yellow,Green,Red,Green,Yellow,Yellow,Yellow,Green,Green
+Medical Practices,Hospitals and Health Care,Hospitals and Health Care,Yellow,Green,Green,Green,Green,Red,Green,Red,Green,Yellow,Yellow,Green,Green,Green
+Mental Health Care,Hospitals and Health Care,Hospitals and Health Care,Yellow,Green,Green,Green,Green,Red,Green,Red,Green,Yellow,Green,Green,Red,Red
+Nursing Homes and Residential Care Facilities,Hospitals and Health Care,Hospitals and Health Care,Red,Red,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Optometrists,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Outpatient Care Centers,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Green,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+"Physical, Occupational and Speech Therapists",Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Physicians,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Services for the Elderly and Disabled,Hospitals and Health Care,Hospitals and Health Care,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Abrasives and Nonmetallic Minerals Manufacturing,"Glass, Ceramics and Concrete Manufacturing",Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Agricultural Chemical Manufacturing,Chemical Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+"Agriculture, Construction, Mining Machinery Manufacturing",Machinery Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Animal Feed Manufacturing,Food and Beverage Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+"Appliances, Electrical, and Electronics Manufacturing","Appliances, Electrical, and Electronics Manufacturing",Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Architectural and Structural Metal Manufacturing,Fabricated Metal Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Artificial Rubber and Synthetic Fiber Manufacturing,Chemical Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Audio and Video Equipment Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Automation Machinery Manufacturing,Machinery Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Green,Green
+Automotive,Transportation Equipment Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Aviation and Aerospace Component Manufacturing,Transportation Equipment Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Baked Goods Manufacturing,Food and Beverage Manufacturing,Manufacturing,Orange,Yellow,Yellow,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Beverage Manufacturing,Food and Beverage Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+"Boilers, Tanks, and Shipping Container Manufacturing",Fabricated Metal Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Chemical Manufacturing,Chemical Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Chemical Raw Materials Manufacturing,Chemical Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Clay and Refractory Products Manufacturing,"Glass, Ceramics and Concrete Manufacturing",Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Commercial and Service Industry Machinery Manufacturing,Machinery Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Communications Equipment Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Computer Hardware Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Computers and Electronics Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Construction Hardware Manufacturing,Fabricated Metal Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Cutlery and Handtool Manufacturing,Fabricated Metal Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Dairy Product Manufacturing,Food and Beverage Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Orange,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Defense and Space Manufacturing,Transportation Equipment Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Electric Lighting Equipment Manufacturing,"Appliances, Electrical, and Electronics Manufacturing",Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Electrical Equipment Manufacturing,"Appliances, Electrical, and Electronics Manufacturing",Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Engines and Power Transmission Equipment Manufacturing,Machinery Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Fabricated Metal Products,Fabricated Metal Products Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Fashion Accessories Manufacturing,Apparel Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Food and Beverage Manufacturing,Food and Beverage Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Orange,Yellow,Orange,Green,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Footwear Manufacturing,Apparel Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Fruit and Vegetable Preserves Manufacturing,Food and Beverage Manufacturing,Manufacturing,Orange,Yellow,Yellow,Orange,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Furniture and Home Furnishings Manufacturing,Furniture and Home Furnishings Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+"Glass, Ceramics and Concrete Manufacturing","Glass, Ceramics and Concrete Manufacturing",Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Glass Product Manufacturing,"Glass, Ceramics and Concrete Manufacturing",Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Household and Institutional Furniture Manufacturing,Furniture and Home Furnishings Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Household Appliance Manufacturing,"Appliances, Electrical, and Electronics Manufacturing",Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+HVAC and Refrigeration Equipment Manufacturing,Machinery Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Industrial Machinery Manufacturing,Machinery Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Leather Product Manufacturing,Leather Product Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Lime and Gypsum Products Manufacturing,"Glass, Ceramics and Concrete Manufacturing",Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Machinery Manufacturing,Machinery Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Red,Red
+Magnetic and Optical Media Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Manufacturing,Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Green,Yellow
+Mattress and Blinds Manufacturing,Furniture and Home Furnishings Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Measuring and Control Instrument Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Meat Products Manufacturing,Food and Beverage Manufacturing,Manufacturing,Orange,Yellow,Yellow,Orange,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Medical Equipment Manufacturing,Other Products Manufacturing,Manufacturing,Yellow,Yellow,Green,Green,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Green,Green
+"Metal Valve, Ball, and Roller Manufacturing",Fabricated Metal Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Metalworking Machinery Manufacturing,Machinery Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Motor Vehicle Manufacturing,Transportation Equipment Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Motor Vehicle Parts Manufacturing,Transportation Equipment Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Office Furniture and Fixtures Manufacturing,Furniture and Home Furnishings Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Oil and Coal Product Manufacturing,Other Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Packaging and Containers Manufacturing,Plastics and Rubber Product Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+"Paint, Coating, and Adhesive Manufacturing",Chemical Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Paper and Forest Product Manufacturing,Other Products Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Personal Care Product Manufacturing,Chemical Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Pharmaceutical Manufacturing,Chemical Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Plastics and Rubber Product Manufacturing,Plastics and Rubber Product Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Plastics Manufacturing,Plastics and Rubber Product Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Primary Metal Manufacturing,Other Products Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Railroad Equipment Manufacturing,Transportation Equipment Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Renewable Energy Semiconductor Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Rubber Products Manufacturing,Plastics and Rubber Product Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Seafood Product Manufacturing,Food and Beverage Manufacturing,Manufacturing,Orange,Yellow,Yellow,Orange,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Semiconductor Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Shipbuilding,Transportation Equipment Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Soap and Cleaning Product Manufacturing,Chemical Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Sporting Goods Manufacturing,Other Products Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Spring and Wire Product Manufacturing,Fabricated Metal Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Sugar and Confectionery Product Manufacturing,Food and Beverage Manufacturing,Manufacturing,Orange,Yellow,Yellow,Orange,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Textile Manufacturing,Other Products Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Tobacco Manufacturing,Other Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Transportation Equipment Manufacturing,Transportation Equipment Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Turned Products and Fastener Manufacturing,Fabricated Metal Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Women's Handbag Manufacturing,Apparel Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Wood Product Manufacturing,Other Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Metal Treatments,Fabricated Metal Products Manufacturing,Manufacturing,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Orange,Orange
+Printing Services,Other Products Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Green,Green,Yellow,Red,Yellow,Yellow,Green,Green,Yellow,Yellow
+Breweries,Food and Beverage Manufacturing,Manufacturing,Orange,Yellow,Yellow,Orange,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Distilleries,Food and Beverage Manufacturing,Manufacturing,Orange,Yellow,Yellow,Orange,Yellow,Yellow,Green,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Wineries,Food and Beverage Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Orange,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Apparel Manufacturing,Apparel Manufacturing,Manufacturing,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Fuel Cell Manufacturing,"Appliances, Electrical, and Electronics Manufacturing",Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Climate Technology Product Manufacturing,Other Products Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Accessible Hardware Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Red,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Smart Meter Manufacturing,Computers and Electronics Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Robot Manufacturing,Machinery Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Renewable Energy Equipment Manufacturing,Machinery Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Alternative Fuel Vehicle Manufacturing,Transportation Equipment Manufacturing,Manufacturing,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Red,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Coal Mining,"Oil, Gas, and Mining","Oil, Gas, and Mining",Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Red,Red,Excluded,Yellow,Yellow,Excluded,Excluded
+Metal Ore Mining,"Oil, Gas, and Mining","Oil, Gas, and Mining",Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Red,Red,Excluded,Yellow,Yellow,Excluded,Excluded
+Mining,"Oil, Gas, and Mining","Oil, Gas, and Mining",Excluded,Red,Orange,Orange,Red,Orange,Red,Red,Red,Red,Green,Green,Yellow,Yellow
+Natural Gas Extraction,"Oil, Gas, and Mining","Oil, Gas, and Mining",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Yellow,Yellow
+Nonmetallic Mineral Mining,"Oil, Gas, and Mining","Oil, Gas, and Mining",Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Red,Red,Excluded,Yellow,Yellow,Excluded,Excluded
+Oil and Gas,"Oil, Gas, and Mining","Oil, Gas, and Mining",Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Green,Orange,Green,Green
+Oil Extraction,"Oil, Gas, and Mining","Oil, Gas, and Mining",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Yellow,Yellow
+"Oil, Gas, and Mining","Oil, Gas, and Mining","Oil, Gas, and Mining",Excluded,Excluded,Excluded,Excluded,Excluded,Orange,Excluded,Red,Red,Excluded,Yellow,Yellow,Yellow,Yellow
+Accounting,Accounting,Professional Services,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded,Excluded
+Think Tanks,Professional Services,Professional Services,Yellow,Yellow,Green,Yellow,Yellow,Green,Yellow,Yellow,Green,Green,Yellow,Green,Green,Green
+Veterinary Services,Professional Services,Professional Services,Yellow,Yellow,Yellow,Green,Yellow,Yellow,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Alternative Dispute Resolution,Legal Services,Professional Services,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Red,Yellow,Green,Yellow,Yellow,Yellow,Yellow
+Law Practice,Legal Services,Professional Services,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Red,Yellow,Green,Yellow,Yellow,Yellow,Yellow
+Legal Services,Legal Services,Professional Services,Yellow,Yellow,Yellow,Green,Yellow,Green,Yellow,Red,Yellow,Green,Yellow,Yellow,Yellow,Yellow
+Advertising Services,Marketing and Advertising,Professional Services,Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Yellow,Green,Green,Green
+Business Content,Marketing and Advertising,Professional Services,Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green
+Marketing and Advertising,Marketing and Advertising,Professional Services,Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green
+Marketing Services,Marketing and Advertising,Professional Services,Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Green,Green,Yellow,Yellow
+Architecture and Planning,Architecture and Planning,Professional Services,Green,Green,Green,Yellow,Green,Green,Red,Red,Green,Green,Green,Green,Yellow,Yellow
+Commercial and Industrial Machinery Maintenance,Professional Services,Professional Services,Orange,Yellow,Yellow,Yellow,Yellow,Green,Red,Green,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Community Development and Urban Planning,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Design Services,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Green
+Environmental Services,Professional Services,Professional Services,Yellow,Yellow,Yellow,Yellow,Green,Green,Green,Green,Yellow,Yellow,Green,Green,Green,Yellow
+Executive Search Services,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Graphic Design,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Human Resources Services,Professional Services,Professional Services,Green,Green,Yellow,Green,Green,Green,Green,Green,Yellow,Yellow,Green,Green,Yellow,Green
+Industry Associations,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Interior Design,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Green,Green
+Business Consulting and Services,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Yellow,Yellow
+Market Research,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Operations Consulting,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Outsourcing and Offshoring Consulting,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Photography,Professional Services,Professional Services,Green,Green,Green,Yellow,Green,Green,Green,Red,Green,Yellow,Green,Green,Green,Green
+Professional Organizations,Professional Services,Professional Services,Yellow,Yellow,Yellow,Yellow,Green,Green,Green,Green,Yellow,Yellow,Green,Green,Yellow,Yellow
+Professional Services,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Professional Training and Coaching,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Public Relations and Communications Services,Marketing and Advertising,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Research Services,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Strategic Management Services,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Translation and Localization,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green
+Accessible Architecture and Design,Professional Services,Professional Services,Green,Green,Green,Yellow,Green,Green,Red,Red,Green,Green,Green,Green,Green,Green
+Regenerative Design,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Engineering Services,Professional Services,Professional Services,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow
+Robotics Engineering,Professional Services,Professional Services,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Surveying and Mapping Services,Professional Services,Professional Services,Green,Green,Green,Yellow,Green,Green,Red,Red,Green,Green,Green,Green,Green,Green
+Services for Renewable Energy,Professional Services,Professional Services,Yellow,Yellow,Yellow,Yellow,Green,Green,Green,Green,Yellow,Yellow,Green,Green,Yellow,Yellow
+Consumer Goods Rental,Equipment Rental Services,Real Estate and Equipment Rental Services,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Green,Green
+Commercial and Industrial Equipment Rental,Equipment Rental Services,Real Estate and Equipment Rental Services,Orange,Yellow,Yellow,Yellow,Yellow,Green,Yellow,Green,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Equipment Rental Services,Equipment Rental Services,Real Estate and Equipment Rental Services,Orange,Orange,Yellow,Yellow,Yellow,Green,Yellow,Green,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Leasing Non-residential Real Estate,Real Estate,Real Estate and Equipment Rental Services,Yellow,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Yellow,Yellow
+Leasing Residential Real Estate,Real Estate,Real Estate and Equipment Rental Services,Yellow,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Green,Green
+Real Estate,Real Estate,Real Estate and Equipment Rental Services,Yellow,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Yellow,Yellow
+Real Estate Agents and Brokers,Real Estate,Real Estate and Equipment Rental Services,Orange,Green,Green,Green,Green,Green,Yellow,Red,Green,Green,Green,Green,Yellow,Yellow
+Real Estate and Equipment Rental Services,Real Estate,Real Estate and Equipment Rental Services,Yellow,Yellow,Yellow,Yellow,Green,Green,Yellow,Red,Yellow,Yellow,Green,Green,Yellow,Yellow
+Subdivision of Land,Real Estate,Real Estate and Equipment Rental Services,Yellow,Yellow,Yellow,Yellow,Green,Green,Yellow,Red,Yellow,Yellow,Green,Green,Yellow,Yellow
+Retail Building Materials and Garden Equipment,Retail,Retail,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Retail Gasoline,Retail,Retail,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Food and Beverage Retail,Retail,Retail,Yellow,Yellow,Yellow,Orange,Yellow,Red,Green,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Online and Mail Order Retail,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Retail,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Green,Orange,Green,Red,Orange,Red,Green,Green,Green,Green
+Retail Apparel and Fashion,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Green,Red,Green,Red,Orange,Red,Green,Green,Yellow,Yellow
+"Retail Appliances, Electrical, and Electronic Equipment",Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Art Supplies,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Books and Printed News,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Florists,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Furniture and Home Furnishings,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Groceries,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Orange,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Health and Personal Care Products,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Luxury Goods and Jewelry,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Musical Instruments,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Office Equipment,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Office Supplies and Gifts,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Recyclable Materials & Used Merchandise,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Green,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Retail Motor Vehicles,Retail,Retail,Red,Orange,Orange,Orange,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+Retail Art Dealers,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Retail Pharmacies,Retail,Retail,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Animation and Post-production,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Blogs,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green
+Book Publishing,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Broadcast Media Production and Distribution,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Cable and Satellite Programming,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Internet News,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Internet Publishing,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Yellow,Yellow
+Media Production,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+"Movies, Videos and Sound",Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Newspaper Publishing,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Online Audio and Video Media,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Periodical Publishing,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Book and Periodical Publishing,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Red,Green,Green,Green,Green,Green,Green
+Radio and Television Broadcasting,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Yellow,Green,Green,Green,Red,Green,Green,Green,Green,Yellow,Yellow
+Social Networking Platforms,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+"Technology, Information and Media",Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Information Services,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Yellow,Yellow,Green,Green,Green,Green,Yellow,Green,Green,Green,Yellow,Yellow
+Biotechnology Research,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Yellow,Green,Green,Green
+Business Intelligence Platforms,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Computer and Network Security,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Yellow,Yellow
+Computer Games,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+IT Services and IT Consulting,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Computer Networking Products,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Data Infrastructure and Analytics,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Data Security Software Products,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Desktop Computing Software Products,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Embedded Software Products,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+"Technology, Information and Internet","Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Internet Marketplace Platforms,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Yellow,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+IT System Custom Software Development,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+IT System Data Services,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+IT System Design Services,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+IT System Installation and Disposal,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+IT System Operations and Maintenance,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+IT System Testing and Evaluation,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+IT System Training and Support,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Mobile Computing Software Products,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Mobile Gaming Apps,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Nanotechnology Research,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Software Development,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Space Research and Technology,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Yellow,Green,Green,Green,Green
+Satellite Telecommunications,Media and Telecommunications,"Technology, Information and Media",Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Telecommunications,Media and Telecommunications,"Technology, Information and Media",Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Telecommunications Carriers,Media and Telecommunications,"Technology, Information and Media",Yellow,Yellow,Yellow,Green,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Wireless Services,Media and Telecommunications,"Technology, Information and Media",Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Digital Accessibility Services,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Yellow,Yellow,Green,Green,Green,Green,Yellow,Green,Green,Green,Yellow,Yellow
+Media & Telecommunications,Media and Telecommunications,"Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Blockchain Services,"Technology, Information and Internet","Technology, Information and Media",Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green,Green
+Climate Data and Analytics,"Technology, Information and Internet","Technology, Information and Media",Yellow,Yellow,Yellow,Yellow,Green,Green,Green,Green,Yellow,Yellow,Green,Green,Yellow,Yellow
+Sightseeing Transportation,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Warehousing and Storage,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Yellow,Yellow,Yellow,Yellow,Yellow,Green,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Airlines and Aviation,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Yellow,Yellow,Green,Yellow,Yellow,Red,Red,Yellow,Yellow,Yellow,Yellow,Green,Green
+Freight and Package Transportation,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Ground Passenger Transportation,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+Interurban and Rural Bus Services,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+Maritime Transportation,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+Pipeline Transportation,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+Rail Transportation,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+School and Employee Bus Services,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+Shuttles and Special Needs Transportation Services,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+Taxi and Limousine Services,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Orange,Orange,Yellow,Yellow,Yellow,Orange,Red,Red,Red,Red,Green,Orange,Green,Yellow
+Truck Transportation,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Orange,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+Urban Transit Services,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Yellow,Orange,Orange,Orange
+Postal Services,"Transportation, Logistics, Supply Chain and Storage","Transportation, Logistics, Supply Chain and Storage",Orange,Orange,Orange,Orange,Yellow,Orange,Red,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Biomass Electric Power Generation,Utilities,Utilities,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow
+Electric Power Generation,Utilities,Utilities,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Red,Yellow,Orange,Yellow,Yellow
+"Electric Power Transmission, Control, and Distribution",Utilities,Utilities,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Orange,Orange
+Fossil Fuel Electric Power Generation,Utilities,Utilities,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Orange,Orange
+Geothermal Electric Power Generation,Utilities,Utilities,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Orange,Orange
+Hydroelectric Power Generation,Utilities,Utilities,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow
+Natural Gas Distribution,Utilities,Utilities,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Orange,Orange
+Nuclear Electric Power Generation,Utilities,Utilities,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Orange,Orange
+Solar Electric Power Generation,Utilities,Utilities,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow
+Steam and Air-Conditioning Supply,Utilities,Utilities,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Orange,Orange
+Water Supply and Irrigation Systems,Utilities,Utilities,Red,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Red,Red,Green,Green,Orange,Orange
+Wind Electric Power Generation,Utilities,Utilities,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Red,Red,Yellow,Yellow,Yellow,Yellow,Yellow
+Utilities,Utilities,Utilities,Yellow,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Red,Red
+Waste Collection,Utilities,Utilities,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Waste Treatment and Disposal,Utilities,Utilities,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+"Water, Waste, Steam, and Air Conditioning Services",Utilities,Utilities,Orange,Orange,Orange,Orange,Yellow,Orange,Yellow,Red,Orange,Red,Yellow,Orange,Orange,Orange
+Renewable Energy Power Generation,Utilities,Utilities,Orange,Yellow,Yellow,Yellow,Yellow,Orange,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Drugs and Sundries,Wholesale,Wholesale,Yellow,Yellow,Yellow,Yellow,Yellow,Red,Yellow,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Food and Beverage,Wholesale,Wholesale,Orange,Yellow,Yellow,Orange,Yellow,Red,Yellow,Red,Orange,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Metals and Minerals,Wholesale,Wholesale,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Orange,Orange
+Wholesale Petroleum and Petroleum Products,Wholesale,Wholesale,Red,Orange,Orange,Orange,Yellow,Orange,Red,Red,Red,Red,Green,Green,Orange,Orange
+Wholesale,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Green,Green
+Wholesale Alcoholic Beverages,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Apparel and Sewing Supplies,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+"Wholesale Appliances, Electrical, and Electronics",Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Building Materials,Wholesale,Wholesale,Orange,Orange,Orange,Orange,Yellow,Orange,Green,Red,Orange,Red,Yellow,Orange,Yellow,Yellow
+Wholesale Chemical and Allied Products,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Computer Equipment,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Footwear,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Furniture and Home Furnishings,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+"Wholesale Hardware, Plumbing, Heating Equipment",Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Wholesale Import and Export,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Luxury Goods and Jewelry,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Yellow,Yellow,Yellow,Yellow,Yellow
+Wholesale Machinery,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Wholesale Motor Vehicles and Parts,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Wholesale Paper Products,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Wholesale Photography Equipment and Supplies,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Wholesale Raw Farm Products,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
+Wholesale Recyclable Materials,Wholesale,Wholesale,Orange,Yellow,Yellow,Yellow,Yellow,Yellow,Green,Red,Yellow,Red,Yellow,Orange,Yellow,Yellow
